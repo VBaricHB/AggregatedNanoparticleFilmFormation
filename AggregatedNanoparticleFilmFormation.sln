@@ -1,7 +1,7 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DirectDepositionAlgorithm", "DirectDepositionAlgorithm\DirectDepositionAlgorithm.csproj", "{ECC70DF6-8549-4EF2-A789-1ECA7712969B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AggregatedNanoparticleFilmFormation", "DirectDepositionAlgorithm\AggregatedNanoparticleFilmFormation.csproj", "{ECC70DF6-8549-4EF2-A789-1ECA7712969B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

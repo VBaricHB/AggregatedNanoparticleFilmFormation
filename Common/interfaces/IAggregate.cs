@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DirectDepositionAlgorithm.interfaces
+namespace Common.interfaces
 {
     public interface IAggregate
     {

@@ -1,5 +1,6 @@
 ﻿using System;
-namespace DirectDepositionAlgorithm
+using Common.interfaces;
+namespace Common
 {
     public class ConsoleLogger : ILogger
     {

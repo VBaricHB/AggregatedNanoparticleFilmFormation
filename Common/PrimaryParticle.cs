@@ -1,22 +1,32 @@
-﻿using Accord.Collections;
-
-namespace DirectDepositionAlgorithm
+﻿
+namespace Common
 {
     public class PrimaryParticle
     {
-        public double X { get; set; }
-        public double Y { get; set; }
-        public double Z { get; set; }
+        public Vector3 Position { get; private set; }
 
         public double Radius { get; set; }
 
-        public PrimaryParticle(double x, double y, double z)
+        public PrimaryParticle(Vector3 position, double radius)
         {
-            X = x;
-            Y = y;
-            Z = z;
+            Position = position;
+            Radius = radius;
         }
 
-        public double[] PositionToArray() => new double[] { X, Y, Z };
+        public PrimaryParticle(double radius)
+        {
+            Position = new Vector3(0,0,0);
+            Radius = radius;
+        }
+
+        public void MoveBy(Vector3 vector)
+        {
+            Position += vector;
+        }
+
+        public void MoveTo(Vector3 vector)
+        {
+            Position = vector;
+        }
     }
 }

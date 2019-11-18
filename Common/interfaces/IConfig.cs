@@ -1,5 +1,5 @@
 ﻿using System;
-namespace DirectDepositionAlgorithm.interfaces
+namespace Common.interfaces
 {
     public interface IConfig
     {

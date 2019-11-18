@@ -4,8 +4,7 @@ namespace Common.interfaces
 {
     public interface IAggregate
     {
-        List<PrimaryParticle> PrimaryParticles { get; }
-        double RadiusGyration { get; set; }
+        List<ICluster> Cluster { get; }
         int NumberOfPrimaryParticles { get; set; }
         int NumberOfClusters { get; set; }
         bool IsDeposited { get; set; }

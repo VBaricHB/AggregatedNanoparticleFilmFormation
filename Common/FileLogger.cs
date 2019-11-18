@@ -1,8 +1,8 @@
-﻿
-using System;
+﻿using System;
 using System.IO;
+using Common.interfaces;
 
-namespace DirectDepositionAlgorithm
+namespace Common
 {
     public class FileLogger : ILogger
     {

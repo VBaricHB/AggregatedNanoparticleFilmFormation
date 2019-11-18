@@ -1,6 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Common.interfaces;
+using DirectDepositionAlgorithm.interfaces;
 
 namespace DirectDepositionAlgorithm
 {
@@ -12,9 +13,9 @@ namespace DirectDepositionAlgorithm
         public BoxDimension ZLim { get; }
 
         public List<IAggregate> DepositedAggregates { get; }
-        public int DepositedPrimaryParticles => DepositedAggregates.Sum(a => a.NumberOfPrimaryParticles);
         public double CurrentHeight { get; set; }
         public double MaxPrimaryParticleRadius { get; set; }
+        public int DepositedPrimaryParticles => DepositedAggregates.Sum(a => a.NumberOfPrimaryParticles);
 
         public SimulationDomain(double width, double maxPrimaryParticleRadius)
         {

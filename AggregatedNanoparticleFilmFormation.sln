@@ -1,7 +1,11 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AggregatedNanoparticleFilmFormation", "DirectDepositionAlgorithm\AggregatedNanoparticleFilmFormation.csproj", "{ECC70DF6-8549-4EF2-A789-1ECA7712969B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AggregatedNanoparticleFilmFormation", "AggregatedNanoparticleFilmFormation\AggregatedNanoparticleFilmFormation.csproj", "{ECC70DF6-8549-4EF2-A789-1ECA7712969B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AggregateFormation", "AggregateFormation\AggregateFormation.csproj", "{43D1EB3E-2404-4DD0-9B29-7AF43A89DB1A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{A82DDAF0-4D05-4A62-B0DA-A0D1A15D2D72}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,5 +17,13 @@ Global
 		{ECC70DF6-8549-4EF2-A789-1ECA7712969B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ECC70DF6-8549-4EF2-A789-1ECA7712969B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ECC70DF6-8549-4EF2-A789-1ECA7712969B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43D1EB3E-2404-4DD0-9B29-7AF43A89DB1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43D1EB3E-2404-4DD0-9B29-7AF43A89DB1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43D1EB3E-2404-4DD0-9B29-7AF43A89DB1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43D1EB3E-2404-4DD0-9B29-7AF43A89DB1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A82DDAF0-4D05-4A62-B0DA-A0D1A15D2D72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A82DDAF0-4D05-4A62-B0DA-A0D1A15D2D72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A82DDAF0-4D05-4A62-B0DA-A0D1A15D2D72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A82DDAF0-4D05-4A62-B0DA-A0D1A15D2D72}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

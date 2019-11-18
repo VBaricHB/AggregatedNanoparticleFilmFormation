@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using Common.interfaces;
 
-namespace DirectDepositionAlgorithm
+namespace Common
 {
     public class MultiLogger : ILogger
     {

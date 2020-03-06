@@ -13,6 +13,11 @@ namespace Export
 
         }
 
+        public ExportToLAMMPS(Aggregate aggregate)
+        {
+            PrimaryParticles = aggregate.Cluster.SelectMany(c => c.PrimaryParticles).ToList();
+        }
+
         public void WriteToFile(string file)
         {
             var text = "ITEM: TIMESTEP\n0\n";

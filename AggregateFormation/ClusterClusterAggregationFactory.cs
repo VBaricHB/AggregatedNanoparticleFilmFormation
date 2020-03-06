@@ -8,56 +8,51 @@ using Common.interfaces;
 
 namespace AggregateFormation
 {
-    public class ClusterClusterAggregation : IParticleFactory<Aggregate>
+    public class ClusterClusterAggregationFactory : IParticleFactory<Aggregate>
     {
         private readonly IPrimaryParticleSizeDistribution _primaryParticleSizeDistribution;
         private readonly IConfig _config;
-        private List<Cluster> _clustersToSet;
+        private ParticleClusterAggregationFactory _clusterFactory;
+        private List<Cluster> ClusterToSet { get; set; }
+        private List<Cluster> Cluster { get; set; }
         private readonly Random _rndGen;
         private int _seed = -1;
 
         private int TargetClusterSize { get; }
+        internal double MeanRadius => _primaryParticleSizeDistribution.MeanRadius;
 
-        private List<Cluster> Cluster { get; set; }
-
-        public ClusterClusterAggregation( int targetClusterSize,
-            IPrimaryParticleSizeDistribution primaryParticleSizeDistribution, IConfig config)
+        public ClusterClusterAggregationFactory( int targetClusterSize,
+            IPrimaryParticleSizeDistribution primaryParticleSizeDistribution, 
+            IConfig config)
         {
             TargetClusterSize = targetClusterSize;
             _primaryParticleSizeDistribution = primaryParticleSizeDistribution;
             _config = config;
-            Cluster = new List<Cluster>();
-            _clustersToSet = new List<Cluster>();
             _rndGen = new Random();
+            _clusterFactory = new ParticleClusterAggregationFactory(_primaryParticleSizeDistribution, _config);
         }
 
-        public ClusterClusterAggregation(int targetClusterSize,
-            IPrimaryParticleSizeDistribution primaryParticleSizeDistribution, IConfig config, int seed)
+        public ClusterClusterAggregationFactory(int targetClusterSize,
+            IPrimaryParticleSizeDistribution primaryParticleSizeDistribution, 
+            IConfig config, int seed)
             : this(targetClusterSize, primaryParticleSizeDistribution, config)
         {
             _rndGen = new Random(seed);
             _seed = seed;
+            _clusterFactory = new ParticleClusterAggregationFactory(_primaryParticleSizeDistribution, _config,_seed);
         }
 
         public Aggregate Build(int size)
         {
-            var clusterSizes = GetClusterSizes(size);
-            var tmpClusters = new List<Cluster>();
-            ParticleClusterAggregation clusterFactory;
-            if (_seed == -1)
-            {
-                clusterFactory = new ParticleClusterAggregation(_primaryParticleSizeDistribution, _config);
-            }
-            else
-            {
-                clusterFactory = new ParticleClusterAggregation(_primaryParticleSizeDistribution, _config, _seed);
-            }
+            ClusterToSet = new List<Cluster>();
+            Cluster = new List<Cluster>();
+            var clusterSizes = GetClusterSizes(size);           
 
             foreach (var cSize in clusterSizes)
             {
-                _clustersToSet.Add(clusterFactory.Build(cSize));
+                ClusterToSet.Add(_clusterFactory.Build(cSize));
             }
-            foreach(var cluster in _clustersToSet)
+            foreach(var cluster in ClusterToSet)
             {
                 SetCluster(cluster);
             }
@@ -79,30 +74,33 @@ namespace AggregateFormation
 
         private void SetNextCluster(Cluster nextCluster)
         {
-            var com = Utility.GetCenterOfMass(Cluster.SelectMany(c => c.PrimaryParticles));
             var distance = GetDistanceForNextCluster(nextCluster);
-            var found = false;
-            var tree = Utility.BuildNeighborsList(Cluster.SelectMany(c => c.PrimaryParticles));
+            var com = ParticleFormationService.GetCenterOfMass(Cluster.SelectMany(c => c.PrimaryParticles));
+            foreach(var cluster in Cluster)
+            {
+                cluster.MoveBy(-1 * com);
+            }
+            var tree = ParticleFormationService.BuildNeighborsList(Cluster.SelectMany(c => c.PrimaryParticles));
             Vector3 rndPosition = new Vector3();
+            var found = false;
             while (!found)
             {
-                rndPosition = Utility.GetRandomPosition(_rndGen, distance) + com;
+                rndPosition = ParticleFormationService.GetRandomPosition(_rndGen, distance);
                 found = TrySetCluster(nextCluster, rndPosition, tree);
             }
-            nextCluster.MoveTo(rndPosition);
+            
             Cluster.Add(nextCluster);
        
         }
 
         private bool TrySetCluster(Cluster nextCluster, Vector3 rndPosition, KDTree<double> tree)
         {
-            double[] query = rndPosition.ToArray();
-            bool globalIsValid = true;
-
+            bool globalIsValid = false;
+            nextCluster.MoveTo(rndPosition);
             foreach (var particle in nextCluster.PrimaryParticles)
             {
                 var valid = IsPrimaryParticleValid(tree, particle);
-                globalIsValid = globalIsValid && valid;
+                globalIsValid = globalIsValid || valid;
             }
 
             return globalIsValid;
@@ -110,21 +108,20 @@ namespace AggregateFormation
 
         internal bool IsPrimaryParticleValid(KDTree<double> tree, PrimaryParticle particle)
         {
-            var neighbors = tree.Nearest(particle.Position.ToArray(),
-                  radius: (particle.Radius + Cluster.SelectMany(c=> c.PrimaryParticles).Max(p => p.Radius))
-                          * _config.Delta);
-            bool isValid;
-            if (neighbors.Count() > 0)
+            var neighbors = tree.Nearest
+                (
+                position: particle.Position.ToArray(),
+                radius: (particle.Radius + Cluster.SelectMany(c=> c.PrimaryParticles).Max(p => p.Radius))
+                          * _config.Delta
+                );
+            bool isValid = true;
+            if (!neighbors.Any())
             {
-                isValid = true;
-            }
-            else
-            {
-                isValid = false;
+                return false;
             }
             foreach (var neigh in neighbors)
             {
-                var valid = Utility.IsValidPosition(neigh, Cluster.SelectMany(c => c.PrimaryParticles), particle.Radius, _config);
+                var valid = ParticleFormationService.IsValidPosition(neigh, Cluster.SelectMany(c => c.PrimaryParticles), particle.Radius, _config);
                 if (valid && isValid)
                 {
                     isValid = true;
@@ -170,8 +167,8 @@ namespace AggregateFormation
 
         internal double GetDistanceForNextCluster(Cluster nextCluster)
         {
-            var rgNext = Utility.GetRadiusOfGyration(nextCluster);
-            var rgExist = Utility.GetRadiusOfGyration(Cluster);
+            var rgNext = ParticleFormationService.GetRadiusOfGyration(nextCluster);
+            var rgExist = ParticleFormationService.GetRadiusOfGyration(Cluster);
             var nNext = nextCluster.NumberOfPrimaryParticles;
             var nExist = Cluster.Sum(c => c.NumberOfPrimaryParticles);
 
@@ -181,7 +178,5 @@ namespace AggregateFormation
                 - ((nExist + nNext) / nExist) * Math.Pow(rgNext, 2)
                 - ((nExist + nNext) / nNext) * Math.Pow(rgExist, 2));
         }
-
-        internal double MeanRadius => _primaryParticleSizeDistribution.MeanRadius;
     }
 }

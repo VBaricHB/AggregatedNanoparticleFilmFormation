@@ -9,25 +9,30 @@ using Common.interfaces;
 
 namespace AggregateFormation
 {
-    public class ParticleClusterAggregation : IParticleFactory<Cluster>
+    public class ParticleClusterAggregationFactory : IParticleFactory<Cluster>
     {
         private readonly IPrimaryParticleSizeDistribution _psd;
         private readonly Random _rndGen;
         private readonly IConfig _config;
 
-        public List<PrimaryParticle> PrimaryParticles;
+        public int CurrentPrimaryParticleId { get; private set; }
+        public int CurrentClusterId { get; private set; }
+
+        public List<PrimaryParticle> PrimaryParticles { get; set; }
         private int TargetClusterSize { get; }
 
 
-        public ParticleClusterAggregation(IPrimaryParticleSizeDistribution primaryParticleSizeDistribution, IConfig config)
+        public ParticleClusterAggregationFactory(IPrimaryParticleSizeDistribution primaryParticleSizeDistribution, IConfig config)
         {
             _psd = primaryParticleSizeDistribution;
             _rndGen = new Random();
             _config = config;
-            PrimaryParticles = new List<PrimaryParticle>();
+            CurrentClusterId = 0;
+            CurrentPrimaryParticleId = 0;
+            
         }
 
-        public ParticleClusterAggregation(IPrimaryParticleSizeDistribution primaryParticleSizeDistribution, IConfig config, int seed)
+        public ParticleClusterAggregationFactory(IPrimaryParticleSizeDistribution primaryParticleSizeDistribution, IConfig config, int seed)
             : this(primaryParticleSizeDistribution, config)
         {
             _rndGen = new Random(seed);
@@ -35,7 +40,7 @@ namespace AggregateFormation
 
         public Cluster Build(int size)
         {
-
+            PrimaryParticles = new List<PrimaryParticle>();
             SetFirstPrimaryParticle();
             SetSecondPrimaryParticle();
             while(PrimaryParticles.Count < size)
@@ -43,13 +48,13 @@ namespace AggregateFormation
                 AddNextPrimaryParticle();
             }
 
-            return new Cluster(PrimaryParticles);
+            return new Cluster(CurrentClusterId++, PrimaryParticles);
         }
 
         private void SetFirstPrimaryParticle()
         {
             var radius = _psd.GetRadiusByProbability(_rndGen.NextDouble());
-            PrimaryParticles.Add(new PrimaryParticle(new Vector3(0, 0, 0), radius));
+            PrimaryParticles.Add(new PrimaryParticle(CurrentPrimaryParticleId++, new Vector3(0, 0, 0), radius));
         }
 
         private void SetSecondPrimaryParticle()
@@ -57,26 +62,26 @@ namespace AggregateFormation
             var radius = _psd.GetRadiusByProbability(_rndGen.NextDouble());
             // Distance of the CenterOfMass (com) of the second pp from the com
             // of the first pp
-            var particle = new PrimaryParticle(radius);
+            var particle = new PrimaryParticle(CurrentPrimaryParticleId++, radius);
             var ppDistance = _config.Epsilon * (PrimaryParticles[0].Radius + particle.Radius);
-            var rndPosition = Utility.GetRandomPosition(_rndGen, ppDistance);
+            var rndPosition = ParticleFormationService.GetRandomPosition(_rndGen, ppDistance);
             particle.MoveTo(rndPosition);
             PrimaryParticles.Add(particle);
         }
 
         internal void AddNextPrimaryParticle()
         {
-            var com = Utility.GetCenterOfMass(PrimaryParticles);
+            var com = ParticleFormationService.GetCenterOfMass(PrimaryParticles);
             var ppDistance = GetNextPrimaryParticleDistance();
             var radius = _psd.GetRadiusByProbability(_rndGen.NextDouble());
-            var particle = new PrimaryParticle(radius);
-            var tree = Utility.BuildNeighborsList(PrimaryParticles);
+            var particle = new PrimaryParticle(CurrentPrimaryParticleId++, radius);
+            var tree = ParticleFormationService.BuildNeighborsList(PrimaryParticles);
 
             var found = false;
             Vector3 rndPosition = new Vector3();
             while (!found)
             {
-                rndPosition = Utility.GetRandomPosition(_rndGen, ppDistance) + com;
+                rndPosition = ParticleFormationService.GetRandomPosition(_rndGen, ppDistance) + com;
                 found = TrySetPrimaryParticle(particle, rndPosition, tree);
             }
             particle.MoveTo(rndPosition);
@@ -102,7 +107,7 @@ namespace AggregateFormation
             }
             foreach (var neigh in neighbors)
             {
-                var valid = Utility.IsValidPosition(neigh, PrimaryParticles,particle.Radius,_config);
+                var valid = ParticleFormationService.IsValidPosition(neigh, PrimaryParticles,particle.Radius,_config);
                 if (valid && isValid)
                 {
                     isValid = true;

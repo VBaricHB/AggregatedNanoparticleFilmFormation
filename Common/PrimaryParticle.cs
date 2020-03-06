@@ -3,29 +3,30 @@ namespace Common
 {
     public class PrimaryParticle
     {
+        public int Id { get; }
         public Vector3 Position { get; private set; }
 
         public double Radius { get; set; }
 
         public int Type { get; set; }
 
-        public PrimaryParticle(Vector3 position, double radius)
+        public PrimaryParticle(int id, Vector3 position, double radius)
         {
+            Id = id;
             Position = position;
             Radius = radius;
             Type = 1;
         }
 
-        public PrimaryParticle(Vector3 position, double radius, int type)
-            : this(position, radius)
+        public PrimaryParticle(int id, Vector3 position, double radius, int type)
+            : this(id, position, radius)
         {
             Type = type;
         }
 
-        public PrimaryParticle(double radius)
+        public PrimaryParticle(int id, double radius)
+            : this(id, new Vector3(0, 0, 0), radius)
         {
-            Position = new Vector3(0,0,0);
-            Radius = radius;
         }
 
         public void MoveBy(Vector3 vector)

@@ -27,6 +27,18 @@
                                self.Z - other.Z);
         }
 
+        public static Vector3 operator *(Vector3 self, int other)
+        {
+            return new Vector3(self.X * other,
+                               self.Y * other,
+                               self.Z * other);
+        }
+
+        public static Vector3 operator *(int other, Vector3 self)
+        {
+            return self * other;
+        }
+
         public double[] ToArray()
         {
             return new double[] { X,Y,Z};

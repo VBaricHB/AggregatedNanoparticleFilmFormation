@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Xunit;
-using Export;
 using System;
+using Export;
 using Common;
 
 namespace AggregateFormation.tests
@@ -15,7 +15,7 @@ namespace AggregateFormation.tests
             CustomConfig config = new CustomConfig();
             var psd = new MonoDisperseSizeDistribution(5);
             var seed = 1;
-            var pca = new ParticleClusterAggregation(psd, config,seed);
+            var pca = new ParticleClusterAggregationFactory(psd, config,seed);
             var cluster = pca.Build(2);
             Assert.Equal(2, cluster.PrimaryParticles.Count());
             var dist = Math.Round(config.Epsilon
@@ -30,7 +30,7 @@ namespace AggregateFormation.tests
             CustomConfig config = new CustomConfig();
             var psd = new MonoDisperseSizeDistribution(5);
             var seed = 1;
-            var pca = new ParticleClusterAggregation(psd, config, seed);
+            var pca = new ParticleClusterAggregationFactory(psd, config, seed);
             var cluster = pca.Build(3);
             Assert.Equal(3, cluster.PrimaryParticles.Count());
             var dist = Math.Round(cluster.PrimaryParticles[0].Radius + cluster.PrimaryParticles[1].Radius,6);
@@ -45,7 +45,7 @@ namespace AggregateFormation.tests
             CustomConfig config = new CustomConfig();
             var psd = new MonoDisperseSizeDistribution(5);
             var seed = 1;
-            var pca = new ParticleClusterAggregation(psd, config, seed);
+            var pca = new ParticleClusterAggregationFactory(psd, config, seed);
             var cluster = pca.Build(4);
             Assert.Equal(4, cluster.PrimaryParticles.Count());
             var dist = Math.Round(cluster.PrimaryParticles[1].Radius + cluster.PrimaryParticles[2].Radius, 6);
@@ -62,7 +62,7 @@ namespace AggregateFormation.tests
             CustomConfig config = new CustomConfig();
             var psd = new MonoDisperseSizeDistribution(5);
             var seed = 1;
-            var pca = new ParticleClusterAggregation(psd, config, seed);
+            var pca = new ParticleClusterAggregationFactory(psd, config, seed);
             var cluster = pca.Build(20);
             Assert.Equal(20, cluster.PrimaryParticles.Count());
             var dist = Math.Round(cluster.PrimaryParticles[1].Radius + cluster.PrimaryParticles[2].Radius, 6);

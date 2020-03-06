@@ -7,8 +7,9 @@ namespace Common
 {
     public class Cluster : ICluster
     {
-        public Cluster(List<PrimaryParticle> primaryParticles)
+        public Cluster(int id, List<PrimaryParticle> primaryParticles)
         {
+            Id = id;
             PrimaryParticles = primaryParticles;
         }
 
@@ -16,9 +17,11 @@ namespace Common
 
         public List<PrimaryParticle> PrimaryParticles { get; }
 
+        public int Id { get; }
+
         public void MoveTo(Vector3 vector)
         {
-            var moveBy = vector -  Utility.GetCenterOfMass(PrimaryParticles);
+            var moveBy = vector -  ParticleFormationService.GetCenterOfMass(PrimaryParticles);
 
             foreach(var particle in PrimaryParticles)
             {

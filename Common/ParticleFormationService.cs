@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using Accord.Collections;
+using Common;
 using Common.interfaces;
 
 namespace Common
 {
-    public static class Utility
+    public static class ParticleFormationService
     {
         public static double DistanceSquared(PrimaryParticle particle1, PrimaryParticle particle2)
         {
@@ -46,7 +47,7 @@ namespace Common
 
         public static double GetRadiusOfGyration(IEnumerable<PrimaryParticle> particles)
         {
-            var com = Utility.GetCenterOfMass(particles);
+            var com = ParticleFormationService.GetCenterOfMass(particles);
             var rg = 0.0;
             foreach (var p in particles)
             {
@@ -70,7 +71,7 @@ namespace Common
 
         public static KDTree<double> BuildNeighborsList(IEnumerable<PrimaryParticle> particles)
         {
-            return KDTree.FromData<double>(Utility.GetPositionArray(particles));
+            return KDTree.FromData<double>(ParticleFormationService.GetPositionArray(particles));
         }
 
         public static Vector3 GetRandomPosition(Random rndGen, double distance)

@@ -2,6 +2,6 @@
 {
     public interface IParticleFactory<T>
     {
-        T Build();
+        T Build(int size);
     }
 }

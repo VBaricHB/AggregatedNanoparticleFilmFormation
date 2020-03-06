@@ -1,7 +1,11 @@
 ﻿using System.Collections.Generic;
 using Accord.Collections;
+using Common;
+using Common.interfaces;
+using AggregatedNanoparticleFilmFormation.interfaces;
+using System.Linq;
 
-namespace DirectDepositionAlgorithm
+namespace AggregatedNanoparticleFilmFormation
 {
     public class NeighborSearch
     {
@@ -34,7 +38,7 @@ namespace DirectDepositionAlgorithm
         /// <returns></returns>
         public List<NodeDistance<KDTreeNode<PrimaryParticle>>> GetNeighbors(PrimaryParticle primaryParticle)
         {
-            return Tree.Nearest(primaryParticle.PositionToArray(),
+            return Tree.Nearest(primaryParticle.Position.ToArray(),
                 radius: primaryParticle.Radius + SimulationDomain.MaxPrimaryParticleRadius + Config.NeighborAddDistance);
         }
 
@@ -44,9 +48,9 @@ namespace DirectDepositionAlgorithm
             int i = 0;
             foreach(var aggregate in SimulationDomain.DepositedAggregates)
             {
-                foreach(var primaryParticle in aggregate.PrimaryParticles)
+                foreach (var primaryParticle in aggregate.Cluster.SelectMany(c => c.PrimaryParticles))
                 {
-                    coordinates[i++] = primaryParticle.PositionToArray();
+                    coordinates[i++] = primaryParticle.Position.ToArray();
                 }
             }
             return coordinates;

@@ -5,4 +5,9 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Export\Export.csproj" />
+    <ProjectReference Include="..\Common\Common.csproj" />
+    <ProjectReference Include="..\AggregateFormation\AggregateFormation.csproj" />
+  </ItemGroup>
 </Project>

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Common.interfaces;
-using DirectDepositionAlgorithm.interfaces;
+using AggregatedNanoparticleFilmFormation.interfaces;
 
-namespace DirectDepositionAlgorithm
+namespace AggregatedNanoparticleFilmFormation
 {
     public class SimulationDomain : ISimulationDomain
     {

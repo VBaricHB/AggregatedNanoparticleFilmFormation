@@ -4,9 +4,9 @@ using Export;
 using System;
 using Common;
 
-namespace AggregateFormation.Test
+namespace AggregateFormation.tests
 {
-    public class FormAggregateTest
+    public class FormClusterTest
     {
 
         [Fact]
@@ -15,8 +15,8 @@ namespace AggregateFormation.Test
             CustomConfig config = new CustomConfig();
             var psd = new MonoDisperseSizeDistribution(5);
             var seed = 1;
-            var pca = new ParticleClusterAggregation(2, psd, config,seed);
-            var cluster = pca.Build();
+            var pca = new ParticleClusterAggregation(psd, config,seed);
+            var cluster = pca.Build(2);
             Assert.Equal(2, cluster.PrimaryParticles.Count());
             var dist = Math.Round(config.Epsilon
                 * (cluster.PrimaryParticles[0].Radius
@@ -30,8 +30,8 @@ namespace AggregateFormation.Test
             CustomConfig config = new CustomConfig();
             var psd = new MonoDisperseSizeDistribution(5);
             var seed = 1;
-            var pca = new ParticleClusterAggregation(3, psd, config, seed);
-            var cluster = pca.Build();
+            var pca = new ParticleClusterAggregation(psd, config, seed);
+            var cluster = pca.Build(3);
             Assert.Equal(3, cluster.PrimaryParticles.Count());
             var dist = Math.Round(cluster.PrimaryParticles[0].Radius + cluster.PrimaryParticles[1].Radius,6);
             var realDist = CalcDistance.Distance(cluster.PrimaryParticles[0], cluster.PrimaryParticles[1]);
@@ -45,8 +45,8 @@ namespace AggregateFormation.Test
             CustomConfig config = new CustomConfig();
             var psd = new MonoDisperseSizeDistribution(5);
             var seed = 1;
-            var pca = new ParticleClusterAggregation(4, psd, config, seed);
-            var cluster = pca.Build();
+            var pca = new ParticleClusterAggregation(psd, config, seed);
+            var cluster = pca.Build(4);
             Assert.Equal(4, cluster.PrimaryParticles.Count());
             var dist = Math.Round(cluster.PrimaryParticles[1].Radius + cluster.PrimaryParticles[2].Radius, 6);
             var realDist = CalcDistance.Distance(cluster.PrimaryParticles[0], cluster.PrimaryParticles[1]);
@@ -62,8 +62,8 @@ namespace AggregateFormation.Test
             CustomConfig config = new CustomConfig();
             var psd = new MonoDisperseSizeDistribution(5);
             var seed = 1;
-            var pca = new ParticleClusterAggregation(20, psd, config, seed);
-            var cluster = pca.Build();
+            var pca = new ParticleClusterAggregation(psd, config, seed);
+            var cluster = pca.Build(20);
             Assert.Equal(20, cluster.PrimaryParticles.Count());
             var dist = Math.Round(cluster.PrimaryParticles[1].Radius + cluster.PrimaryParticles[2].Radius, 6);
             var realDist = CalcDistance.Distance(cluster.PrimaryParticles[0], cluster.PrimaryParticles[1]);

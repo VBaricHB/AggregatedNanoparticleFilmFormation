@@ -7,10 +7,19 @@ namespace Common
 
         public double Radius { get; set; }
 
+        public int Type { get; set; }
+
         public PrimaryParticle(Vector3 position, double radius)
         {
             Position = position;
             Radius = radius;
+            Type = 1;
+        }
+
+        public PrimaryParticle(Vector3 position, double radius, int type)
+            : this(position, radius)
+        {
+            Type = type;
         }
 
         public PrimaryParticle(double radius)
@@ -28,5 +37,11 @@ namespace Common
         {
             Position = vector;
         }
+
+        public override string ToString()
+        {
+            return $"{Type} {Position.X} {Position.Y} {Position.Z} {Radius}";
+        }
+        
     }
 }

@@ -5,6 +5,6 @@ namespace Common.interfaces
     public interface ICluster
     {
         int NumberOfPrimaryParticles { get; }
-        IEnumerable<PrimaryParticle> PrimaryParticles { get; }
+        List<PrimaryParticle> PrimaryParticles { get; }
     }
 }

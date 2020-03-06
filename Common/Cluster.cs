@@ -7,20 +7,22 @@ namespace Common
 {
     public class Cluster : ICluster
     {
-        public Cluster(IEnumerable<PrimaryParticle> primaryParticles)
+        public Cluster(List<PrimaryParticle> primaryParticles)
         {
             PrimaryParticles = primaryParticles;
         }
 
         public int NumberOfPrimaryParticles => PrimaryParticles.Count();
 
-        public IEnumerable<PrimaryParticle> PrimaryParticles { get; }
+        public List<PrimaryParticle> PrimaryParticles { get; }
 
         public void MoveTo(Vector3 vector)
         {
+            var moveBy = vector -  Utility.GetCenterOfMass(PrimaryParticles);
+
             foreach(var particle in PrimaryParticles)
             {
-                particle.MoveTo(vector);
+                particle.MoveBy(moveBy);
             }
         }
 
@@ -31,5 +33,6 @@ namespace Common
                 particle.MoveBy(vector);
             }
         }
+
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Common.interfaces;
 
-namespace DirectDepositionAlgorithm.interfaces
+namespace AggregatedNanoparticleFilmFormation.interfaces
 {
     public interface ISimulationDomain
     {

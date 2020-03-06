@@ -18,11 +18,11 @@ namespace Export
             var text = "ITEM: TIMESTEP\n0\n";
             text += $"ITEM: NUMBER OF ATOMS\n{PrimaryParticles.Count}\n";
             text += "ITEM: BOX BOUNDS pp pp pp\n0 0\n0 0\n0 0\n";
-            text += "ITEM ATOMS id type x y z Radius\n";
+            text += "ITEM: ATOMS id type x y z Radius\n";
             var index = 1;
             foreach (var particle in PrimaryParticles)
             {
-                text += $"{index++} 1 {particle.Position.X} {particle.Position.Y} {particle.Position.Z} {particle.Radius}\n";
+                text += $"{index++} {particle}\n";
             }
             System.IO.File.WriteAllText(file, text);
         }

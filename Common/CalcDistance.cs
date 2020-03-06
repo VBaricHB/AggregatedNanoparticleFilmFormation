@@ -17,7 +17,7 @@ namespace Common
             var x = Math.Pow(particle2.Position.X - particle1.Position.X, 2);
             var y = Math.Pow(particle2.Position.Y - particle1.Position.Y, 2);
             var z = Math.Pow(particle2.Position.Z - particle1.Position.Z, 2);
-            return Math.Sqrt(x + y + z);
+            return Math.Round(Math.Sqrt(x + y + z),6);
         }
     }
 }

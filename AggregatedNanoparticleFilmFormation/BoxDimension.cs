@@ -1,4 +1,4 @@
-﻿namespace DirectDepositionAlgorithm
+﻿namespace AggregatedNanoparticleFilmFormation
 {
     public class BoxDimension
     {

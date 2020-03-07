@@ -21,7 +21,7 @@ namespace AggregateFormation.tests
             var dist = Math.Round(config.Epsilon
                 * (cluster.PrimaryParticles[0].Radius
                 + cluster.PrimaryParticles[1].Radius),6);
-            Assert.Equal(dist, CalcDistance.Distance(cluster.PrimaryParticles[0], cluster.PrimaryParticles[1]));
+            Assert.Equal(dist, ParticleFormationService.Distance(cluster.PrimaryParticles[0], cluster.PrimaryParticles[1]));
         }
 
         [Fact]
@@ -34,7 +34,7 @@ namespace AggregateFormation.tests
             var cluster = pca.Build(3);
             Assert.Equal(3, cluster.PrimaryParticles.Count());
             var dist = Math.Round(cluster.PrimaryParticles[0].Radius + cluster.PrimaryParticles[1].Radius,6);
-            var realDist = CalcDistance.Distance(cluster.PrimaryParticles[0], cluster.PrimaryParticles[1]);
+            var realDist = ParticleFormationService.Distance(cluster.PrimaryParticles[0], cluster.PrimaryParticles[1]);
             Assert.True(realDist >= config.Epsilon * dist);
             Assert.True(realDist <= config.Delta * dist);
         }
@@ -49,7 +49,7 @@ namespace AggregateFormation.tests
             var cluster = pca.Build(4);
             Assert.Equal(4, cluster.PrimaryParticles.Count());
             var dist = Math.Round(cluster.PrimaryParticles[1].Radius + cluster.PrimaryParticles[2].Radius, 6);
-            var realDist = CalcDistance.Distance(cluster.PrimaryParticles[0], cluster.PrimaryParticles[1]);
+            var realDist = ParticleFormationService.Distance(cluster.PrimaryParticles[0], cluster.PrimaryParticles[1]);
             Assert.True(realDist >= config.Epsilon * dist);
             Assert.True(realDist <= config.Delta * dist);
             var export = new ExportToLAMMPS(cluster);
@@ -65,10 +65,16 @@ namespace AggregateFormation.tests
             var pca = new ParticleClusterAggregationFactory(psd, config, seed);
             var cluster = pca.Build(20);
             Assert.Equal(20, cluster.PrimaryParticles.Count());
-            var dist = Math.Round(cluster.PrimaryParticles[1].Radius + cluster.PrimaryParticles[2].Radius, 6);
-            var realDist = CalcDistance.Distance(cluster.PrimaryParticles[0], cluster.PrimaryParticles[1]);
-            Assert.True(realDist >= config.Epsilon * dist);
-            Assert.True(realDist <= config.Delta * dist);
+            foreach (var pp1 in cluster.PrimaryParticles)
+            {
+                foreach(var pp2 in cluster.PrimaryParticles)
+                {
+                    if(pp1 != pp2)
+                    {
+                        Assert.True(ParticleFormationService.Distance(pp1, pp2) >= pp1.Radius + pp2.Radius);
+                    }
+                }
+            }
             var export = new ExportToLAMMPS(cluster);
             export.WriteToFile("ClusterOf20.trj");
         }

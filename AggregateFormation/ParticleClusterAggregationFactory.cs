@@ -27,8 +27,8 @@ namespace AggregateFormation
             _psd = primaryParticleSizeDistribution;
             _rndGen = new Random();
             _config = config;
-            CurrentClusterId = 0;
-            CurrentPrimaryParticleId = 0;
+            CurrentClusterId = 1;
+            CurrentPrimaryParticleId = 1;
             
         }
 
@@ -88,7 +88,7 @@ namespace AggregateFormation
             PrimaryParticles.Add(particle);
         }
 
-        internal bool TrySetPrimaryParticle(PrimaryParticle particle, Vector3 rndPosition, KDTree<double> tree)
+        internal bool  TrySetPrimaryParticle(PrimaryParticle particle, Vector3 rndPosition, KDTree<double> tree)
         {
             
             double[] query = rndPosition.ToArray();
@@ -96,29 +96,20 @@ namespace AggregateFormation
             var neighbors = tree.Nearest(query,
                 radius: (particle.Radius + PrimaryParticles.Max(p => p.Radius))
                         * _config.Delta);
-            bool isValid;
-            if (neighbors.Count() > 0)
+
+            bool anyNearby = false;
+            bool allFeasible = true;
+            if (!neighbors.Any())
             {
-                isValid = true;
-            }
-            else
-            {
-                isValid = false;
+                return anyNearby && allFeasible;
             }
             foreach (var neigh in neighbors)
             {
-                var valid = ParticleFormationService.IsValidPosition(neigh, PrimaryParticles,particle.Radius,_config);
-                if (valid && isValid)
-                {
-                    isValid = true;
-                }
-                else
-                {
-                    isValid = false;
-                }
+                var (nearby, feasible) = ParticleFormationService.IsValidPosition(neigh, PrimaryParticles, particle.Radius, _config);
+                anyNearby = anyNearby || nearby;
+                allFeasible = allFeasible && feasible;
             }
-            return isValid;
-
+            return anyNearby && allFeasible;
         }
 
         private double GetNextPrimaryParticleDistance()

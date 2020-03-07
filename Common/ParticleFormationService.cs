@@ -85,24 +85,24 @@ namespace Common
             return new Vector3(x, y, z);
         }
 
-        public static bool IsValidPosition(NodeDistance<KDTreeNode<double>> neigh,
+        public static (bool nearby, bool feasible) IsValidPosition(NodeDistance<KDTreeNode<double>> neigh,
             IEnumerable<PrimaryParticle> primaryParticles, double radius, IConfig config)
         {
-            bool overlap = false;
+            bool feasible = true;
             bool nearby = false;
             var r2 = GetRadiusOfPrimaryParticleAtPosition(neigh.Node.Position, primaryParticles);
             // is the neighbor within the threshold distance
-            if (neigh.Distance > config.Epsilon * (r2 + radius) &&
-                neigh.Distance < config.Delta * (r2 + radius))
+            if (neigh.Distance < config.Delta * (r2 + radius))
             {
                 nearby = true;
             }
-            else if (neigh.Distance < config.Epsilon * (r2 + radius))
+            if (neigh.Distance < config.Epsilon * (r2 + radius))
             {
-                overlap = true;
+                feasible = false;
             }
-            return (nearby && !overlap);
+            return (nearby, feasible);
         }
+
 
         public static double GetRadiusOfPrimaryParticleAtPosition(double[] position, IEnumerable<PrimaryParticle> primaryParticles)
         {

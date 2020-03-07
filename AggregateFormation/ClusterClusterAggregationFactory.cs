@@ -14,7 +14,7 @@ namespace AggregateFormation
         private readonly IConfig _config;
         private ParticleClusterAggregationFactory _clusterFactory;
         private List<Cluster> ClusterToSet { get; set; }
-        private List<Cluster> Cluster { get; set; }
+        internal List<Cluster> Cluster { get; set; }
         private readonly Random _rndGen;
         private int _seed = -1;
 
@@ -74,7 +74,7 @@ namespace AggregateFormation
 
         private void SetNextCluster(Cluster nextCluster)
         {
-            var distance = GetDistanceForNextCluster(nextCluster);
+            var distance = GetDistanceFromCOMForNextCluster(nextCluster);
             var com = ParticleFormationService.GetCenterOfMass(Cluster.SelectMany(c => c.PrimaryParticles));
             foreach(var cluster in Cluster)
             {
@@ -93,45 +93,46 @@ namespace AggregateFormation
        
         }
 
-        private bool TrySetCluster(Cluster nextCluster, Vector3 rndPosition, KDTree<double> tree)
+        internal bool TrySetCluster(Cluster nextCluster, Vector3 rndPosition, KDTree<double> tree)
         {
-            bool globalIsValid = false;
+            bool isValid = false;
             nextCluster.MoveTo(rndPosition);
             foreach (var particle in nextCluster.PrimaryParticles)
             {
-                var valid = IsPrimaryParticleValid(tree, particle);
-                globalIsValid = globalIsValid || valid;
+                var (anyNearby, allFeasible) = IsPrimaryParticleValid(tree, particle);
+                if (!allFeasible)
+                {
+                    return false;
+                }
+                // any two primary particles must be close enough to be in contact
+                isValid = isValid || anyNearby;
+                
             }
 
-            return globalIsValid;
+            return isValid;
         }
 
-        internal bool IsPrimaryParticleValid(KDTree<double> tree, PrimaryParticle particle)
+        internal (bool anyNearby, bool allFeasible) IsPrimaryParticleValid(KDTree<double> tree, PrimaryParticle particle)
         {
             var neighbors = tree.Nearest
                 (
                 position: particle.Position.ToArray(),
-                radius: (particle.Radius + Cluster.SelectMany(c=> c.PrimaryParticles).Max(p => p.Radius))
+                radius: (particle.Radius + Cluster.SelectMany(c => c.PrimaryParticles).Max(p => p.Radius))
                           * _config.Delta
                 );
-            bool isValid = true;
+            bool anyNearby = false;
+            bool allFeasible = true;
             if (!neighbors.Any())
             {
-                return false;
+                return (anyNearby, allFeasible);
             }
             foreach (var neigh in neighbors)
             {
-                var valid = ParticleFormationService.IsValidPosition(neigh, Cluster.SelectMany(c => c.PrimaryParticles), particle.Radius, _config);
-                if (valid && isValid)
-                {
-                    isValid = true;
-                }
-                else
-                {
-                    isValid = false;
-                }
+                var (valid, feasible) = ParticleFormationService.IsValidPosition(neigh, Cluster.SelectMany(c => c.PrimaryParticles), particle.Radius, _config);
+                anyNearby = anyNearby || valid;
+                allFeasible = allFeasible && feasible;
             }
-            return isValid;
+            return (anyNearby, allFeasible);
         }
 
         internal List<int> GetClusterSizes(int targetAggregateSize)
@@ -165,7 +166,7 @@ namespace AggregateFormation
             return Convert.ToInt32(Math.Ceiling(targetAggregateSize / Convert.ToDouble(TargetClusterSize)));
         }
 
-        internal double GetDistanceForNextCluster(Cluster nextCluster)
+        internal double GetDistanceFromCOMForNextCluster(Cluster nextCluster)
         {
             var rgNext = ParticleFormationService.GetRadiusOfGyration(nextCluster);
             var rgExist = ParticleFormationService.GetRadiusOfGyration(Cluster);

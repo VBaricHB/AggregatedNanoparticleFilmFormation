@@ -1,4 +1,6 @@
-﻿namespace Common
+﻿using System;
+
+namespace Common
 {
     public struct Vector3
     {
@@ -39,9 +41,37 @@
             return self * other;
         }
 
+        public static bool operator ==(Vector3 other, Vector3 self)
+        {
+            return other.X == self.X && other.Y == self.Y & other.Z == self.Z;
+        }
+
+        public static bool operator !=(Vector3 other, Vector3 self)
+        {
+            return other.X != self.X || other.Y != self.Y || other.Z == self.Z;
+        }
+
         public double[] ToArray()
         {
             return new double[] { X,Y,Z};
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Vector3 vector &&
+                   X == vector.X &&
+                   Y == vector.Y &&
+                   Z == vector.Z;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(X, Y, Z);
+        }
+
+        public override string ToString()
+        {
+            return $"{Math.Round(X, 3)} {Math.Round(Y, 3)} {Math.Round(Z, 3)}";
         }
     }
 }

@@ -41,8 +41,25 @@ namespace Common
 
         public override string ToString()
         {
-            return $"{Type} {Position.X} {Position.Y} {Position.Z} {Radius}";
+            return $"{Id}";
         }
-        
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || obj !is PrimaryParticle)
+            {
+                return false;
+            }
+
+            var other = (PrimaryParticle)obj;
+
+            return other.Id == Id && other.Position == Position && other.Radius == Radius;
+        }
+
+        public override int GetHashCode()
+        {
+            return Id;
+        }
+
     }
 }

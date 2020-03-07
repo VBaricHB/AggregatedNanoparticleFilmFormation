@@ -5,7 +5,7 @@ namespace AggregateFormation
 {
     public class CustomConfig : IConfig
     {
-        public double Epsilon => 1.001;
+        public double Epsilon => 1.000;
 
         public double Delta => 1.01;
 

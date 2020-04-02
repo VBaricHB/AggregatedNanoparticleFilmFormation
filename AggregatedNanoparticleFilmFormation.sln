@@ -1,15 +1,16 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AggregatedNanoparticleFilmFormation", "AggregatedNanoparticleFilmFormation\AggregatedNanoparticleFilmFormation.csproj", "{ECC70DF6-8549-4EF2-A789-1ECA7712969B}"
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29911.84
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FilmFormationLibrary", "FilmFormationLibrary\FilmFormationLibrary.csproj", "{ECC70DF6-8549-4EF2-A789-1ECA7712969B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AggregateFormation", "AggregateFormation\AggregateFormation.csproj", "{43D1EB3E-2404-4DD0-9B29-7AF43A89DB1A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AggregateFormationLibrary", "AggregateFormationLibrary\AggregateFormationLibrary.csproj", "{43D1EB3E-2404-4DD0-9B29-7AF43A89DB1A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{A82DDAF0-4D05-4A62-B0DA-A0D1A15D2D72}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonLibrary", "CommonLibrary\CommonLibrary.csproj", "{A82DDAF0-4D05-4A62-B0DA-A0D1A15D2D72}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Export", "Export\Export.csproj", "{0245D7E1-BDEB-4050-AF32-DDC4E3CCBBE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Export", "Export\Export.csproj", "{0245D7E1-BDEB-4050-AF32-DDC4E3CCBBE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Runner", "Runner\Runner.csproj", "{AA769A30-ACCE-43F6-BE03-64AD48752462}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleUI", "ConsoleUI\ConsoleUI.csproj", "{AA769A30-ACCE-43F6-BE03-64AD48752462}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,5 +38,11 @@ Global
 		{AA769A30-ACCE-43F6-BE03-64AD48752462}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA769A30-ACCE-43F6-BE03-64AD48752462}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA769A30-ACCE-43F6-BE03-64AD48752462}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {43131080-830C-404D-976C-033E7536DDD6}
 	EndGlobalSection
 EndGlobal

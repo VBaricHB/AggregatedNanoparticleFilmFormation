@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sizes>
+  <size>
+    <!--Radius in nm-->
+    <value>1.5</value>
+    <probability>0.004575553015</probability>
+  </size>
+  <size>
+    <!--Radius in nm-->
+    <value>2.0</value>
+    <probability>0.025236684013</probability>
+  </size>
+  <size>
+    <!--Radius in nm-->
+    <value>2.5</value>
+    <probability>0.062589822949</probability>
+  </size>
+  <size>
+    <!--Radius in nm-->
+    <value>3.0</value>
+    <probability>0.100377563173</probability>
+  </size>
+  <size>
+    <!--Radius in nm-->
+    <value>3.5</value>
+    <probability>0.123846415353</probability>
+  </size>
+  <size>
+    <!--Radius in nm-->
+    <value>4.0</value>
+    <probability>0.129140523864</probability>
+  </size>
+  <size>
+    <!--Radius in nm-->
+    <value>4.5</value>
+    <probability>0.120283325264</probability>
+  </size>
+  <size>
+    <!--Radius in nm-->
+    <value>5.0</value>
+    <probability>0.103600435027</probability>
+  </size>
+  <size>
+    <!--Radius in nm-->
+    <value>5.5</value>
+    <probability>0.084412993747</probability>
+  </size>
+  <size>
+    <!--Radius in nm-->
+    <value>6.0</value>
+    <probability>0.066080953962</probability>
+  </size>
+  <size>
+    <!--Radius in nm-->
+    <value>6.5</value>
+    <probability>0.050243773379</probability>
+  </size>
+  <size>
+    <!--Radius in nm-->
+    <value>7.0</value>
+    <probability>0.037395475656</probability>
+  </size>
+  <size>
+    <!--Radius in nm-->
+    <value>7.5</value>
+    <probability>0.027401450373</probability>
+  </size>
+  <size>
+    <!--Radius in nm-->
+    <value>8.0</value>
+    <probability>0.019851778900</probability>
+  </size>
+  <size>
+    <!--Radius in nm-->
+    <value>8.5</value>
+    <probability>0.014265853888</probability>
+  </size>
+  <size>
+    <!--Radius in nm-->
+    <value>9.0</value>
+    <probability>0.010193887965</probability>
+  </size>
+  <size>
+    <!--Radius in nm-->
+    <value>9.5</value>
+    <probability>0.007256926069</probability>
+  </size>
+  <size>
+    <!--Radius in nm-->
+    <value>10.0</value>
+    <probability>0.005154419795</probability>
+  </size>
+  <size>
+    <!--Radius in nm-->
+    <value>10.5</value>
+    <probability>0.003657000022</probability>
+  </size>
+  <size>
+    <!--Radius in nm-->
+    <value>11.0</value>
+    <probability>0.002594087571</probability>
+  </size>
+  <size>
+    <!--Radius in nm-->
+    <value>11.5</value>
+    <probability>0.001841076015</probability>
+  </size>
+</sizes>

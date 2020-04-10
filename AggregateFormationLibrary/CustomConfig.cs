@@ -15,5 +15,7 @@ namespace AggregateFormation
 
         public double NeighborAddDistance => 1.0;
         public long MaxTimeMilliseconds => 5000;
+
+        public double LargeNumber => 1e10;
     }
 }

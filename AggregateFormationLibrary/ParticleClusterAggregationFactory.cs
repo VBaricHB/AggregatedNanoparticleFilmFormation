@@ -7,6 +7,7 @@ using Accord.Collections;
 using CommonLibrary.interfaces;
 using System.Diagnostics;
 using NLog;
+using ParticleExtensionMethodLibrary;
 
 namespace AggregateFormation
 {
@@ -72,11 +73,11 @@ namespace AggregateFormation
 
         internal void AddNextPrimaryParticle(List<PrimaryParticle> primaryParticles, Stopwatch stopwatch, int size)
         {
-            var com = ParticleFormationService.GetCenterOfMass(primaryParticles);
+            var com = primaryParticles.GetCenterOfMass();
             var ppDistance = GetNextPrimaryParticleDistance(primaryParticles);
             var radius = _psd.GetRandomSize();
             var particle = new PrimaryParticle(CurrentPrimaryParticleId++, radius);
-            var tree = ParticleFormationService.BuildNeighborsList(primaryParticles);
+            var tree = primaryParticles.ToNeighborsList();
 
             var found = false;
             Vector3 rndPosition = new Vector3();

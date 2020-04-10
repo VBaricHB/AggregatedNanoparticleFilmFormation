@@ -2,6 +2,7 @@
 using CommonLibrary;
 using CommonLibrary.interfaces;
 using FilmFormationLibrary.interfaces;
+using ParticleExtensionMethodLibrary;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +22,12 @@ namespace FilmFormationLibrary
             (
             IConfig config,
             IList<Aggregate> aggregates,
+            IFilmFormationParameter filmFormationParameter,
             int seed = -1
             )
         {
+            _filmFormationParameter = filmFormationParameter;
+
             var maxRadius = aggregates.SelectMany(a => a.Cluster.SelectMany(c => c.PrimaryParticles)).Select(p => p.Radius).Max();
             var simulationBox = new RectangularSimulationBox(_filmFormationParameter.FilmWidthAbsolute);
             var primaryParticleDepositionHandler = new BallisticSingleParticleDepositionHandler(config, maxRadius * 1.05);
@@ -57,7 +61,6 @@ namespace FilmFormationLibrary
             var rndPos = GetRandomPosition();
             aggregate.MoveTo(rndPos);
             _wallCollisionHandler.CheckPrimaryParticle(aggregate.Cluster.SelectMany(c => c.PrimaryParticles));
-
         }
 
         private Vector3 GetRandomPosition()

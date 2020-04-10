@@ -7,6 +7,7 @@ using AggregateFormation.interfaces;
 using CommonLibrary;
 using CommonLibrary.interfaces;
 using NLog;
+using ParticleExtensionMethodLibrary;
 
 namespace AggregateFormation
 {
@@ -84,12 +85,12 @@ namespace AggregateFormation
         private void SetNextCluster(Cluster nextCluster, List<Cluster> depositedCluster, Stopwatch stopwatch, int size)
         {
             var distance = GetDistanceFromCOMForNextCluster(nextCluster, depositedCluster);
-            var com = ParticleFormationService.GetCenterOfMass(depositedCluster.SelectMany(c => c.PrimaryParticles));
+            var com = depositedCluster.GetCenterOfMass();
             foreach(var cluster in depositedCluster)
             {
                 cluster.MoveBy(-1 * com);
             }
-            var tree = ParticleFormationService.BuildNeighborsList(depositedCluster.SelectMany(c => c.PrimaryParticles));
+            var tree = depositedCluster.ToNeighborsList();
             Vector3 rndPosition = new Vector3();
             var found = false;
             while (!found)
@@ -182,8 +183,8 @@ namespace AggregateFormation
 
         internal double GetDistanceFromCOMForNextCluster(Cluster nextCluster, List<Cluster> depositedCluster)
         {
-            var rgNext = ParticleFormationService.GetRadiusOfGyration(nextCluster);
-            var rgExist = ParticleFormationService.GetRadiusOfGyration(depositedCluster);
+            var rgNext = nextCluster.GetGyrationRadius();
+            var rgExist = depositedCluster.GetGyrationRadius();
             var nNext = nextCluster.NumberOfPrimaryParticles;
             var nExist = depositedCluster.Sum(c => c.NumberOfPrimaryParticles);
 

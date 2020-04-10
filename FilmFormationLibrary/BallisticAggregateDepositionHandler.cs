@@ -1,6 +1,7 @@
 ﻿using CommonLibrary;
 using CommonLibrary.interfaces;
 using FilmFormationLibrary.interfaces;
+using ParticleExtensionMethodLibrary;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,7 +43,7 @@ namespace FilmFormationLibrary
         /// </summary>
         /// <param name="aggregate">Aggregate to be deposited</param>
         /// <param name="distances">List of distances the individual primary particles can move</param>
-        private void DepositAtParticle(Aggregate aggregate, List<double> distances)
+        public void DepositAtParticle(Aggregate aggregate, List<double> distances)
         {
             aggregate.MoveBy(new Vector3(0, 0, -1 * distances.Min()));
         }
@@ -54,10 +55,10 @@ namespace FilmFormationLibrary
         /// <param name="distances">List of the distances the individual primary particles can move
         /// before deposition.</param>
         /// <returns></returns>
-        private bool IsWithoutContact(List<double> distances)
+        public bool IsWithoutContact(List<double> distances)
         {
             // If there is no contact, than all values in distance equal IConfig.LargeNumber.
-            return (Math.Abs(distances.Min() - _config.LargeNumber) > 1e-6);
+            return (Math.Abs(distances.Min() - _config.LargeNumber) < 1e-6);
         }
 
         /// <summary>
@@ -66,7 +67,7 @@ namespace FilmFormationLibrary
         /// Then move the aggregate by this height.
         /// </summary>
         /// <param name="aggregate"></param>
-        private void DepositOnGround(Aggregate aggregate)
+        public void DepositOnGround(Aggregate aggregate)
         {
             var minZ = aggregate.Cluster.SelectMany(c => c.PrimaryParticles).Select(p => p.Position.Z - p.Radius).Min();
 

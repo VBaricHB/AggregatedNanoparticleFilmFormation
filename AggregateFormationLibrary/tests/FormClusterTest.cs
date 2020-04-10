@@ -5,6 +5,7 @@ using Export;
 using CommonLibrary;
 using Moq;
 using NLog;
+using ParticleExtensionMethodLibrary;
 
 namespace AggregateFormation.tests
 {
@@ -24,7 +25,7 @@ namespace AggregateFormation.tests
             var dist = Math.Round(config.Epsilon
                 * (cluster.PrimaryParticles[0].Radius
                 + cluster.PrimaryParticles[1].Radius),6);
-            Assert.Equal(dist, ParticleFormationService.Distance(cluster.PrimaryParticles[0], cluster.PrimaryParticles[1]));
+            Assert.Equal(dist, cluster.PrimaryParticles[0].GetDistanceToPrimaryParticle(cluster.PrimaryParticles[1]));
         }
 
         [Fact]
@@ -38,7 +39,7 @@ namespace AggregateFormation.tests
             var cluster = pca.Build(3);
             Assert.Equal(3, cluster.PrimaryParticles.Count());
             var dist = Math.Round(cluster.PrimaryParticles[0].Radius + cluster.PrimaryParticles[1].Radius,6);
-            var realDist = ParticleFormationService.Distance(cluster.PrimaryParticles[0], cluster.PrimaryParticles[1]);
+            var realDist = cluster.PrimaryParticles[0].GetDistanceToPrimaryParticle(cluster.PrimaryParticles[1]);
             Assert.True(realDist >= config.Epsilon * dist);
             Assert.True(realDist <= config.Delta * dist);
         }
@@ -54,7 +55,7 @@ namespace AggregateFormation.tests
             var cluster = pca.Build(4);
             Assert.Equal(4, cluster.PrimaryParticles.Count());
             var dist = Math.Round(cluster.PrimaryParticles[1].Radius + cluster.PrimaryParticles[2].Radius, 6);
-            var realDist = ParticleFormationService.Distance(cluster.PrimaryParticles[0], cluster.PrimaryParticles[1]);
+            var realDist = cluster.PrimaryParticles[0].GetDistanceToPrimaryParticle(cluster.PrimaryParticles[1]);
             Assert.True(realDist >= config.Epsilon * dist);
             Assert.True(realDist <= config.Delta * dist);
             var export = new ExportToLAMMPS(cluster);
@@ -77,7 +78,7 @@ namespace AggregateFormation.tests
                 {
                     if(pp1 != pp2)
                     {
-                        Assert.True(ParticleFormationService.Distance(pp1, pp2) >= pp1.Radius + pp2.Radius);
+                        Assert.True(pp1.GetDistanceToPrimaryParticle(pp2) >= pp1.Radius + pp2.Radius);
                     }
                 }
             }

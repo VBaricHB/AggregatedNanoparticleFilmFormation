@@ -2,6 +2,7 @@
 using Export;
 using Moq;
 using NLog;
+using ParticleExtensionMethodLibrary;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -44,7 +45,7 @@ namespace AggregateFormation.tests
             var depositedCluster = new List<Cluster>();
             depositedCluster.Add(cluster1);
 
-            var tree = ParticleFormationService.BuildNeighborsList(cluster1.PrimaryParticles);
+            var tree = cluster1.PrimaryParticles.ToNeighborsList();
 
             var pp3 = new PrimaryParticle(3, new Vector3(0, 0, 25), 5);
             var pp4 = new PrimaryParticle(4, new Vector3(0, 0, 19), 5);
@@ -79,7 +80,7 @@ namespace AggregateFormation.tests
             var cluster1 = new Cluster(1, new List<PrimaryParticle>() { pp1, pp2 });
             var depositedCluster = new List<Cluster>();
             depositedCluster.Add(cluster1);
-            var tree = ParticleFormationService.BuildNeighborsList(cluster1.PrimaryParticles);
+            var tree = cluster1.PrimaryParticles.ToNeighborsList();
             
             var pp3 = new PrimaryParticle(3, new Vector3(0, 0, 30), 5);
             var pp4 = new PrimaryParticle(4, new Vector3(0, 0, 20), 5);
@@ -109,7 +110,7 @@ namespace AggregateFormation.tests
                     {
                         if (pp1 != pp2)
                         {
-                            var distance = ParticleFormationService.Distance(pp1, pp2);
+                            var distance = pp1.GetDistanceToPrimaryParticle(pp2);
                             Assert.True(distance >= (pp1.Radius + pp2.Radius));
                         }
                     }

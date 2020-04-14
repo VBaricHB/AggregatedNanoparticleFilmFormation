@@ -5,7 +5,6 @@ using System.Linq;
 using Accord.Collections;
 using ANPaX.AggregateFormation.interfaces;
 using ANPaX.Collection;
-using ANPaX.Collection.interfaces;
 using NLog;
 using ANPaX.Extensions;
 
@@ -13,65 +12,100 @@ namespace ANPaX.AggregateFormation
 {
     internal class ClusterClusterAggregationFactory : IParticleFactory<Aggregate>
     {
-        private readonly ISizeDistribution<double> _primaryParticleSizeDistribution;
-        private readonly IConfig _config;
+        private readonly ISizeDistribution<double> _psd;
+        private readonly IAggregateFormationConfig _config;
         private readonly ILogger _logger;
+        private readonly int _seed;
 
-        private readonly Random _rndGen;
-        private int _seed = -1;
-
-        private int TargetClusterSize { get; }
-        internal double MeanRadius => _primaryParticleSizeDistribution.Mean;
-
-        public ClusterClusterAggregationFactory( int targetClusterSize,
-            ISizeDistribution<double> primaryParticleSizeDistribution, 
-            IConfig config, 
+        public ClusterClusterAggregationFactory(
+            ISizeDistribution<double> primaryParticleSizeDistribution,
+            IAggregateFormationConfig config,
             ILogger logger,
-            Random rndGen)
+            int seed = -1)
         {
-            TargetClusterSize = targetClusterSize;
-            _primaryParticleSizeDistribution = primaryParticleSizeDistribution;
+            _psd = primaryParticleSizeDistribution;
             _config = config;
-            _rndGen = rndGen;
             _logger = logger;
+            _seed = seed;
         }
 
         public Aggregate Build(int size)
         {
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
+            var aggregate = Process(size);
+            while (aggregate is null)
+            {
+                Debug.WriteLine($"Restarting Aggregate: Exceeded FormationTime");
+                aggregate = Process(size);
+            }
+
+            return aggregate;
+        }
+
+        /// <summary>
+        /// The processing is decoupled from the building method to allow for restarting the building
+        /// if it takes too long.
+        /// This can happen mostly for polydisperse primary particle size distributions when the unsuitable sizes were
+        /// selected for the fist few primary particles. 
+        /// </summary>
+        public Aggregate Process(
+            int size)
+        {
+            var rndGen = new Random();
+            if (_seed != -1)
+            {
+                rndGen = new Random(_seed);
+            }
+            var count = 0;
             var clusterToSet = new List<Cluster>();
             var depositedCluster = new List<Cluster>();
-            var clusterSizes = GetClusterSizes(size);           
-
+            var clusterSizes = GetClusterSizes(size, _config);
+            var pca = new ParticleClusterAggregationFactory(_psd, rndGen, _config, _logger);
             foreach (var cSize in clusterSizes)
             {
-                var cluster = ParticleClusterAggregationFactory.Build(cSize, _primaryParticleSizeDistribution, _rndGen, _config, _logger);
+                var cluster = pca.Build(cSize);
                 clusterToSet.Add(cluster);
             }
+
             foreach(var cluster in clusterToSet)
             {
-                SetCluster(cluster, depositedCluster, stopwatch, size);
+                if (!SetCluster(cluster, depositedCluster, count, rndGen, _config, _psd, _logger))
+                { 
+                    return null;
+                }
             }
   
             return new Aggregate(depositedCluster);
         }
 
-        private void SetCluster(Cluster cluster, List<Cluster> depositedCluster, Stopwatch stopwatch, int size)
+        private static bool SetCluster(
+            Cluster cluster,
+            List<Cluster> depositedCluster,
+            int count,
+            Random rndGen,
+            IAggregateFormationConfig config,
+            ISizeDistribution<double> psd,
+            ILogger logger)
         {
             if (!depositedCluster.Any())
             {
                 depositedCluster.Add(cluster);
+                return true;
             }
             else
             {
-                SetNextCluster(cluster, depositedCluster, stopwatch, size);
+                return SetNextCluster(cluster, depositedCluster, count, rndGen, config, psd, logger);
             }
         }
 
-        private void SetNextCluster(Cluster nextCluster, List<Cluster> depositedCluster, Stopwatch stopwatch, int size)
+        private static bool SetNextCluster(Cluster nextCluster,
+                                           List<Cluster> depositedCluster,
+                                           int count,                                          
+                                           Random rndGen,
+                                           IAggregateFormationConfig config,
+                                           ISizeDistribution<double> psd,
+                                           ILogger logger)
         {
-            var distance = GetDistanceFromCOMForNextCluster(nextCluster, depositedCluster);
+            var distance = GetDistanceFromCOMForNextCluster(nextCluster, depositedCluster, config, psd);
             var com = depositedCluster.GetCenterOfMass();
             foreach(var cluster in depositedCluster)
             {
@@ -82,26 +116,33 @@ namespace ANPaX.AggregateFormation
             var found = false;
             while (!found)
             {
-                rndPosition = ParticleFormationService.GetRandomPosition(_rndGen, distance);
-                found = TrySetCluster(nextCluster, rndPosition, tree, depositedCluster);
-                if (stopwatch.ElapsedMilliseconds > _config.MaxTimePerAggregateMilliseconds )
+                rndPosition = ParticleFormationUtil.GetRandomPosition(rndGen, distance);
+                found = TrySetCluster(nextCluster, rndPosition, tree, depositedCluster, config);
+                if (count > config.MaxAttemptsPerAggregate )
                 {
-                    _logger.Debug("Resetting aggregate generation. Time limit exceeded.");
-                    Build(size);
+                    logger.Debug("Resetting aggregate generation. Time limit exceeded.");
+                    return false;
                 }
+                count++;
             }
 
             depositedCluster.Add(nextCluster);
+            return true;
        
         }
 
-        internal bool TrySetCluster(Cluster nextCluster, Vector3 rndPosition, KDTree<double> tree, List<Cluster> depositedCluster)
+        public static bool TrySetCluster(
+            Cluster nextCluster,
+            Vector3 rndPosition,
+            KDTree<double> tree,
+            List<Cluster> depositedCluster,
+            IAggregateFormationConfig config)
         {
             bool isValid = false;
             nextCluster.MoveTo(rndPosition);
             foreach (var particle in nextCluster.PrimaryParticles)
             {
-                var (anyNearby, allFeasible) = IsPrimaryParticleValid(tree, particle, depositedCluster);
+                var (anyNearby, allFeasible) = IsPrimaryParticleValid(tree, particle, depositedCluster, config);
                 if (!allFeasible)
                 {
                     return false;
@@ -114,13 +155,17 @@ namespace ANPaX.AggregateFormation
             return isValid;
         }
 
-        internal (bool anyNearby, bool allFeasible) IsPrimaryParticleValid(KDTree<double> tree, PrimaryParticle particle, List<Cluster> depositedCluster)
+        public static (bool anyNearby, bool allFeasible) IsPrimaryParticleValid(
+            KDTree<double> tree,
+            PrimaryParticle particle,
+            List<Cluster> depositedCluster,
+            IAggregateFormationConfig config)
         {
             var neighbors = tree.Nearest
             (
                 position: particle.Position.ToArray(),
                 radius: (particle.Radius + depositedCluster.SelectMany(c => c.PrimaryParticles).Max(p => p.Radius))
-                          * _config.Delta
+                          * config.Delta
             );
             bool anyNearby = false;
             bool allFeasible = true;
@@ -130,16 +175,18 @@ namespace ANPaX.AggregateFormation
             }
             foreach (var neigh in neighbors)
             {
-                var (valid, feasible) = ParticleFormationService.IsValidPosition(neigh, depositedCluster.SelectMany(c => c.PrimaryParticles), particle.Radius, _config);
+                var (valid, feasible) = ParticleFormationUtil.IsValidPosition(neigh, depositedCluster.SelectMany(c => c.PrimaryParticles), particle.Radius, config);
                 anyNearby = anyNearby || valid;
                 allFeasible = allFeasible && feasible;
             }
             return (anyNearby, allFeasible);
         }
 
-        internal List<int> GetClusterSizes(int targetAggregateSize)
+        public static List<int> GetClusterSizes(
+            int targetAggregateSize,
+            IAggregateFormationConfig config)
         {
-            var nCluster = GetNumberOfCluster(targetAggregateSize);
+            var nCluster = GetNumberOfCluster(targetAggregateSize, config);
             var clusterSizes = new List<int>();
             for(var i = 0; i < nCluster; i++)
             {
@@ -163,12 +210,16 @@ namespace ANPaX.AggregateFormation
             return clusterSizes;
         }
 
-        internal int GetNumberOfCluster(int targetAggregateSize)
+        public static int GetNumberOfCluster(int targetAggregateSize, IAggregateFormationConfig config)
         {
-            return Convert.ToInt32(Math.Ceiling(targetAggregateSize / Convert.ToDouble(TargetClusterSize)));
+            return Convert.ToInt32(Math.Ceiling(targetAggregateSize / Convert.ToDouble(config.ClusterSize)));
         }
 
-        internal double GetDistanceFromCOMForNextCluster(Cluster nextCluster, List<Cluster> depositedCluster)
+        public static double GetDistanceFromCOMForNextCluster(
+            Cluster nextCluster,
+            List<Cluster> depositedCluster,
+            IAggregateFormationConfig config,
+            ISizeDistribution<double> psd)
         {
             var rgNext = nextCluster.GetGyrationRadius();
             var rgExist = depositedCluster.GetGyrationRadius();
@@ -176,8 +227,8 @@ namespace ANPaX.AggregateFormation
             var nExist = depositedCluster.Sum(c => c.NumberOfPrimaryParticles);
 
             return Math.Sqrt(
-                (Math.Pow(MeanRadius, 2) * Math.Pow(nNext + nExist, 2) / (nExist * nNext))
-                * Math.Pow((nExist + nNext) / _config.Kf, 2 / _config.Df)
+                (Math.Pow(psd.Mean, 2) * Math.Pow(nNext + nExist, 2) / (nExist * nNext))
+                * Math.Pow((nExist + nNext) / config.Kf, 2 / config.Df)
                 - ((nExist + nNext) / nExist) * Math.Pow(rgNext, 2)
                 - ((nExist + nNext) / nNext) * Math.Pow(rgExist, 2));
         }

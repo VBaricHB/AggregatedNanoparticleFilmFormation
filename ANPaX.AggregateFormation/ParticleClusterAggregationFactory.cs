@@ -3,36 +3,58 @@ using ANPaX.AggregateFormation.interfaces;
 using System.Collections.Generic;
 using System;
 using System.Linq;
-using ANPaX.Collection.interfaces;
 using System.Diagnostics;
 using NLog;
 using ANPaX.Extensions;
 
 namespace ANPaX.AggregateFormation
 {
-    internal static class ParticleClusterAggregationFactory
+    internal class ParticleClusterAggregationFactory : IParticleFactory<Cluster>
     {
-        public static Cluster Build(int size, ISizeDistribution<double> psd, Random rndGen, IConfig config, ILogger logger)
+        private readonly ISizeDistribution<double> _psd;
+        private readonly Random _rndGen;
+        private readonly IAggregateFormationConfig _config;
+        private readonly ILogger _logger;
+
+        public ParticleClusterAggregationFactory(
+            ISizeDistribution<double> psd,
+            Random rndGen,
+            IAggregateFormationConfig config,
+            ILogger logger)
         {
-            var cluster = Procedure(size, psd, rndGen, config, logger);
+            _psd = psd;
+            _rndGen = rndGen;
+            _config = config;
+            _logger = logger;
+        }
+
+        public Cluster Build(int size)
+        {
+            var cluster = Procedure(size);
             while (cluster is null)
             {
-                cluster = Procedure(size, psd, rndGen, config, logger);
+                cluster = Procedure(size);
             }
 
             return cluster;
         }
 
-        public static Cluster Procedure(int size, ISizeDistribution<double> psd, Random rndGen, IConfig config, ILogger logger)
+        /// <summary>
+        /// The processing is decoupled from the building method to allow for restarting the building
+        /// if it takes too long.
+        /// This can happen mostly for polydisperse primary particle size distributions when the unsuitable sizes were
+        /// selected for the fist few primary particles. Since the distance from COM for the next primary particle only depends
+        /// on the mean primary particle size, this distance can be infeasible for the cluster. In that case the whole cluster formation is restarted.
+        /// </summary>
+        public Cluster Procedure(int size)
         {
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
+            var count = 0;
             var primaryParticles = new List<PrimaryParticle>();
-            primaryParticles = SetFirstPrimaryParticle(primaryParticles, psd);
-            primaryParticles = SetSecondPrimaryParticle(primaryParticles, psd, rndGen, config);
+            primaryParticles = SetFirstPrimaryParticle(primaryParticles);
+            primaryParticles = SetSecondPrimaryParticle(primaryParticles);
             while (primaryParticles.Count < size)
             {
-                if (!AddNextPrimaryParticle(primaryParticles, stopwatch, size, psd, rndGen, config, logger))
+                if (!AddNextPrimaryParticle(primaryParticles, count))
                 {
                     return null;
                 }
@@ -41,45 +63,41 @@ namespace ANPaX.AggregateFormation
             return new Cluster(0, primaryParticles);
         }
 
-        public static List<PrimaryParticle> SetFirstPrimaryParticle(List<PrimaryParticle> primaryParticles, ISizeDistribution<double> psd)
+        public List<PrimaryParticle> SetFirstPrimaryParticle(List<PrimaryParticle> primaryParticles)
         {
-            var radius = psd.GetRandomSize();
+            var radius = _psd.GetRandomSize();
             primaryParticles.Add(new PrimaryParticle(0, new Vector3(0, 0, 0), radius));
             return primaryParticles;
         }
 
-        public static List<PrimaryParticle> SetSecondPrimaryParticle(List<PrimaryParticle> primaryParticles, ISizeDistribution<double> psd, Random rndGen, IConfig config)
+        public List<PrimaryParticle> SetSecondPrimaryParticle(List<PrimaryParticle> primaryParticles)
         {
-            var radius = psd.GetRandomSize();
+            var radius = _psd.GetRandomSize();
             // Distance of the CenterOfMass (com) of the second pp from the com
             // of the first pp
             var particle = new PrimaryParticle(0, radius);
-            var ppDistance = config.Epsilon * (primaryParticles[0].Radius + particle.Radius);
-            var rndPosition = ParticleFormationService.GetRandomPosition(rndGen, ppDistance);
+            var ppDistance = _config.Epsilon * (primaryParticles[0].Radius + particle.Radius);
+            var rndPosition = ParticleFormationUtil.GetRandomPosition(_rndGen, ppDistance);
             particle.MoveTo(rndPosition);
             primaryParticles.Add(particle);
             return primaryParticles;
         }
 
-        public static bool AddNextPrimaryParticle(List<PrimaryParticle> primaryParticles, Stopwatch stopwatch, int size,
-                                                  ISizeDistribution<double> psd, Random rndGen, IConfig config,
-                                                  ILogger logger)
+        public bool AddNextPrimaryParticle(List<PrimaryParticle> primaryParticles, int count)
         {
             var com = primaryParticles.GetCenterOfMass();
-            var ppDistance = GetNextPrimaryParticleDistance(primaryParticles, psd, config);
-            var particle = InitializeNewPrimaryParticle(psd.GetRandomSize());
+            var ppDistance = GetNextPrimaryParticleDistance(primaryParticles);
+            var particle = InitializeNewPrimaryParticle(_psd.GetRandomSize());
 
             var found = false;
             Vector3 rndPosition = new Vector3();
-            var count = 0;
             while (!found)
             {
-                rndPosition = ParticleFormationService.GetRandomPosition(rndGen, ppDistance) + com;
-                found = TrySetPrimaryParticle(particle, rndPosition, primaryParticles, config);
-                if (stopwatch.ElapsedMilliseconds > config.MaxTimePerClusterMilliseconds)
+                rndPosition = ParticleFormationUtil.GetRandomPosition(_rndGen, ppDistance) + com;
+                found = TrySetPrimaryParticle(particle, rndPosition, primaryParticles);
+                if (count > _config.MaxAttemptsPerCluster)
                 {
-                    logger.Debug("Resetting cluster generation. Time limit exceeded.");
-                    stopwatch.Restart();
+                    _logger.Debug("Resetting cluster generation. Time limit exceeded.");
                     return false;
                 }
                 count++;
@@ -94,10 +112,10 @@ namespace ANPaX.AggregateFormation
             return new PrimaryParticle(0, radius);
         }
         
-        internal static bool TrySetPrimaryParticle(PrimaryParticle particle, Vector3 rndPosition, List<PrimaryParticle> primaryParticles, IConfig config)
+        internal bool TrySetPrimaryParticle(PrimaryParticle particle, Vector3 rndPosition, List<PrimaryParticle> primaryParticles)
         {
             var tree = primaryParticles.ToNeighborsList();
-            var searchRadius = (particle.Radius + primaryParticles.Max(p => p.Radius)) * config.Delta;
+            var searchRadius = (particle.Radius + primaryParticles.Max(p => p.Radius)) * _config.Delta;
             var neighbors = tree.Nearest(rndPosition.ToArray(),
                 radius: searchRadius);
 
@@ -109,20 +127,20 @@ namespace ANPaX.AggregateFormation
             }
             foreach (var neigh in neighbors)
             {
-                var (nearby, feasible) = ParticleFormationService.IsValidPosition(neigh, primaryParticles, particle.Radius, config);
+                var (nearby, feasible) = ParticleFormationUtil.IsValidPosition(neigh, primaryParticles, particle.Radius, _config);
                 anyNearby = anyNearby || nearby;
                 allFeasible = allFeasible && feasible;
             }
             return anyNearby && allFeasible;
         }
 
-        private static double GetNextPrimaryParticleDistance(List<PrimaryParticle> primaryParticles, ISizeDistribution<double> psd, IConfig config)
+        private double GetNextPrimaryParticleDistance(List<PrimaryParticle> primaryParticles)
         {
             var n = primaryParticles.Count + 1;
-            var rsq = Math.Pow(n, 2) * Math.Pow(psd.Mean, 2) / (n - 1)
-                    * Math.Pow(n / config.Kf, 2 / config.Df)
-                    - n * Math.Pow(psd.Mean, 2) / (n - 1)
-                    - n * Math.Pow(psd.Mean, 2) * Math.Pow((n - 1) / config.Kf, 2 / config.Df);
+            var rsq = Math.Pow(n, 2) * Math.Pow(_psd.Mean, 2) / (n - 1)
+                    * Math.Pow(n / _config.Kf, 2 / _config.Df)
+                    - n * Math.Pow(_psd.Mean, 2) / (n - 1)
+                    - n * Math.Pow(_psd.Mean, 2) * Math.Pow((n - 1) / _config.Kf, 2 / _config.Df);
             return Math.Sqrt(rsq);
         }
       

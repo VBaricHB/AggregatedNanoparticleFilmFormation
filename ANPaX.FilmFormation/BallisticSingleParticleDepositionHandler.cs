@@ -11,10 +11,10 @@ namespace ANPaX.FilmFormation
 {
     internal class BallisticSingleParticleDepositionHandler : ISingleParticleDepositionHandler
     {
-        private readonly IConfig _config;
+        private readonly IFilmFormationConfig _config;
         private readonly double _searchRadius;
 
-        public BallisticSingleParticleDepositionHandler(IConfig config, double searchRadius)
+        public BallisticSingleParticleDepositionHandler(IFilmFormationConfig config, double searchRadius)
         {
             _config = config;
             _searchRadius = searchRadius;
@@ -30,7 +30,7 @@ namespace ANPaX.FilmFormation
             distances.Add(_config.LargeNumber);
             foreach (var neighbor in neighbors)
             {
-                var neighborRadius = ParticleFormationService.GetRadiusOfXYNodePrimaryParticle(neighbor.Node.Position, primaryParticles);
+                var neighborRadius = ParticleFormationUtil.GetRadiusOfXYNodePrimaryParticle(neighbor.Node.Position, primaryParticles);
                 var neighbor3DPosition = Get3DPositionFrom2DProjection(neighbor.Node.Position, primaryParticles);
                 distances.Add(Get1DDistanceToNeighbor(primaryParticle, neighbor3DPosition, neighborRadius));
             }

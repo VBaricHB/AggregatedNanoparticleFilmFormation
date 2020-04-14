@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <Compile Remove="Program.cs" />
-    <Compile Remove="interfaces\IConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ANPaX.Collection\ANPaX.Collection.csproj" />

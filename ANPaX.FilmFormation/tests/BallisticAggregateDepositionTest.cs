@@ -1,5 +1,6 @@
 ﻿using ANPaX.AggregateFormation;
 using ANPaX.Collection;
+using ANPaX.FilmFormation.interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -8,6 +9,8 @@ namespace ANPaX.FilmFormation.tests
 {
     public class BallisticAggregateDepositionTest
     {
+
+        private IFilmFormationConfig _config = new TestFilmFormationConfig();
         private static Aggregate GetExampleAggregate()
         {
             var radius = 1.0;
@@ -47,9 +50,8 @@ namespace ANPaX.FilmFormation.tests
         [Fact]
         private void DepositAggregateOnGroundTest()
         {
-            var config = new CustomConfig();
-            var spHandler = new BallisticSingleParticleDepositionHandler(config, 2);
-            var aggHandler = new BallisticAggregateDepositionHandler(spHandler, config);
+            var spHandler = new BallisticSingleParticleDepositionHandler(_config, 2);
+            var aggHandler = new BallisticAggregateDepositionHandler(spHandler, _config);
             var aggregate = GetExampleAggregate();
             aggHandler.DepositOnGround(aggregate);
             Assert.Equal(1.0, aggregate.Cluster.SelectMany(c => c.PrimaryParticles).Select(p => p.Position.Z).Min());
@@ -58,11 +60,10 @@ namespace ANPaX.FilmFormation.tests
         [Fact]
         private void IsWithoutContactTest_NoContact_ShouldBeTrue()
         {
-            var config = new CustomConfig();
-            var spHandler = new BallisticSingleParticleDepositionHandler(config, 2);
-            var aggHandler = new BallisticAggregateDepositionHandler(spHandler, config);
+            var spHandler = new BallisticSingleParticleDepositionHandler(_config, 2);
+            var aggHandler = new BallisticAggregateDepositionHandler(spHandler, _config);
 
-            var distances = new List<double>() { config.LargeNumber, config.LargeNumber };
+            var distances = new List<double>() { _config.LargeNumber, _config.LargeNumber };
 
             var isWithoutContact = aggHandler.IsWithoutContact(distances);
             Assert.True(isWithoutContact);
@@ -71,11 +72,10 @@ namespace ANPaX.FilmFormation.tests
         [Fact]
         private void IsWithoutContactTest_HasContact_ShouldBeFalse()
         {
-            var config = new CustomConfig();
-            var spHandler = new BallisticSingleParticleDepositionHandler(config, 2);
-            var aggHandler = new BallisticAggregateDepositionHandler(spHandler, config);
+            var spHandler = new BallisticSingleParticleDepositionHandler(_config, 2);
+            var aggHandler = new BallisticAggregateDepositionHandler(spHandler, _config);
 
-            var distances = new List<double>() { config.LargeNumber, 20 };
+            var distances = new List<double>() { _config.LargeNumber, 20 };
 
             var isWithoutContact = aggHandler.IsWithoutContact(distances);
             Assert.False(isWithoutContact);
@@ -84,11 +84,10 @@ namespace ANPaX.FilmFormation.tests
         [Fact]
         private void DepositAtParticleTest_CorrectDepositionDistance()
         {
-            var config = new CustomConfig();
-            var spHandler = new BallisticSingleParticleDepositionHandler(config, 2);
-            var aggHandler = new BallisticAggregateDepositionHandler(spHandler, config);
+            var spHandler = new BallisticSingleParticleDepositionHandler(_config, 2);
+            var aggHandler = new BallisticAggregateDepositionHandler(spHandler, _config);
 
-            var distances = new List<double>() { config.LargeNumber, 20 };
+            var distances = new List<double>() { _config.LargeNumber, 20 };
             var aggregate = GetExampleAggregate();
 
             aggHandler.DepositAtParticle(aggregate, distances);
@@ -99,9 +98,8 @@ namespace ANPaX.FilmFormation.tests
         [Fact]
         private void DepositAggregate_DepositAtPrimaryParticle()
         {
-            var config = new CustomConfig();
-            var spHandler = new BallisticSingleParticleDepositionHandler(config, 2);
-            var aggHandler = new BallisticAggregateDepositionHandler(spHandler, config);
+            var spHandler = new BallisticSingleParticleDepositionHandler(_config, 2);
+            var aggHandler = new BallisticAggregateDepositionHandler(spHandler, _config);
 
             var aggregate = GetExampleAggregate();
 
@@ -113,9 +111,8 @@ namespace ANPaX.FilmFormation.tests
         [Fact]
         private void DepositAggregate_DepositOnGround()
         {
-            var config = new CustomConfig();
-            var spHandler = new BallisticSingleParticleDepositionHandler(config, 2);
-            var aggHandler = new BallisticAggregateDepositionHandler(spHandler, config);
+            var spHandler = new BallisticSingleParticleDepositionHandler(_config, 2);
+            var aggHandler = new BallisticAggregateDepositionHandler(spHandler, _config);
 
             var aggregate = GetExampleAggregate();
 

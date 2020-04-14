@@ -36,7 +36,8 @@ namespace ANPaX.AggregateFormation.tests
             var file = _resources + "FSP_PrimaryParticleSizeDistribution.xml";
             var dist = XMLSizeDistributionBuilder<double>.Read(file);
             var rndGen = new Random(_seed);
-            var psd = new TabulatedPrimaryParticleSizeDistribution(dist, rndGen, integrate: true);
+            var config = new TestAggregateFormationConfig();
+            var psd = new TabulatedPrimaryParticleSizeDistribution(dist, rndGen, config, integrate: true);
             var list = psd._tabulatedSizeDistribution;
 
             Assert.Equal(1.0, list.Sizes.Last().Probability);

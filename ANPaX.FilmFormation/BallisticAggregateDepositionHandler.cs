@@ -1,5 +1,4 @@
 ﻿using ANPaX.Collection;
-using ANPaX.Collection.interfaces;
 using ANPaX.FilmFormation.interfaces;
 using ANPaX;
 using System;
@@ -10,10 +9,10 @@ namespace ANPaX.FilmFormation
 {
     internal class BallisticAggregateDepositionHandler : IAggregateDepositionHandler
     {
-        private readonly IConfig _config;
+        private readonly IFilmFormationConfig _config;
         private readonly ISingleParticleDepositionHandler _singleParticleDepositionHandler;
 
-        public BallisticAggregateDepositionHandler(ISingleParticleDepositionHandler singleParticleDepositionHandler, IConfig config)
+        public BallisticAggregateDepositionHandler(ISingleParticleDepositionHandler singleParticleDepositionHandler, IFilmFormationConfig config)
         {
             _singleParticleDepositionHandler = singleParticleDepositionHandler;
             _config = config;

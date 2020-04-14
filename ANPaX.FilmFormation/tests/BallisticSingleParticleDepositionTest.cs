@@ -1,6 +1,7 @@
 ﻿using ANPaX.AggregateFormation;
 using ANPaX.Collection;
 using ANPaX.Extensions;
+using ANPaX.FilmFormation.interfaces;
 using System;
 using System.Collections.Generic;
 using Xunit;
@@ -9,6 +10,8 @@ namespace ANPaX.FilmFormation.tests
 {
     public class BallisticSingleParticleDepositionTest
     {
+
+        private IFilmFormationConfig _config = new TestFilmFormationConfig();
 
         [Fact]
         private void DistanceToCenterLine_CorrectDistanceComputed()
@@ -32,7 +35,7 @@ namespace ANPaX.FilmFormation.tests
             var primaryParticle = new PrimaryParticle(0, pos, r);
 
             var searchRadius = 5.0;
-            var handler = new BallisticSingleParticleDepositionHandler(new CustomConfig(), searchRadius);
+            var handler = new BallisticSingleParticleDepositionHandler(_config, searchRadius);
 
             var pos2 = new Vector3(0, 3, 10);
             var pos3 = new Vector3(3, -3, 10);
@@ -60,7 +63,7 @@ namespace ANPaX.FilmFormation.tests
             var primaryParticle = new PrimaryParticle(0, pos, r);
             
             var searchRadius = 2.0;
-            var handler = new BallisticSingleParticleDepositionHandler(new CustomConfig(), searchRadius);
+            var handler = new BallisticSingleParticleDepositionHandler(_config, searchRadius);
 
             var neighborPosition = new double[] { 1, 0, 10 };
             var neighborRadius = 1.0;
@@ -81,8 +84,7 @@ namespace ANPaX.FilmFormation.tests
             var primaryParticle = new PrimaryParticle(0, pos, r);
 
             var searchRadius = 2.0;
-            var config = new CustomConfig();
-            var handler = new BallisticSingleParticleDepositionHandler(config, searchRadius);
+            var handler = new BallisticSingleParticleDepositionHandler(_config, searchRadius);
 
             var neighborPosition = new double[] { 5, 0, 10 };
             var neighborRadius = 1.0;
@@ -91,7 +93,7 @@ namespace ANPaX.FilmFormation.tests
 
             // Math.Sqrt(3) results from the square of the combined radius (4) - the distance to centerline. 
             // This origins from the triangle: final position pp1. position neigbor, center projection neighbor.
-            var shouldBeDistance = config.LargeNumber;
+            var shouldBeDistance = _config.LargeNumber;
             Assert.Equal(shouldBeDistance, dist);
         }
 
@@ -103,7 +105,7 @@ namespace ANPaX.FilmFormation.tests
             var primaryParticle = new PrimaryParticle(0, pos, r);
 
             var searchRadius = 2.0;
-            var handler = new BallisticSingleParticleDepositionHandler(new CustomConfig(), searchRadius);
+            var handler = new BallisticSingleParticleDepositionHandler(_config, searchRadius);
 
             var pos2 = new Vector3(1, 0, 10);
             var pp2 = new PrimaryParticle(1, pos2, r);
@@ -125,7 +127,7 @@ namespace ANPaX.FilmFormation.tests
             var primaryParticle = new PrimaryParticle(0, pos, r);
 
             var searchRadius = 2.0;
-            var handler = new BallisticSingleParticleDepositionHandler(new CustomConfig(), searchRadius);
+            var handler = new BallisticSingleParticleDepositionHandler(_config, searchRadius);
 
             var pos2 = new Vector3(1, 0, 10);
             var pp2 = new PrimaryParticle(1, pos2, r);
@@ -147,8 +149,7 @@ namespace ANPaX.FilmFormation.tests
             var primaryParticle = new PrimaryParticle(0, pos, r);
 
             var searchRadius = 2.0;
-            var config = new CustomConfig();
-            var handler = new BallisticSingleParticleDepositionHandler(config, searchRadius);
+            var handler = new BallisticSingleParticleDepositionHandler(_config, searchRadius);
 
             var pos2 = new Vector3(5, 0, 10);
             var pp2 = new PrimaryParticle(1, pos2, r);
@@ -156,7 +157,7 @@ namespace ANPaX.FilmFormation.tests
 
             var dist = handler.GetMinDepositionDistance(primaryParticle, otherParticles);
 
-            var shouldBeDistance = config.LargeNumber;
+            var shouldBeDistance = _config.LargeNumber;
             Assert.Equal(shouldBeDistance, dist);
         }
     }

@@ -9,13 +9,14 @@ namespace ANPaX.AggregateFormation
     {
         private Random _rndGen;
         private XMLSizeDistribution<int> _tabulatedSizeDistribution;
+        private readonly IAggregateFormationConfig _config;
 
         public int Mean { get; private set; }
 
-        public TabulatedAggregateSizeDistribution(XMLSizeDistribution<int> tabulatedSizeDistribution, Random rndGen, bool integrate = true)
+        public TabulatedAggregateSizeDistribution(XMLSizeDistribution<int> tabulatedSizeDistribution, Random rndGen, IAggregateFormationConfig config, bool integrate = true)
         {
             _rndGen = rndGen;
-
+            _config = config;
             _tabulatedSizeDistribution = tabulatedSizeDistribution;
 
             if (integrate)
@@ -46,13 +47,43 @@ namespace ANPaX.AggregateFormation
 
         private void CalcMean()
         {
-            var listOfRandomR = new List<int>();
+            var n = 10000;
+
+            var listOfRandomR = new int[n];
             for (var i = 0; i < 10000; i++)
             {
-                listOfRandomR.Add(GetRandomSize());
+                listOfRandomR[i] = GetRandomSize();
             }
 
-            Mean = Convert.ToInt32(Math.Round(listOfRandomR.Average()));
+            switch (_config.MeanMethod)
+            {
+                case MeanMethod.Geometric:
+                    Mean = CalcGeometricMean(listOfRandomR);
+                    return;
+                case MeanMethod.Arithmetic:
+                    Mean = Convert.ToInt32(Math.Round(listOfRandomR.Average()));
+                    return;
+            }
+
+        }
+
+        private int CalcGeometricMean(int[] listOfRandomR)
+        {
+            //declare sum variable and
+            // initialize it to 1.
+            double sum = 0;
+
+            // Compute the sum of all the 
+            // elements in the array. 
+            for (int i = 0; i < listOfRandomR.Count(); i++)
+                sum += Math.Log(listOfRandomR[i]);
+
+            // compute geometric mean through formula 
+            // antilog(((log(1) + log(2) + . . . + log(n))/n) 
+            // and return the value to main function. 
+            sum /= listOfRandomR.Count();
+
+            return Convert.ToInt32(Math.Round(Math.Exp(sum)));
         }
     }
 }

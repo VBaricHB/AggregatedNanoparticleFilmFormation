@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using Accord.Collections;
-using ANPaX.Collection.interfaces;
+using ANPaX.AggregateFormation.interfaces;
 
 namespace ANPaX.Collection
 {
-    public static class ParticleFormationService
+    public static class ParticleFormationUtil
     { 
         public static Vector3 GetRandomPosition(Random rndGen, double distance)
         {
@@ -31,7 +31,7 @@ namespace ANPaX.Collection
         }
 
         public static (bool nearby, bool feasible) IsValidPosition(NodeDistance<KDTreeNode<double>> neigh,
-            IEnumerable<PrimaryParticle> primaryParticles, double radius, IConfig config)
+            IEnumerable<PrimaryParticle> primaryParticles, double radius, IAggregateFormationConfig config)
         {
             bool feasible = true;
             bool nearby = false;

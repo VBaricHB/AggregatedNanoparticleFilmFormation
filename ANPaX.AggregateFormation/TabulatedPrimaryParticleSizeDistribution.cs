@@ -8,12 +8,14 @@ namespace ANPaX.AggregateFormation
     {
         internal XMLSizeDistribution<double> _tabulatedSizeDistribution;
         private readonly Random _rndGen;
+        private readonly IAggregateFormationConfig _config;
         public double Mean { get; private set; }
 
-        public TabulatedPrimaryParticleSizeDistribution(XMLSizeDistribution<double> tabulatedSizeDistribution, Random rndGen, bool integrate = true)
+        public TabulatedPrimaryParticleSizeDistribution(XMLSizeDistribution<double> tabulatedSizeDistribution, Random rndGen, IAggregateFormationConfig config, bool integrate = true)
         {
             _rndGen = rndGen;
             _tabulatedSizeDistribution = tabulatedSizeDistribution;
+            _config = config;
 
             if (integrate)
             {
@@ -52,6 +54,20 @@ namespace ANPaX.AggregateFormation
                 listOfRandomR[i] = GetRandomSize();
             }
 
+            switch (_config.MeanMethod)
+            {
+                case MeanMethod.Geometric:
+                    Mean = CalcGeometricMean(listOfRandomR);
+                    return;
+                case MeanMethod.Arithmetic:
+                    Mean = listOfRandomR.Average();
+                    return;
+            }
+
+        }
+
+        private double CalcGeometricMean(double[] listOfRandomR)
+        {
             //listOfRandomR = _tabulatedSizeDistribution.Sizes.Select(c => c.Value).ToArray();
             //declare sum variable and
             // initialize it to 1.
@@ -67,9 +83,7 @@ namespace ANPaX.AggregateFormation
             // and return the value to main function. 
             sum /= listOfRandomR.Count();
 
-            Mean = Math.Exp(sum);
-            //Mean = listOfRandomR.Average();
-            //Mean = 5.65;
+            return Math.Exp(sum);
         }
     }
 }

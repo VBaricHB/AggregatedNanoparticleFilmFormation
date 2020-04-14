@@ -1,5 +1,6 @@
 ﻿using ANPaX.Collection;
 using ANPaX.Collection.interfaces;
+using ANPaX.Extensions;
 using ANPaX.FilmFormation.interfaces;
 using System;
 using System.Collections.Generic;
@@ -13,35 +14,25 @@ namespace ANPaX.FilmFormation
         private readonly IAggregateDepositionHandler _aggregateDepositionHandler;
         private readonly IList<Aggregate> _aggregates;
         private readonly IWallCollisionHandler _wallCollisionHandler;
-        private readonly IFilmFormationParameter _filmFormationParameter;
         private readonly Random _rndGen;
 
         public AggregateFilmFormationService
             (
-            IConfig config,
+            IFilmFormationConfig config,
             IList<Aggregate> aggregates,
-            IFilmFormationParameter filmFormationParameter,
-            int seed = -1
+            Random rndGen,
+            IFilmFormationConfig filmFormationConfig
             )
         {
-            _filmFormationParameter = filmFormationParameter;
-
-            var maxRadius = aggregates.SelectMany(a => a.Cluster.SelectMany(c => c.PrimaryParticles)).Select(p => p.Radius).Max();
-            var simulationBox = new RectangularSimulationBox(_filmFormationParameter.FilmWidthAbsolute);
-            var primaryParticleDepositionHandler = new BallisticSingleParticleDepositionHandler(config, maxRadius * 1.05);
+            var maxRadius = aggregates.GetMaxRadius();
+            var simulationBox = new RectangularSimulationBox(filmFormationConfig.FilmWidthAbsolute);
+            var primaryParticleDepositionHandler = new BallisticSingleParticleDepositionHandler(config, maxRadius * config.Delta);
 
             _simulationDomain = new RectangularAggregateSimulationDomain(simulationBox, maxRadius);
             _aggregateDepositionHandler = new BallisticAggregateDepositionHandler(primaryParticleDepositionHandler, config);
             _wallCollisionHandler = new WallCollisionHandler(simulationBox);
             _aggregates = aggregates;
-            if (seed != -1)
-            {
-                _rndGen = new Random(seed);
-            }
-            else
-            {
-                _rndGen = new Random();
-            }
+            _rndGen = rndGen;
         }
 
         public void BuildFilm()

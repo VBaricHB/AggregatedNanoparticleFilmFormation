@@ -1,7 +1,11 @@
-﻿namespace ANPaX.AggregateFormation.interfaces
+﻿using ANPaX.AggregateFormation.interfaces;
+using NLog;
+using System;
+
+namespace ANPaX.AggregateFormation.interfaces
 {
     public interface IParticleFactory<T>
     {
-        T Build(int size);
+        public T Build(int size);
     }
 }

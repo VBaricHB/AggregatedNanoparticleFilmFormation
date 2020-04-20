@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using ANPaX.Collection.interfaces;
 
 namespace ANPaX.Collection
@@ -9,7 +10,7 @@ namespace ANPaX.Collection
     {
         public Aggregate(IEnumerable<Cluster> cluster)
         {
-            Cluster = cluster; 
+            Cluster = cluster;
         }
 
         public IEnumerable<Cluster> Cluster { get; private set; }

@@ -14,7 +14,8 @@ namespace ANPaX.AggregateFormation.interfaces
         public double LargeNumber { get; }
         public int ClusterSize { get; }
         public int TotalPrimaryParticles { get; }
-        public MeanMethod MeanMethod { get; }
+        public MeanMethod RadiusMeanCalculationMethod { get; }
+        public MeanMethod AggregateSizeMeanCalculationMethod { get; }
         public bool UseDefaultGenerationMethods { get; }
         public ISizeDistribution<double> PrimaryParticleSizeDistribution { get; }
         public ISizeDistribution<int> AggregateSizeDistribution { get; }

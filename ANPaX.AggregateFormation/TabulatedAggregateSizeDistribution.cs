@@ -1,19 +1,19 @@
-﻿using ANPaX.AggregateFormation.interfaces;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
+
+using ANPaX.AggregateFormation.interfaces;
 
 namespace ANPaX.AggregateFormation
 {
     internal class TabulatedAggregateSizeDistribution : ISizeDistribution<int>
     {
         private Random _rndGen;
-        private XMLSizeDistribution<int> _tabulatedSizeDistribution;
+        private IFileSizeDistribution<int> _tabulatedSizeDistribution;
         private readonly IAggregateFormationConfig _config;
 
         public int Mean { get; private set; }
 
-        public TabulatedAggregateSizeDistribution(XMLSizeDistribution<int> tabulatedSizeDistribution, Random rndGen, IAggregateFormationConfig config, bool integrate = true)
+        public TabulatedAggregateSizeDistribution(IFileSizeDistribution<int> tabulatedSizeDistribution, Random rndGen, IAggregateFormationConfig config, bool integrate = true)
         {
             _rndGen = rndGen;
             _config = config;
@@ -34,7 +34,7 @@ namespace ANPaX.AggregateFormation
 
         private void IntegrateProbabilities()
         {
-            for (int i = 1; i < _tabulatedSizeDistribution.Sizes.Length; i++)
+            for (var i = 1; i < _tabulatedSizeDistribution.Sizes.Length; i++)
             {
                 _tabulatedSizeDistribution.Sizes[i].Probability += _tabulatedSizeDistribution.Sizes[i - 1].Probability;
             }
@@ -55,7 +55,7 @@ namespace ANPaX.AggregateFormation
                 listOfRandomR[i] = GetRandomSize();
             }
 
-            switch (_config.MeanMethod)
+            switch (_config.AggregateSizeMeanCalculationMethod)
             {
                 case MeanMethod.Geometric:
                     Mean = CalcGeometricMean(listOfRandomR);
@@ -63,27 +63,26 @@ namespace ANPaX.AggregateFormation
                 case MeanMethod.Arithmetic:
                     Mean = Convert.ToInt32(Math.Round(listOfRandomR.Average()));
                     return;
+                case MeanMethod.Sauter:
+                    throw new ArgumentException($"MeanMethod.Sauter cannot be applied to aggregate size.");
             }
 
         }
 
-        private int CalcGeometricMean(int[] listOfRandomR)
+        /// <summary>
+        /// antilog(((log(1) + log(2) + . . . + log(n))/n) 
+        /// </summary>
+        /// <param name="randomRadii"></param>
+        /// <returns></returns>
+        private int CalcGeometricMean(int[] randomRadii)
         {
-            //declare sum variable and
-            // initialize it to 1.
-            double sum = 0;
+            var sum = randomRadii.Aggregate(
+                seed: 0.0,
+                func: (result, item) => result + Math.Log(item),
+                resultSelector: result => result / randomRadii.Count()
+                );
 
-            // Compute the sum of all the 
-            // elements in the array. 
-            for (int i = 0; i < listOfRandomR.Count(); i++)
-                sum += Math.Log(listOfRandomR[i]);
-
-            // compute geometric mean through formula 
-            // antilog(((log(1) + log(2) + . . . + log(n))/n) 
-            // and return the value to main function. 
-            sum /= listOfRandomR.Count();
-
-            return Convert.ToInt32(Math.Round(Math.Exp(sum)));
+            return Convert.ToInt32(Math.Exp(sum));
         }
     }
 }

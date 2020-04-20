@@ -10,7 +10,7 @@ namespace ANPaX.FilmFormation
 
         public RectangularSimulationBox(double width)
         {
-            XDim = new BoxDimension(- 0.5 * width, 0.5 * width);
+            XDim = new BoxDimension(-0.5 * width, 0.5 * width);
             YDim = new BoxDimension(-0.5 * width, 0.5 * width);
             ZDim = new BoxDimension(0, 0);
         }

@@ -1,14 +1,18 @@
-﻿using ANPaX.Collection;
-using ANPaX.Export;
-using Moq;
-using NLog;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Xunit;
-using ANPaX.Extensions;
+
 using ANPaX.AggregateFormation.interfaces;
+using ANPaX.Collection;
+using ANPaX.Export;
+using ANPaX.Extensions;
+
+using Moq;
+
+using NLog;
+
+using Xunit;
 
 namespace ANPaX.AggregateFormation.tests
 {
@@ -79,10 +83,12 @@ namespace ANPaX.AggregateFormation.tests
 
             var pp1 = new PrimaryParticle(1, new Vector3(0, 0, 0), 5);
             var pp2 = new PrimaryParticle(2, new Vector3(0, 0, 10), 5);
-                        
+
             var cluster1 = new Cluster(1, new List<PrimaryParticle>() { pp1, pp2 });
-            var depositedCluster = new List<Cluster>();
-            depositedCluster.Add(cluster1);
+            var depositedCluster = new List<Cluster>
+            {
+                cluster1
+            };
 
             var tree = cluster1.PrimaryParticles.ToNeighborsList();
 
@@ -114,10 +120,12 @@ namespace ANPaX.AggregateFormation.tests
             var pp2 = new PrimaryParticle(2, new Vector3(0, 0, 10), 5);
 
             var cluster1 = new Cluster(1, new List<PrimaryParticle>() { pp1, pp2 });
-            var depositedCluster = new List<Cluster>();
-            depositedCluster.Add(cluster1);
+            var depositedCluster = new List<Cluster>
+            {
+                cluster1
+            };
             var tree = cluster1.PrimaryParticles.ToNeighborsList();
-            
+
             var pp3 = new PrimaryParticle(3, new Vector3(0, 0, 30), 5);
             var pp4 = new PrimaryParticle(4, new Vector3(0, 0, 20), 5);
             var cluster2 = new Cluster(1, new List<PrimaryParticle>() { pp3, pp4 });

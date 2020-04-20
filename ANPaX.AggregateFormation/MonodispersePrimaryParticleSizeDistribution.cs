@@ -4,7 +4,7 @@ namespace ANPaX.AggregateFormation
 {
     internal class MonodispersePrimaryParticleSizeDistribution : ISizeDistribution<double>
     {
-        private double _size; 
+        private readonly double _size;
 
         public MonodispersePrimaryParticleSizeDistribution(double size)
         {

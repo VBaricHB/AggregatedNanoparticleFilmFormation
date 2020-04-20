@@ -1,9 +1,12 @@
-﻿using Moq;
-using NLog;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+
+using Moq;
+
+using NLog;
+
 using Xunit;
 
 namespace ANPaX.AggregateFormation.tests
@@ -16,7 +19,7 @@ namespace ANPaX.AggregateFormation.tests
         private ILogger _logger = new Mock<ILogger>().Object;
 
         [Fact]
-        private  void GenerateMonodisperseAggregates_Sync_AllGenerated()
+        private void GenerateMonodisperseAggregates_Sync_AllGenerated()
         {
             var primaryParticles = 2000;
 
@@ -28,7 +31,7 @@ namespace ANPaX.AggregateFormation.tests
             var asd = new TabulatedAggregateSizeDistribution(distASD, _rndGen, config, integrate: true);
             var cca = new ClusterClusterAggregationFactory(psd, config, _logger, _seed);
             var service = new AggregateFormationService(asd, psd, config, cca, _logger);
-            var aggs =  service.GenerateAggregates();
+            var aggs = service.GenerateAggregates();
             Assert.True(aggs.Sum(agg => agg.NumberOfPrimaryParticles) >= primaryParticles);
 
         }
@@ -89,7 +92,7 @@ namespace ANPaX.AggregateFormation.tests
             var asd = new TabulatedAggregateSizeDistribution(distASD, rndGen, config, integrate: true);
 
             var cca = new ClusterClusterAggregationFactory(psd, config, _logger, _seed);
-            var service = new AggregateFormationService(asd, psd, config,cca, _logger);
+            var service = new AggregateFormationService(asd, psd, config, cca, _logger);
             var aggs = service.GenerateAggregates_Parallel(numCPU);
             Assert.True(aggs.Sum(agg => agg.NumberOfPrimaryParticles) >= primaryParticles);
         }
@@ -101,7 +104,7 @@ namespace ANPaX.AggregateFormation.tests
             var numCPU = 4;
             var rndGen = new Random();
             var logger = new Mock<ILogger>().Object;
-            
+
             var fileASD = _resources + "FSP_AggregateSizeDistribution.xml";
             var distASD = XMLSizeDistributionBuilder<int>.Read(fileASD);
             var config = new TestAggregateFormationConfig(primaryParticles);
@@ -112,10 +115,10 @@ namespace ANPaX.AggregateFormation.tests
             var cca = new ClusterClusterAggregationFactory(psd, config, _logger, _seed);
             var service = new AggregateFormationService(asd, psd, config, cca, _logger);
 
-            Progress<ProgressReportModel> progress = new Progress<ProgressReportModel>();
+            var progress = new Progress<ProgressReportModel>();
             progress.ProgressChanged += ReportProgress;
             var aggs = await service.GenerateAggregates_Parallel_Async(numCPU, progress);
-            
+
             Assert.True(aggs.Sum(agg => agg.NumberOfPrimaryParticles) >= primaryParticles);
         }
 
@@ -139,7 +142,7 @@ namespace ANPaX.AggregateFormation.tests
             var cca = new ClusterClusterAggregationFactory(psd, config, _logger, _seed);
             var service = new AggregateFormationService(asd, psd, config, cca, _logger);
 
-            Progress<ProgressReportModel> progress = new Progress<ProgressReportModel>();
+            var progress = new Progress<ProgressReportModel>();
             progress.ProgressChanged += ReportProgress;
             var aggs = await service.GenerateAggregates_Parallel_Async(numCPU, progress);
 

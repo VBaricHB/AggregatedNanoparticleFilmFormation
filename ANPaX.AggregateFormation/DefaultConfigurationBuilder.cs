@@ -1,8 +1,7 @@
-﻿using ANPaX.AggregateFormation.interfaces;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Text;
+
+using ANPaX.AggregateFormation.interfaces;
 
 namespace ANPaX.AggregateFormation
 {
@@ -10,7 +9,7 @@ namespace ANPaX.AggregateFormation
     {
         public static ISizeDistribution<double> GetPrimaryParticleSizeDistribution(Random rndGen, IAggregateFormationConfig config)
         {
-            string resources = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\Resources\\"));
+            var resources = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\ANPaX.AggregateFormation\\Resources\\"));
             var filePSD = resources + "FSP_PrimaryParticleSizeDistribution.xml";
             var dist = XMLSizeDistributionBuilder<double>.Read(filePSD);
             var psd = new TabulatedPrimaryParticleSizeDistribution(dist, rndGen, config, integrate: true);
@@ -19,7 +18,7 @@ namespace ANPaX.AggregateFormation
 
         public static ISizeDistribution<int> GetAggreateSizeDistribution(Random rndGen, IAggregateFormationConfig config)
         {
-            string resources = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\Resources\\"));
+            var resources = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\ANPaX.AggregateFormation\\Resources\\"));
             var fileASD = resources + "FSP_AggregateSizeDistribution.xml";
             var distASD = XMLSizeDistributionBuilder<int>.Read(fileASD);
             var asd = new TabulatedAggregateSizeDistribution(distASD, rndGen, config, integrate: true);

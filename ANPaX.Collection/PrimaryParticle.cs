@@ -45,7 +45,7 @@
 
         public override bool Equals(object obj)
         {
-            if (obj == null || obj !is PrimaryParticle)
+            if (obj == null || obj! is PrimaryParticle)
             {
                 return false;
             }

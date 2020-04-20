@@ -1,11 +1,12 @@
-﻿using ANPaX.Collection;
-using ANPaX.AggregateFormation.interfaces;
+﻿using System;
 using System.Collections.Generic;
-using System;
 using System.Linq;
-using System.Diagnostics;
-using NLog;
+
+using ANPaX.AggregateFormation.interfaces;
+using ANPaX.Collection;
 using ANPaX.Extensions;
+
+using NLog;
 
 namespace ANPaX.AggregateFormation
 {
@@ -90,7 +91,7 @@ namespace ANPaX.AggregateFormation
             var particle = InitializeNewPrimaryParticle(_psd.GetRandomSize());
 
             var found = false;
-            Vector3 rndPosition = new Vector3();
+            var rndPosition = new Vector3();
             while (!found)
             {
                 rndPosition = ParticleFormationUtil.GetRandomPosition(_rndGen, ppDistance) + com;
@@ -111,7 +112,7 @@ namespace ANPaX.AggregateFormation
         {
             return new PrimaryParticle(0, radius);
         }
-        
+
         internal bool TrySetPrimaryParticle(PrimaryParticle particle, Vector3 rndPosition, List<PrimaryParticle> primaryParticles)
         {
             var tree = primaryParticles.ToNeighborsList();
@@ -119,8 +120,8 @@ namespace ANPaX.AggregateFormation
             var neighbors = tree.Nearest(rndPosition.ToArray(),
                 radius: searchRadius);
 
-            bool anyNearby = false;
-            bool allFeasible = true;
+            var anyNearby = false;
+            var allFeasible = true;
             if (!neighbors.Any())
             {
                 return anyNearby && allFeasible;
@@ -143,7 +144,7 @@ namespace ANPaX.AggregateFormation
                     - n * Math.Pow(_psd.Mean, 2) * Math.Pow((n - 1) / _config.Kf, 2 / _config.Df);
             return Math.Sqrt(rsq);
         }
-      
+
     }
 }
 

@@ -35,7 +35,8 @@ namespace ANPaX.AggregateFormation.tests
 
         public int ClusterSize => 6;
 
-        public MeanMethod MeanMethod => MeanMethod.Geometric;
+        public MeanMethod RadiusMeanCalculationMethod => MeanMethod.Geometric;
+        public MeanMethod AggregateSizeMeanCalculationMethod => MeanMethod.Geometric;
 
         public bool UseDefaultGenerationMethods => true;
 

@@ -1,6 +1,7 @@
-﻿using ANPaX.AggregateFormation.interfaces;
-using System;
+﻿using System;
 using System.Linq;
+
+using ANPaX.AggregateFormation.interfaces;
 
 namespace ANPaX.AggregateFormation
 {
@@ -33,7 +34,7 @@ namespace ANPaX.AggregateFormation
 
         private void IntegrateProbabilities()
         {
-            for (int i = 1; i < _tabulatedSizeDistribution.Sizes.Length; i++)
+            for (var i = 1; i < _tabulatedSizeDistribution.Sizes.Length; i++)
             {
                 _tabulatedSizeDistribution.Sizes[i].Probability += _tabulatedSizeDistribution.Sizes[i - 1].Probability;
             }
@@ -48,40 +49,52 @@ namespace ANPaX.AggregateFormation
         {
             var n = 10000;
 
-            var listOfRandomR = new double[n];
-            for (var i = 0; i < 10000; i++)
+            var randomRadii = new double[n];
+            for (var i = 0; i < n; i++)
             {
-                listOfRandomR[i] = GetRandomSize();
+                randomRadii[i] = GetRandomSize();
             }
 
-            switch (_config.MeanMethod)
+            switch (_config.RadiusMeanCalculationMethod)
             {
                 case MeanMethod.Geometric:
-                    Mean = CalcGeometricMean(listOfRandomR);
+                    Mean = CalcGeometricMean(randomRadii);
                     return;
                 case MeanMethod.Arithmetic:
-                    Mean = listOfRandomR.Average();
+                    Mean = randomRadii.Average();
+                    return;
+                case MeanMethod.Sauter:
+                    Mean = CalcSauterRadius(randomRadii);
                     return;
             }
 
         }
 
-        private double CalcGeometricMean(double[] listOfRandomR)
+        /// <summary>
+        /// The Sauter mean radius is defined as the radius of a sphere that has the same volume/surface area ratio as a particle of interest.
+        /// </summary>
+        /// https://www.chemeurope.com/en/encyclopedia/Sauter_diameter.html
+        /// <param name="randomRadii"> an array with radom radii</param>
+        /// <returns></returns>
+        private double CalcSauterRadius(double[] randomRadii)
         {
-            //listOfRandomR = _tabulatedSizeDistribution.Sizes.Select(c => c.Value).ToArray();
-            //declare sum variable and
-            // initialize it to 1.
-            double sum = 0;
+            var volume = 4.0 / 3.0 * Math.PI * randomRadii.Aggregate((result, item) => result + Math.Pow(item, 3));
+            var area = 4.0 * Math.PI * randomRadii.Aggregate((result, item) => result + Math.Pow(item, 2));
+            return 3 * volume / area;
+        }
 
-            // Compute the sum of all the 
-            // elements in the array. 
-            for (int i = 0; i < listOfRandomR.Count(); i++)
-                sum += Math.Log(listOfRandomR[i]);
-
-            // compute geometric mean through formula 
-            // antilog(((log(1) + log(2) + . . . + log(n))/n) 
-            // and return the value to main function. 
-            sum /= listOfRandomR.Count();
+        /// <summary>
+        /// antilog(((log(1) + log(2) + . . . + log(n))/n) 
+        /// </summary>
+        /// <param name="randomRadii"></param>
+        /// <returns></returns>
+        private double CalcGeometricMean(double[] randomRadii)
+        {
+            var sum = randomRadii.Aggregate(
+                seed: 0.0,
+                func: (result, item) => result + Math.Log(item),
+                resultSelector: result => result / randomRadii.Count()
+                );
 
             return Math.Exp(sum);
         }

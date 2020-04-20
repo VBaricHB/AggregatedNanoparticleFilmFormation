@@ -1,11 +1,12 @@
-﻿using Accord.Collections;
-using ANPaX.Collection;
-using ANPaX.Collection.interfaces;
-using ANPaX.Extensions;
-using ANPaX.FilmFormation.interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using Accord.Collections;
+
+using ANPaX.Collection;
+using ANPaX.Extensions;
+using ANPaX.FilmFormation.interfaces;
 
 namespace ANPaX.FilmFormation
 {
@@ -24,10 +25,12 @@ namespace ANPaX.FilmFormation
         {
             var neighbors = GetNeighbors(primaryParticle, primaryParticles);
 
-            var distances = new List<double>();
-            
-            // This first entry is in case there is no neighbor that gets hit
-            distances.Add(_config.LargeNumber);
+            var distances = new List<double>
+            {
+
+                // This first entry is in case there is no neighbor that gets hit
+                _config.LargeNumber
+            };
             foreach (var neighbor in neighbors)
             {
                 var neighborRadius = ParticleFormationUtil.GetRadiusOfXYNodePrimaryParticle(neighbor.Node.Position, primaryParticles);
@@ -40,7 +43,7 @@ namespace ANPaX.FilmFormation
 
         private double[] Get3DPositionFrom2DProjection(double[] position, IEnumerable<PrimaryParticle> primaryParticles)
         {
-            foreach(var particle in primaryParticles)
+            foreach (var particle in primaryParticles)
             {
                 if (Math.Abs(particle.Position.X - position[0]) < 1e-6 &&
                     Math.Abs(particle.Position.Y - position[1]) < 1e-6)
@@ -56,13 +59,13 @@ namespace ANPaX.FilmFormation
         {
             var distanceToCenterline = primaryParticle.GetDistanceToVerticalAxis(neighborPosition);
             var combinedRadius = neighborRadius + primaryParticle.Radius;
-            
+
             // If the neighbor is close but it won't be hit during deposition return a large number
             if (distanceToCenterline > combinedRadius)
             {
                 return _config.LargeNumber;
             }
-            
+
             var extraHeight = Math.Sqrt(Math.Pow(combinedRadius, 2) - Math.Pow(distanceToCenterline, 2));
             var distance = primaryParticle.Position.Z - neighborPosition[2] - extraHeight;
 

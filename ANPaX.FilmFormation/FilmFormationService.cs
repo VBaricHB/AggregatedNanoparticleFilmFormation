@@ -1,10 +1,10 @@
-﻿using ANPaX.Collection;
-using ANPaX.Collection.interfaces;
-using ANPaX.Extensions;
-using ANPaX.FilmFormation.interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using ANPaX.Collection;
+using ANPaX.Extensions;
+using ANPaX.FilmFormation.interfaces;
 
 namespace ANPaX.FilmFormation
 {
@@ -37,7 +37,7 @@ namespace ANPaX.FilmFormation
 
         public void BuildFilm()
         {
-            foreach(var aggregate in _aggregates)
+            foreach (var aggregate in _aggregates)
             {
                 InitializeAggregate(aggregate);
                 _aggregateDepositionHandler.DepositAggregate(aggregate, _simulationDomain.PrimaryParticles);

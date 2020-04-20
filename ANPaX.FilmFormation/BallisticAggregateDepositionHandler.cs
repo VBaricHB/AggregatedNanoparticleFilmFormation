@@ -1,9 +1,9 @@
-﻿using ANPaX.Collection;
-using ANPaX.FilmFormation.interfaces;
-using ANPaX;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using ANPaX.Collection;
+using ANPaX.FilmFormation.interfaces;
 
 namespace ANPaX.FilmFormation
 {

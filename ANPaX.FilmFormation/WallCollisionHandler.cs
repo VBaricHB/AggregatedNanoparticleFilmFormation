@@ -1,6 +1,7 @@
-﻿using ANPaX.Collection;
+﻿using System.Collections.Generic;
+
+using ANPaX.Collection;
 using ANPaX.FilmFormation.interfaces;
-using System.Collections.Generic;
 
 namespace ANPaX.FilmFormation
 {
@@ -21,7 +22,7 @@ namespace ANPaX.FilmFormation
 
         public void CheckPrimaryParticle(IEnumerable<PrimaryParticle> primaryParticles)
         {
-            foreach(var primaryParticle in primaryParticles)
+            foreach (var primaryParticle in primaryParticles)
             {
                 CheckPrimaryParticle(primaryParticle);
             }

@@ -55,7 +55,7 @@ namespace ANPaX.Collection
 
         public double[] ToArray()
         {
-            return new double[] { X,Y,Z};
+            return new double[] { X, Y, Z };
         }
 
         public double[] ToXYArray()

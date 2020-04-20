@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+
 using Accord.Collections;
+
 using ANPaX.AggregateFormation.interfaces;
 using ANPaX.Collection;
-using NLog;
 using ANPaX.Extensions;
+
+using NLog;
 
 namespace ANPaX.AggregateFormation
 {
@@ -66,14 +69,14 @@ namespace ANPaX.AggregateFormation
                 clusterToSet.Add(cluster);
             }
 
-            foreach(var cluster in clusterToSet)
+            foreach (var cluster in clusterToSet)
             {
                 if (!SetCluster(cluster, depositedCluster, count, rndGen, _config, _psd, _logger))
-                { 
+                {
                     return null;
                 }
             }
-  
+
             return new Aggregate(depositedCluster);
         }
 
@@ -99,7 +102,7 @@ namespace ANPaX.AggregateFormation
 
         private static bool SetNextCluster(Cluster nextCluster,
                                            List<Cluster> depositedCluster,
-                                           int count,                                          
+                                           int count,
                                            Random rndGen,
                                            IAggregateFormationConfig config,
                                            ISizeDistribution<double> psd,
@@ -107,18 +110,18 @@ namespace ANPaX.AggregateFormation
         {
             var distance = GetDistanceFromCOMForNextCluster(nextCluster, depositedCluster, config, psd);
             var com = depositedCluster.GetCenterOfMass();
-            foreach(var cluster in depositedCluster)
+            foreach (var cluster in depositedCluster)
             {
                 cluster.MoveBy(-1 * com);
             }
             var tree = depositedCluster.ToNeighborsList();
-            Vector3 rndPosition = new Vector3();
+            var rndPosition = new Vector3();
             var found = false;
             while (!found)
             {
                 rndPosition = ParticleFormationUtil.GetRandomPosition(rndGen, distance);
                 found = TrySetCluster(nextCluster, rndPosition, tree, depositedCluster, config);
-                if (count > config.MaxAttemptsPerAggregate )
+                if (count > config.MaxAttemptsPerAggregate)
                 {
                     logger.Debug("Resetting aggregate generation. Time limit exceeded.");
                     return false;
@@ -128,7 +131,7 @@ namespace ANPaX.AggregateFormation
 
             depositedCluster.Add(nextCluster);
             return true;
-       
+
         }
 
         public static bool TrySetCluster(
@@ -138,7 +141,7 @@ namespace ANPaX.AggregateFormation
             List<Cluster> depositedCluster,
             IAggregateFormationConfig config)
         {
-            bool isValid = false;
+            var isValid = false;
             nextCluster.MoveTo(rndPosition);
             foreach (var particle in nextCluster.PrimaryParticles)
             {
@@ -149,7 +152,7 @@ namespace ANPaX.AggregateFormation
                 }
                 // any two primary particles must be close enough to be in contact
                 isValid = isValid || anyNearby;
-                
+
             }
 
             return isValid;
@@ -167,8 +170,8 @@ namespace ANPaX.AggregateFormation
                 radius: (particle.Radius + depositedCluster.SelectMany(c => c.PrimaryParticles).Max(p => p.Radius))
                           * config.Delta
             );
-            bool anyNearby = false;
-            bool allFeasible = true;
+            var anyNearby = false;
+            var allFeasible = true;
             if (!neighbors.Any())
             {
                 return (anyNearby, allFeasible);
@@ -188,7 +191,7 @@ namespace ANPaX.AggregateFormation
         {
             var nCluster = GetNumberOfCluster(targetAggregateSize, config);
             var clusterSizes = new List<int>();
-            for(var i = 0; i < nCluster; i++)
+            for (var i = 0; i < nCluster; i++)
             {
                 clusterSizes.Add(0);
             }

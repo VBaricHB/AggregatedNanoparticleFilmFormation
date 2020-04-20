@@ -1,8 +1,10 @@
-﻿using Accord.Collections;
-using ANPaX.Collection;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using Accord.Collections;
+
+using ANPaX.Collection;
 
 namespace ANPaX.Extensions
 {

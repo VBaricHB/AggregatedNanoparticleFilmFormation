@@ -1,13 +1,13 @@
-﻿using ANPaX.AggregateFormation.interfaces;
-using ANPaX.Collection;
-using ANPaX.Extensions;
-using NLog;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime;
 using System.Threading.Tasks;
+
+using ANPaX.AggregateFormation.interfaces;
+using ANPaX.Collection;
+
+using NLog;
 
 namespace ANPaX.AggregateFormation
 {
@@ -25,7 +25,7 @@ namespace ANPaX.AggregateFormation
         {
             _config = config;
             _logger = logger;
-                        
+
             if (config.UseDefaultGenerationMethods)
             {
                 BuildDefaultMethods();
@@ -73,7 +73,7 @@ namespace ANPaX.AggregateFormation
             _particleFactory = particleFactory;
         }
 
-        
+
 
         public List<Aggregate> GenerateAggregates()
         {
@@ -141,7 +141,7 @@ namespace ANPaX.AggregateFormation
             };
             var aggregateSizes = GenerateAggregateSizes();
             var aggregates = new List<Aggregate>();
-            ProgressReportModel report = new ProgressReportModel();
+            var report = new ProgressReportModel();
             var rndGen = new Random();
             if (_seed != -1)
             {

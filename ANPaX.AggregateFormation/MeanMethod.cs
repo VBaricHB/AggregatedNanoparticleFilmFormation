@@ -3,6 +3,7 @@
     public enum MeanMethod
     {
         Arithmetic,
-        Geometric
+        Geometric,
+        Sauter
     }
 }

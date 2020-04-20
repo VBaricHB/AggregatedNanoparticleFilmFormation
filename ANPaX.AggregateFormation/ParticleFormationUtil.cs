@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using Accord.Collections;
+
 using ANPaX.AggregateFormation.interfaces;
 
 namespace ANPaX.Collection
 {
     public static class ParticleFormationUtil
-    { 
+    {
         public static Vector3 GetRandomPosition(Random rndGen, double distance)
         {
             var (z, theta, phi) = GetRandomHeightAndAngles(rndGen, distance);
@@ -33,8 +35,8 @@ namespace ANPaX.Collection
         public static (bool nearby, bool feasible) IsValidPosition(NodeDistance<KDTreeNode<double>> neigh,
             IEnumerable<PrimaryParticle> primaryParticles, double radius, IAggregateFormationConfig config)
         {
-            bool feasible = true;
-            bool nearby = false;
+            var feasible = true;
+            var nearby = false;
             var r2 = GetRadiusOfNodePrimaryParticle(neigh.Node.Position, primaryParticles);
             // is the neighbor within the threshold distance
             if (neigh.Distance < config.Delta * (r2 + radius))
@@ -64,6 +66,6 @@ namespace ANPaX.Collection
                                                   ).Radius;
         }
 
-        
+
     }
 }

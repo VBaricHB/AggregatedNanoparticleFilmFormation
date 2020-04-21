@@ -16,7 +16,12 @@ namespace ANPaX.DesktopUI.ViewModels
         private string _selectedPSDMeanMode = "Geometric Mean";
         private string _selectedASDMeanMode = "Geometric Mean";
 
-        public AggregateFormationConfig Config { get; set; } = new AggregateFormationConfig();
+        public AggregateFormationConfigViewModel(AggregateFormationConfig config)
+        {
+            Config = config;
+        }
+
+        public AggregateFormationConfig Config { get; set; }
 
         public double MeanPPRadius { get; set; }
 

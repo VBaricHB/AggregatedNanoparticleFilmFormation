@@ -70,31 +70,6 @@
             Grid.Row="1"
             Grid.Column="7" />
 
-        <!--  Row 2  -->
-
-        <TextBlock
-            Grid.Row="2"
-            Grid.Column="1"
-            Text="Primary particle size distribution" />
-        <ComboBox
-            x:Name="AvailablePPSizeDistributions"
-            Grid.Row="2"
-            Grid.Column="3"
-            MinWidth="100"
-            SelectedItem="{Binding Path=SelectedPPSizeDistribution}" />
-
-
-        <TextBlock
-            Grid.Row="2"
-            Grid.Column="5"
-            Text="Aggregate size distribution" />
-        <ComboBox
-            x:Name="AvailableAggSizeDistributions"
-            Grid.Row="2"
-            Grid.Column="7"
-            MinWidth="100"
-            SelectedItem="{Binding Path=SelectedAggSizeDistribution}" />
-
         <!--  Row 3  -->
         <TextBlock
             Grid.Row="3"

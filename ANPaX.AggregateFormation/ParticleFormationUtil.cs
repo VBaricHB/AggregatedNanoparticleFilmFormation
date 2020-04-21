@@ -5,6 +5,7 @@ using System.Linq;
 using Accord.Collections;
 
 using ANPaX.AggregateFormation.interfaces;
+using ANPaX.Extensions;
 
 namespace ANPaX.Collection
 {
@@ -32,24 +33,78 @@ namespace ANPaX.Collection
             return (x, y);
         }
 
-        public static (bool nearby, bool feasible) IsValidPosition(NodeDistance<KDTreeNode<double>> neigh,
-            IEnumerable<PrimaryParticle> primaryParticles, double radius, IAggregateFormationConfig config)
+        /// <summary>
+        /// Check if the primary particle is in contact with any other primary particle (isInContact) and if it is overlapping with any other primary particle (hasNoOverlap)
+        /// </summary>
+        /// <param name="particle"></param>
+        /// <param name="primaryParticles"></param>
+        /// <param name="config"></param>
+        /// <param name="neighbors"></param>
+        /// <returns></returns>
+        public static (bool isInContact, bool hasNoOverlap) IsAnyNeighborInContactOrOverlapping(PrimaryParticle particle, IEnumerable<PrimaryParticle> primaryParticles, IAggregateFormationConfig config, List<NodeDistance<KDTreeNode<double>>> neighbors)
         {
-            var feasible = true;
-            var nearby = false;
-            var r2 = GetRadiusOfNodePrimaryParticle(neigh.Node.Position, primaryParticles);
-            // is the neighbor within the threshold distance
-            if (neigh.Distance < config.Delta * (r2 + radius))
+            var isInContact = false;
+            var hasNoOverlap = true;
+            foreach (var neigh in neighbors)
             {
-                nearby = true;
+                var radiusParticle2 = GetRadiusOfNodePrimaryParticle(neigh.Node.Position, primaryParticles);
+
+                isInContact = isInContact || IsInContact(neigh.Distance, particle.Radius, radiusParticle2, config.Delta);
+                hasNoOverlap = hasNoOverlap && HasNoOverlap(neigh.Distance, particle.Radius, radiusParticle2, config.Epsilon);
             }
-            if (neigh.Distance < config.Epsilon * (r2 + radius))
-            {
-                feasible = false;
-            }
-            return (nearby, feasible);
+            return (isInContact, hasNoOverlap);
         }
 
+
+        /// <summary>
+        /// Search in a defined radius around the primary particles if there are any more primary particles.
+        /// </summary>
+        /// <param name="primaryParticle">Primary particle that will be positioned</param>
+        /// <param name="randomPosition">The random position where the primary particle might be positioned</param>
+        /// <param name="otherPrimaryParticles">All primary particles that are already deposited (and remain fixed)</param>
+        /// <param name="config"></param>
+        /// <returns></returns>
+        public static List<NodeDistance<KDTreeNode<double>>> GetPossibleNeighbors(
+            PrimaryParticle primaryParticle,
+            Vector3 randomPosition,
+            KDTree<double> tree,
+            IEnumerable<PrimaryParticle> otherPrimaryParticles,
+            IAggregateFormationConfig config)
+        {
+            var searchRadius = (primaryParticle.Radius + otherPrimaryParticles.GetMaxRadius()) * config.Delta;
+            var neighbors = tree.Nearest(randomPosition.ToArray(),
+                radius: searchRadius);
+
+            return neighbors;
+        }
+
+        /// <summary>
+        /// Two primary particles are in contact if the distance of their center of masses is
+        /// less or equal the sum of their radii + an additional threshold distance (relative to their size)
+        /// </summary>
+        /// <param name="distance">Distance of the two center of masses</param>
+        /// <param name="radiusParticle1"></param>
+        /// <param name="radiusParticle2"></param>
+        /// <param name="delta">Max distance threshold factor</param>
+        /// <returns></returns>
+        public static bool IsInContact(double distance, double radiusParticle1, double radiusParticle2, double delta)
+        {
+            return (distance < delta * (radiusParticle2 + radiusParticle1));
+        }
+
+        /// <summary>
+        /// Two primary particles overlap if the distance of ther center of masses is less than the sum of their radii + an min distance threshold factor
+        /// (relative to their radii)
+        /// </summary>
+        /// <param name="distance">Distance of the two center of masses</param>
+        /// <param name="radiusParticle1"></param>
+        /// <param name="radiusParticle2"></param>
+        /// <param name="epsilon">Min distance threshold factor</param>
+        /// <returns></returns>
+        public static bool HasNoOverlap(double distance, double radiusParticle1, double radiusParticle2, double epsilon)
+        {
+            return (distance >= epsilon * (radiusParticle2 + radiusParticle1));
+        }
 
         public static double GetRadiusOfNodePrimaryParticle(double[] position, IEnumerable<PrimaryParticle> primaryParticles)
         {

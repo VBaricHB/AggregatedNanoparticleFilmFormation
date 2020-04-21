@@ -17,7 +17,7 @@ namespace ANPaX.DesktopUI.ViewModels
 
         public static ITabViewModel AggConfigView = new AggregateFormationConfigViewModel();
         public static ITabViewModel FilmConfigView = new FilmFormationConfigViewModel();
-        private ILogger _logger;
+        private ILogger _logger = new Mock<ILogger>().Object;
 
         public string SimulationName { get; set; }
         private string _simulatonPath = "<Select path>";

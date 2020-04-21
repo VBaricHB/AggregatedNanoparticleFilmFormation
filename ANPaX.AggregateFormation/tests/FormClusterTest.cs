@@ -1,14 +1,18 @@
-﻿using System.Linq;
-using Xunit;
-using System;
-using ANPaX.Export;
-using Moq;
-using NLog;
-using ANPaX.Extensions;
-using System.IO;
-using ANPaX.Collection;
+﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+
 using ANPaX.AggregateFormation.interfaces;
+using ANPaX.Collection;
+using ANPaX.Export;
+using ANPaX.Extensions;
+
+using Moq;
+
+using NLog;
+
+using Xunit;
 
 namespace ANPaX.AggregateFormation.tests
 {
@@ -32,7 +36,7 @@ namespace ANPaX.AggregateFormation.tests
         }
 
         [Fact]
-        public void TrySetPrimaryParticle_CorrectDetectionTest()
+        public void IsPrimaryParticlePositionValid_CorrectDetectionTest()
         {
             var pp1 = new PrimaryParticle(1, new Vector3(), 4.5);
             var pp2 = new PrimaryParticle(2, new Vector3(4.035344, 0.969021, 7.427756), 4.0);
@@ -40,10 +44,11 @@ namespace ANPaX.AggregateFormation.tests
 
             var pp3 = new PrimaryParticle(3, 5.5);
             var com = primaryParticles.GetCenterOfMass();
-            var setPosition = new Vector3(-11.098618, 1.316368, -6.026161)+ com;
+            var setPosition = new Vector3(-11.098618, 1.316368, -6.026161) + com;
             var psd = new MonodispersePrimaryParticleSizeDistribution(5);
             var pca = new ParticleClusterAggregationFactory(psd, _rndGen, _config, _logger);
-            var check = pca.TrySetPrimaryParticle(pp3, setPosition, primaryParticles);
+            var tree = primaryParticles.ToNeighborsList();
+            var check = pca.IsPrimaryParticlePositionValid(pp3, setPosition, tree, primaryParticles, _config);
             Assert.True(check);
         }
 
@@ -57,7 +62,7 @@ namespace ANPaX.AggregateFormation.tests
             Assert.Equal(2, cluster.PrimaryParticles.Count());
             var dist = Math.Round(config.Epsilon
                 * (cluster.PrimaryParticles[0].Radius
-                + cluster.PrimaryParticles[1].Radius),6);
+                + cluster.PrimaryParticles[1].Radius), 6);
             Assert.Equal(dist, cluster.PrimaryParticles[0].GetDistanceToPrimaryParticle(cluster.PrimaryParticles[1]));
         }
 
@@ -71,7 +76,7 @@ namespace ANPaX.AggregateFormation.tests
             var pca = new ParticleClusterAggregationFactory(psd, _rndGen, _config, _logger);
             var cluster = pca.Build(3);
             Assert.Equal(3, cluster.PrimaryParticles.Count());
-            var dist = Math.Round(cluster.PrimaryParticles[0].Radius + cluster.PrimaryParticles[1].Radius,6);
+            var dist = Math.Round(cluster.PrimaryParticles[0].Radius + cluster.PrimaryParticles[1].Radius, 6);
             var realDist = cluster.PrimaryParticles[0].GetDistanceToPrimaryParticle(cluster.PrimaryParticles[1]);
             Assert.True(realDist >= config.Epsilon * dist);
             Assert.True(realDist <= config.Delta * dist);
@@ -101,9 +106,9 @@ namespace ANPaX.AggregateFormation.tests
             Assert.Equal(20, cluster.PrimaryParticles.Count());
             foreach (var pp1 in cluster.PrimaryParticles)
             {
-                foreach(var pp2 in cluster.PrimaryParticles)
+                foreach (var pp2 in cluster.PrimaryParticles)
                 {
-                    if(pp1 != pp2)
+                    if (pp1 != pp2)
                     {
                         Assert.True(pp1.GetDistanceToPrimaryParticle(pp2) >= pp1.Radius + pp2.Radius);
                     }

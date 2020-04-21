@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 using ANPaX.AggregateFormation.interfaces;
 using ANPaX.Collection;
@@ -96,17 +95,17 @@ namespace ANPaX.AggregateFormation.tests
             var pp4 = new PrimaryParticle(4, new Vector3(0, 0, 19), 5);
             var pp5 = new PrimaryParticle(4, new Vector3(0, 0, 20.02), 5);
 
-            var (anyNearby1, allFeasible1) = ClusterClusterAggregationFactory.IsPrimaryParticleValid(tree, pp3, depositedCluster, _config);
+            var (anyNearby1, allFeasible1) = ClusterClusterAggregationFactory.IsPrimaryParticlePositionValid(tree, pp3, depositedCluster.GetPrimaryParticles(), _config);
 
             Assert.False(anyNearby1);
             Assert.True(allFeasible1);
 
-            var (anyNearby2, allFeasible2) = ClusterClusterAggregationFactory.IsPrimaryParticleValid(tree, pp4, depositedCluster, _config);
+            var (anyNearby2, allFeasible2) = ClusterClusterAggregationFactory.IsPrimaryParticlePositionValid(tree, pp4, depositedCluster.GetPrimaryParticles(), _config);
 
             Assert.True(anyNearby2);
             Assert.False(allFeasible2);
 
-            var (anyNearby3, allFeasible3) = ClusterClusterAggregationFactory.IsPrimaryParticleValid(tree, pp5, depositedCluster, _config);
+            var (anyNearby3, allFeasible3) = ClusterClusterAggregationFactory.IsPrimaryParticlePositionValid(tree, pp5, depositedCluster.GetPrimaryParticles(), _config);
 
             Assert.True(anyNearby3);
             Assert.True(allFeasible3);
@@ -130,11 +129,13 @@ namespace ANPaX.AggregateFormation.tests
             var pp4 = new PrimaryParticle(4, new Vector3(0, 0, 20), 5);
             var cluster2 = new Cluster(1, new List<PrimaryParticle>() { pp3, pp4 });
             var position = new Vector3(0, 0, 25.02);
-            var set = ClusterClusterAggregationFactory.TrySetCluster(cluster2, position, tree, depositedCluster, _config);
+            cluster2.MoveTo(position);
+            var set = ClusterClusterAggregationFactory.IsClusterPositionValid(cluster2, tree, depositedCluster, _config);
             Assert.True(set);
 
             var position2 = new Vector3(0, 0, 24);
-            var set2 = ClusterClusterAggregationFactory.TrySetCluster(cluster2, position2, tree, depositedCluster, _config);
+            cluster2.MoveTo(position2);
+            var set2 = ClusterClusterAggregationFactory.IsClusterPositionValid(cluster2, tree, depositedCluster, _config);
             Assert.False(set2);
         }
 
@@ -148,9 +149,9 @@ namespace ANPaX.AggregateFormation.tests
             {
                 var agg = cca.Build(24);
 
-                foreach (var pp1 in agg.Cluster.SelectMany(c => c.PrimaryParticles))
+                foreach (var pp1 in agg.Cluster.GetPrimaryParticles())
                 {
-                    foreach (var pp2 in agg.Cluster.SelectMany(c => c.PrimaryParticles))
+                    foreach (var pp2 in agg.Cluster.GetPrimaryParticles())
                     {
                         if (pp1 != pp2)
                         {

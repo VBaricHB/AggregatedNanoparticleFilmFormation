@@ -37,5 +37,10 @@ namespace ANPaX.Extensions
             return new Vector3(x0, y0, z0);
         }
 
+        public static IEnumerable<PrimaryParticle> GetPrimaryParticles(this IEnumerable<Cluster> cluster)
+        {
+            return cluster.SelectMany(c => c.PrimaryParticles);
+        }
+
     }
 }

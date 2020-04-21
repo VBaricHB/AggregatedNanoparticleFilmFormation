@@ -4,7 +4,6 @@ namespace ANPaX.AggregateFormation.interfaces
 {
     public interface IAggregateFormationConfig
     {
-        double NeighborAddDistance { get; }
         public double Epsilon { get; }
         public double Delta { get; }
         public double Df { get; }

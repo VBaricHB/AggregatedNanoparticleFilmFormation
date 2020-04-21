@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using Accord.Collections;
+
 using ANPaX.AggregateFormation.interfaces;
 using ANPaX.Collection;
 using ANPaX.Extensions;
@@ -10,6 +12,20 @@ using NLog;
 
 namespace ANPaX.AggregateFormation
 {
+    /// <summary>
+    /// This class is an implementation of the Particle-Cluster-Aggregation (PCA) proposed in
+    /// Filippov et al. (2000), Journal of Colloid and Interface Science 229, 261-273.
+    /// In that paper this algorithm is also called Sequential Algorithm (SA)
+    /// </summary>
+    /// 
+    /// <remarks>
+    /// The paper derives an equation <see cref="GetNextPrimaryParticleDistance"/> determining
+    /// the distance of the center of mass from the cumulated primary particles and the next primary particle.
+    /// This class formes a sphere with this radius around the cumulated primary particle and
+    /// searches for a suitable position for the next primary particle on this sphere.
+    ///
+    /// This class is utilized in the Cluster-Cluster-Aggregation (CCA) in <see cref="ClusterClusterAggregationFactory"/>.
+    /// </remarks>
     internal class ParticleClusterAggregationFactory : IParticleFactory<Cluster>
     {
         private readonly ISizeDistribution<double> _psd;
@@ -29,6 +45,9 @@ namespace ANPaX.AggregateFormation
             _logger = logger;
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public Cluster Build(int size)
         {
             var cluster = Procedure(size);
@@ -51,8 +70,10 @@ namespace ANPaX.AggregateFormation
         {
             var count = 0;
             var primaryParticles = new List<PrimaryParticle>();
-            primaryParticles = SetFirstPrimaryParticle(primaryParticles);
-            primaryParticles = SetSecondPrimaryParticle(primaryParticles);
+
+            SetFirstPrimaryParticle(primaryParticles);
+            SetSecondPrimaryParticle(primaryParticles);
+
             while (primaryParticles.Count < size)
             {
                 if (!AddNextPrimaryParticle(primaryParticles, count))
@@ -64,38 +85,70 @@ namespace ANPaX.AggregateFormation
             return new Cluster(0, primaryParticles);
         }
 
-        public List<PrimaryParticle> SetFirstPrimaryParticle(List<PrimaryParticle> primaryParticles)
+        /// <summary>
+        /// The first primary particle of a cluster is always at (0,0,0)
+        /// </summary>
+        /// <param name="primaryParticles"></param>
+        /// <returns></returns>
+        public void SetFirstPrimaryParticle(List<PrimaryParticle> primaryParticles)
         {
             var radius = _psd.GetRandomSize();
             primaryParticles.Add(new PrimaryParticle(0, new Vector3(0, 0, 0), radius));
-            return primaryParticles;
         }
 
-        public List<PrimaryParticle> SetSecondPrimaryParticle(List<PrimaryParticle> primaryParticles)
+        /// <summary>
+        /// The second primary particle position is determined by its and the radius of the initial primary particle
+        /// </summary>
+        /// <param name="primaryParticles"></param>
+        public void SetSecondPrimaryParticle(List<PrimaryParticle> primaryParticles)
         {
             var radius = _psd.GetRandomSize();
             // Distance of the CenterOfMass (com) of the second pp from the com
             // of the first pp
             var particle = new PrimaryParticle(0, radius);
+
+            // Position the second primary particle directly in contact with the first
             var ppDistance = _config.Epsilon * (primaryParticles[0].Radius + particle.Radius);
+
+            // Get any random position withon that distance
             var rndPosition = ParticleFormationUtil.GetRandomPosition(_rndGen, ppDistance);
+
             particle.MoveTo(rndPosition);
             primaryParticles.Add(particle);
-            return primaryParticles;
         }
 
+        /// <summary>
+        /// The position of the third (and follwing) primary particle is determined by the PCA:
+        /// The radius determined by the geometrical properties is computed and the
+        /// primary particle is positioned in that distance to the existing ones.
+        /// If that primary particle is in contact with another one but not
+        /// overlapping with any other, it may reside there.
+        /// </summary>
+        /// <param name="primaryParticles"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
         public bool AddNextPrimaryParticle(List<PrimaryParticle> primaryParticles, int count)
         {
             var com = primaryParticles.GetCenterOfMass();
+
+            // compute the distance for the next primary particle to fulfill fractal dimension
             var ppDistance = GetNextPrimaryParticleDistance(primaryParticles);
+
+            // get a new primary particle without any position yet.
             var particle = InitializeNewPrimaryParticle(_psd.GetRandomSize());
 
             var found = false;
             var rndPosition = new Vector3();
+
+            // the neighborslist speeds up the search
+            var tree = primaryParticles.ToNeighborsList();
             while (!found)
             {
+                // get a new random position on the sphere of allowed positions
                 rndPosition = ParticleFormationUtil.GetRandomPosition(_rndGen, ppDistance) + com;
-                found = TrySetPrimaryParticle(particle, rndPosition, primaryParticles);
+
+                // check if that position is valid
+                found = IsPrimaryParticlePositionValid(particle, rndPosition, tree, primaryParticles, _config);
                 if (count > _config.MaxAttemptsPerCluster)
                 {
                     _logger.Debug("Resetting cluster generation. Time limit exceeded.");
@@ -108,33 +161,70 @@ namespace ANPaX.AggregateFormation
             return true;
         }
 
+        /// <summary>
+        /// A primary particle positon is valid if:
+        /// (1) there is at least 1 contact with other primary particles
+        /// (2) there are no overlaps.
+        /// </summary>
+        /// <param name="particle"></param>
+        /// <param name="rndPosition"></param>
+        /// <param name="tree"></param>
+        /// <param name="primaryParticles"></param>
+        /// <param name="config"></param>
+        /// <returns></returns>
+        public bool IsPrimaryParticlePositionValid(
+            PrimaryParticle particle,
+            Vector3 rndPosition,
+            KDTree<double> tree,
+            IEnumerable<PrimaryParticle> primaryParticles,
+            IAggregateFormationConfig config)
+        {
+            // Get all neighbors within potential reach of the primary particle
+            var neighbors = ParticleFormationUtil.GetPossibleNeighbors(particle, rndPosition, tree, primaryParticles, config);
+
+            var isInContact = false;
+            var hasNoOverlap = true;
+
+            // no neighbor: invalid position
+            if (!neighbors.Any())
+            {
+                return false;
+            }
+            return IsAnyNeighborPositionValid(particle, primaryParticles, config, neighbors);
+        }
+
+        /// <summary>
+        /// Since there is a nearby primary particle, check if the position is valid:
+        /// (1) there is at least 1 contact with other primary particles
+        /// (2) there are no overlaps.
+        /// </summary>
+        /// <param name="particle"></param>
+        /// <param name="primaryParticles"></param>
+        /// <param name="config"></param>
+        /// <param name="neighbors"></param>
+        /// <returns></returns>
+        private static bool IsAnyNeighborPositionValid(
+            PrimaryParticle particle,
+            IEnumerable<PrimaryParticle> primaryParticles,
+            IAggregateFormationConfig config,
+            List<NodeDistance<KDTreeNode<double>>> neighbors)
+        {
+            var (isInContact, hasNoOverlap) = ParticleFormationUtil.IsAnyNeighborInContactOrOverlapping(particle, primaryParticles, config, neighbors);
+            return isInContact && hasNoOverlap;
+        }
+
         public static PrimaryParticle InitializeNewPrimaryParticle(double radius)
         {
             return new PrimaryParticle(0, radius);
         }
 
-        internal bool TrySetPrimaryParticle(PrimaryParticle particle, Vector3 rndPosition, List<PrimaryParticle> primaryParticles)
-        {
-            var tree = primaryParticles.ToNeighborsList();
-            var searchRadius = (particle.Radius + primaryParticles.Max(p => p.Radius)) * _config.Delta;
-            var neighbors = tree.Nearest(rndPosition.ToArray(),
-                radius: searchRadius);
-
-            var anyNearby = false;
-            var allFeasible = true;
-            if (!neighbors.Any())
-            {
-                return anyNearby && allFeasible;
-            }
-            foreach (var neigh in neighbors)
-            {
-                var (nearby, feasible) = ParticleFormationUtil.IsValidPosition(neigh, primaryParticles, particle.Radius, _config);
-                anyNearby = anyNearby || nearby;
-                allFeasible = allFeasible && feasible;
-            }
-            return anyNearby && allFeasible;
-        }
-
+        /// <summary>
+        /// The equation for PCA from Filippov et al. (2000), Journal of Colloid and Interface Science 229, 261-273.
+        /// The position of the next primary particle is determined by the fractal dimension Df and the fractal prefactor Kf.
+        /// Also, the mean primary particle radius is considered here.
+        /// </summary>
+        /// <param name="primaryParticles"></param>
+        /// <returns></returns>
         private double GetNextPrimaryParticleDistance(List<PrimaryParticle> primaryParticles)
         {
             var n = primaryParticles.Count + 1;

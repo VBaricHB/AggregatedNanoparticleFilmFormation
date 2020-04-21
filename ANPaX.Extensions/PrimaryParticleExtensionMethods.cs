@@ -10,6 +10,12 @@ namespace ANPaX.Extensions
 {
     public static class PrimaryParticleExtensionMethods
     {
+
+        public static double GetMaxRadius(this IEnumerable<PrimaryParticle> primaryParticles)
+        {
+            return primaryParticles.Max(p => p.Radius);
+        }
+
         public static double GetDistanceToPrimaryParticle(this PrimaryParticle self, PrimaryParticle other)
         {
             var x = Math.Pow(self.Position.X - other.Position.X, 2);

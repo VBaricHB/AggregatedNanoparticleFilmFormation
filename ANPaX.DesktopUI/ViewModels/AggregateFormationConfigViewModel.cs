@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿
+using System;
+using System.Collections.Generic;
 
+using ANPaX.AggregateFormation;
 using ANPaX.DesktopUI.Models;
 
 using Caliburn.Micro;
@@ -21,9 +24,11 @@ namespace ANPaX.DesktopUI.ViewModels
             Config = config;
         }
 
+
         public AggregateFormationConfig Config { get; set; }
 
-        public double MeanPPRadius { get; set; }
+        public double MeanPPRadius { get; set; } = 5;
+        public double SdevPPRadius { get; set; } = 0.230;
 
         public List<string> AvailablePPSizeDistributions { get; set; } = new List<string>() { _defaultSizeDistribution, "Monodisperse" };
 
@@ -51,6 +56,7 @@ namespace ANPaX.DesktopUI.ViewModels
             {
                 _selectedPSDMeanMode = value;
                 NotifyOfPropertyChange(() => SelectedPSDMeanMode);
+                Config.RadiusMeanCalculationMethod = ConvertStringToMeanMethod(value);
 
             }
         }
@@ -62,6 +68,7 @@ namespace ANPaX.DesktopUI.ViewModels
             {
                 _selectedASDMeanMode = value;
                 NotifyOfPropertyChange(() => SelectedASDMeanMode);
+                Config.AggregateSizeMeanCalculationMethod = ConvertStringToMeanMethod(value);
 
             }
         }
@@ -87,5 +94,20 @@ namespace ANPaX.DesktopUI.ViewModels
         }
 
         public string Header => "Aggregate Formation Config";
+
+        public MeanMethod ConvertStringToMeanMethod(string methodString)
+        {
+            switch (methodString)
+            {
+                case "Arithmetic Mean":
+                    return MeanMethod.Arithmetic;
+                case "Geometric Mean":
+                    return MeanMethod.Geometric;
+                case "Sauter radius":
+                    return MeanMethod.Sauter;
+
+            }
+            throw new ArgumentException($"Unknown string {methodString}");
+        }
     }
 }

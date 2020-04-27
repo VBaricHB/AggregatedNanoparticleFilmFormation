@@ -1,88 +1,89 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Windows;
+
 using ANPaX.DesktopUI.Models;
 
 using Caliburn.Micro;
+
+using Moq;
+
+using NLog;
 
 namespace ANPaX.DesktopUI.ViewModels
 {
     public class ShellViewModel : Conductor<object>
     {
-        private string _firstName = "ANPaX";
-        private string _lastName;
-        private PersonModel _selectedPerson;
+        private ILogger _logger = new Mock<ILogger>().Object;
+        private ITabViewModel _selectedTabViewModel;
+
+        public ITabViewModel SelectedTabViewModel
+        {
+            get => _selectedTabViewModel;
+            set
+            {
+                _selectedTabViewModel = value;
+                NotifyOfPropertyChange(() => SelectedTabViewModel);
+            }
+        }
+        public List<ITabViewModel> TabViewModels { get; set; }
+
+        public AggregateFormationConfig Config { get; set; }
+        public static AggregateFormationConfigViewModel AggregateFormationConfigViewModel;
+        public static FilmFormationConfigViewModel FilmFormationConfigViewModel;
+        public static MainControlViewModel MainControlViewModel;
+
+        public string SimulationName { get; set; } = DateTime.Now.ToString("yyyyMMdd");
+
+        public int NumberOfCPU { get; set; } = Environment.ProcessorCount;
 
         public ShellViewModel()
         {
-            People.Add(new PersonModel { FirstName = "Valentin", LastName = "Baric" });
-            People.Add(new PersonModel { FirstName = "Steffi", LastName = "Baric" });
-            People.Add(new PersonModel { FirstName = "Madita", LastName = "Baric" });
+            Config = new AggregateFormationConfig();
+            AggregateFormationConfigViewModel = new AggregateFormationConfigViewModel(Config);
+            FilmFormationConfigViewModel = new FilmFormationConfigViewModel();
+            MainControlViewModel = new MainControlViewModel(Config);
+            TabViewModels = new List<ITabViewModel>() { MainControlViewModel };
+            SelectedTabViewModel = MainControlViewModel;
+
         }
 
-        public string FirstName
+        public async Task ShowAggConfigMenu(object sender, RoutedEventArgs e)
         {
-            get
-            {
-                return _firstName;
-            }
-            set
-            {
-                _firstName = value;
-                NotifyOfPropertyChange(() => FirstName);
-                NotifyOfPropertyChange(() => FullName);
-            }
+
+            SwitchToAggConfigView();
+            await Task.Delay(1000);
         }
 
-        public string LastName
+        public void SwitchToAggConfigView()
         {
-            get { return _lastName; }
-            set
-            {
-                _lastName = value;
-                NotifyOfPropertyChange(() => LastName);
-                NotifyOfPropertyChange(() => FullName);
-            }
+            ActivateItem(AggregateFormationConfigViewModel);
         }
 
-        public string FullName => $"{FirstName} {LastName}";
-
-        public BindableCollection<PersonModel> People { get; set; } = new BindableCollection<PersonModel>();
-
-        public PersonModel SelectedPerson
+        public async Task ShowFilmConfigMenu(object sender, RoutedEventArgs e)
         {
-            get { return _selectedPerson; }
-            set
-            {
-                _selectedPerson = value;
-                NotifyOfPropertyChange(() => SelectedPerson);
-            }
+
+            SwitchToFilmConfigView();
+            await Task.Delay(1000);
         }
 
-        /// <summary>
-        /// This automatically disables the button if both names are null or empty.
-        /// This seems magic because it is implicitely actived.
-        /// </summary>
-        /// <param name="firstName"></param>
-        /// <param name="lastName"></param>
-        /// <returns></returns>
-        public bool CanClearText(string firstName, string lastName)
+        public async Task HideAggConfigMenu(object sender, RoutedEventArgs e)
         {
-            return !string.IsNullOrWhiteSpace(firstName) || !string.IsNullOrWhiteSpace(lastName);
+            ActivateItem(null);
+            await Task.Delay(1000);
         }
 
-        public void ClearText(string firstName, string lastName)
+        public void SwitchToFilmConfigView()
         {
-            FirstName = "";
-            LastName = "";
+            ActivateItem(FilmFormationConfigViewModel);
         }
 
-        public void LoadPageOne()
-        {
-            ActivateItem(new FirstChildViewModel());
-        }
 
-        public void LoadPageTwo()
+        public async Task HideFilmConfigMenu(object sender, RoutedEventArgs e)
         {
-            ActivateItem(new SecondChildViewModel());
+            ActivateItem(null);
+            await Task.Delay(1000);
         }
     }
 }

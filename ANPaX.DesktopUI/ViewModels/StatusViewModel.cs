@@ -2,7 +2,7 @@
 
 namespace ANPaX.DesktopUI.ViewModels
 {
-    public class FirstChildViewModel : Screen
+    public class StatusViewModel : Screen
     {
     }
 }

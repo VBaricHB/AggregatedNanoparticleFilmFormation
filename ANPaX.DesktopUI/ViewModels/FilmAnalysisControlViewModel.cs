@@ -2,7 +2,7 @@
 
 namespace ANPaX.DesktopUI.ViewModels
 {
-    class SecondChildViewModel : Screen
+    public class FilmAnalysisControlViewModel : Screen
     {
     }
 }

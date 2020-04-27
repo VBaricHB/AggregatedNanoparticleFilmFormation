@@ -14,11 +14,11 @@ using System.Windows.Shapes;
 namespace ANPaX.DesktopUI.Views
 {
     /// <summary>
-    /// Interaction logic for SecondChildView.xaml
+    /// Interaction logic for LoggingView.xaml
     /// </summary>
-    public partial class SecondChildView : UserControl
+    public partial class LoggingView : UserControl
     {
-        public SecondChildView()
+        public LoggingView()
         {
             InitializeComponent();
         }

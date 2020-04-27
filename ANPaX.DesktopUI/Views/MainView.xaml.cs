@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Windows;
 
 namespace ANPaX.DesktopUI.Views
 {
@@ -20,6 +10,42 @@ namespace ANPaX.DesktopUI.Views
         public MainView()
         {
             InitializeComponent();
+        }
+
+        private void AggFormationButton_Click(object sender, RoutedEventArgs e)
+        {
+            AggFormationButton.Visibility = Visibility.Hidden;
+            AggFormationHideButton.Visibility = Visibility.Visible;
+
+            FilmAnalysisButton.Visibility = Visibility.Visible;
+            FilmAnalysisHideButton.Visibility = Visibility.Hidden;
+
+            FilmFormationButton.Visibility = Visibility.Visible;
+            FilmFormationHideButton.Visibility = Visibility.Hidden;
+        }
+
+        private void FilmFormationButton_Click(object sender, RoutedEventArgs e)
+        {
+            AggFormationButton.Visibility = Visibility.Visible;
+            AggFormationHideButton.Visibility = Visibility.Hidden;
+
+            FilmAnalysisButton.Visibility = Visibility.Visible;
+            FilmAnalysisHideButton.Visibility = Visibility.Hidden;
+
+            FilmFormationButton.Visibility = Visibility.Hidden;
+            FilmFormationHideButton.Visibility = Visibility.Visible;
+        }
+
+        private void FilmAnalysisButton_Click(object sender, RoutedEventArgs e)
+        {
+            AggFormationButton.Visibility = Visibility.Visible;
+            AggFormationHideButton.Visibility = Visibility.Hidden;
+
+            FilmAnalysisButton.Visibility = Visibility.Hidden;
+            FilmAnalysisHideButton.Visibility = Visibility.Visible;
+
+            FilmFormationButton.Visibility = Visibility.Visible;
+            FilmFormationHideButton.Visibility = Visibility.Hidden;
         }
     }
 }

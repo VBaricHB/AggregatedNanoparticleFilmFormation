@@ -5,240 +5,258 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ANPaX.DesktopUI.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
-    BorderBrush="Black"
+    Width="298"
+    d:DesignHeight="500"
+    d:DesignWidth="250"
     mc:Ignorable="d">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="20" />
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="5" />
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="20" />
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="5" />
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="20" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="20" />
-            <RowDefinition Height="20" />
-            <RowDefinition Height="20" />
-            <RowDefinition Height="20" />
-            <RowDefinition Height="20" />
-            <RowDefinition Height="20" />
-            <RowDefinition Height="20" />
-            <RowDefinition Height="20" />
-            <RowDefinition Height="20" />
-            <RowDefinition Height="20" />
-            <RowDefinition Height="20" />
-            <RowDefinition Height="20" />
-            <RowDefinition Height="20" />
-            <RowDefinition Height="20" />
-            <RowDefinition Height="20" />
-        </Grid.RowDefinitions>
+    <Border Padding="5">
+        <StackPanel Orientation="Vertical">
+            <TextBlock
+                HorizontalAlignment="Center"
+                FontWeight="Bold"
+                Text="General Settings" />
+            <!--  Row 1  -->
+            <StackPanel Orientation="Horizontal">
+                <CheckBox
+                    x:Name="Config_UseDefaultGenerationMethods"
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    Margin="10,0,0,0"
+                    VerticalAlignment="Center" />
+                <TextBlock
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Margin="10,0,0,0"
+                    VerticalAlignment="Center"
+                    Text="Use default formation methods" />
+            </StackPanel>
 
-        <!--  Main Properties  -->
-        <TextBlock
-            Grid.Row="0"
-            Grid.Column="1"
-            Grid.ColumnSpan="10"
-            HorizontalAlignment="Center"
-            FontWeight="Bold"
-            Text="Main Aggregate Properties" />
+            <!--  Row 2  -->
+            <TextBlock
+                Grid.Row="2"
+                Grid.Column="0"
+                Margin="0,5,0,0"
+                Text="Primary particle size distribution" />
+            <ComboBox
+                x:Name="AvailablePPSizeDistributions"
+                Grid.Row="3"
+                Grid.Column="0"
+                MinWidth="100"
+                SelectedItem="{Binding Path=SelectedPPSizeDistribution}">
+                <ComboBox.Style>
+                    <Style TargetType="{x:Type ComboBox}">
+                        <Setter Property="IsReadOnly" Value="True" />
+                        <Setter Property="Background" Value="LightGray" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Config_UseDefaultGenerationMethods}" Value="false">
+                                <Setter Property="IsReadOnly" Value="False" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ComboBox.Style>
+            </ComboBox>
 
-        <!--  Row 1  -->
-        <TextBlock
-            Grid.Row="1"
-            Grid.Column="1"
-            Text="Total number of primary particles" />
-        <TextBox
-            x:Name="Config_TotalPrimaryParticles"
-            Grid.Row="1"
-            Grid.Column="3"
-            MinWidth="50"
-            HorizontalAlignment="Right" />
+            <!--  Row 3  -->
+            <TextBlock Margin="0,5,0,0" Text="Primary particle diameter" />
+            <Grid>
 
-        <TextBlock
-            Grid.Row="1"
-            Grid.Column="5"
-            Text="Use default formation methods" />
-        <CheckBox
-            x:Name="Config_UseDefaultGenerationMethods"
-            Grid.Row="1"
-            Grid.Column="7" />
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
 
-        <!--  Row 3  -->
-        <TextBlock
-            Grid.Row="3"
-            Grid.Column="1"
-            Text="Mean primary particle radius" />
-        <TextBox
-            x:Name="MeanPPRadius"
-            Grid.Row="3"
-            Grid.Column="3"
-            HorizontalAlignment="Right" />
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Text="Mean" />
+                <TextBox
+                    x:Name="MeanPPRadius"
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    MinWidth="139">
 
-        <!--  Row 4  -->
+                    <TextBox.Style>
+                        <Style TargetType="{x:Type TextBox}">
+                            <Setter Property="IsReadOnly" Value="True" />
+                            <Setter Property="Background" Value="LightGray" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Config_UseDefaultGenerationMethods}" Value="true">
+                                    <Setter Property="IsReadOnly" Value="True" />
 
-        <TextBlock
-            Grid.Row="4"
-            Grid.Column="1"
-            Text="Aggregate formation model" />
-        <ComboBox
-            x:Name="AvailableAggFormationFactories"
-            Grid.Row="4"
-            Grid.Column="3"
-            MinWidth="175"
-            SelectedItem="{Binding Path=SelectedAggFormationFactory}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding SelectedPPSizeDistribution}" Value="Monodisperse">
+                                    <Setter Property="IsReadOnly" Value="False" />
+                                    <Setter Property="Background" Value="White" />
+                                </DataTrigger>
 
-        <TextBlock
-            Grid.Row="4"
-            Grid.Column="5"
-            Text="Primary Particles per Cluster" />
-        <TextBox
-            x:Name="Config_ClusterSize"
-            Grid.Row="4"
-            Grid.Column="7"
-            MinWidth="50"
-            HorizontalAlignment="Right" />
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="10,0,0,0"
+                    Text="S.Dev." />
+                <TextBox
+                    x:Name="SdevPPRadius"
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    MinWidth="139"
+                    Margin="10,0,0,0">
 
-        <!--  Row 6  -->
-        <TextBlock
-            Grid.Row="6"
-            Grid.Column="1"
-            Grid.ColumnSpan="10"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            FontWeight="Bold"
-            Text="Aggregate Structure Properties" />
+                    <TextBox.Style>
+                        <Style TargetType="{x:Type TextBox}">
+                            <Setter Property="IsReadOnly" Value="True" />
+                            <Setter Property="Background" Value="LightGray" />
+                            <Style.Triggers />
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+            </Grid>
 
-        <!--  Row 7  -->
-        <TextBlock
-            Grid.Row="7"
-            Grid.Column="1"
-            Text="Fractal Dimension" />
-        <TextBox
-            x:Name="Config_Df"
-            Grid.Row="7"
-            Grid.Column="3"
-            MinWidth="50"
-            HorizontalAlignment="Right" />
+            <!--  Row 4  -->
+            <TextBlock Margin="0,5,0,0" Text="Aggregate size distribution" />
+            <ComboBox
+                x:Name="AvailableAggSizeDistributions"
+                MinWidth="120"
+                Margin="0,0,0,0"
+                SelectedItem="{Binding Path=SelectedAggSizeDistribution}" />
 
-        <TextBlock
-            Grid.Row="7"
-            Grid.Column="5"
-            Text="Prefactor" />
-        <TextBox
-            x:Name="Config_Kf"
-            Grid.Row="7"
-            Grid.Column="7"
-            MinWidth="50"
-            HorizontalAlignment="Right" />
+            <!--  Row 5  -->
+            <TextBlock Margin="0,5,0,0" Text="Aggregate formation model" />
+            <ComboBox
+                x:Name="AvailableAggFormationFactories"
+                MinWidth="175"
+                SelectedItem="{Binding Path=SelectedAggFormationFactory}" />
 
-        <!--  Row 8  -->
-        <TextBlock
-            Grid.Row="8"
-            Grid.Column="1"
-            Text="Min primary particle distance" />
-        <TextBox
-            x:Name="Config_Epsilon"
-            Grid.Row="8"
-            Grid.Column="3"
-            MinWidth="50"
-            HorizontalAlignment="Right" />
+            <TextBlock Margin="0,5,0,0" Text="Primary Particles per Cluster" />
+            <TextBox
+                x:Name="Config_ClusterSize"
+                Grid.ColumnSpan="2"
+                MinWidth="50" />
 
-        <TextBlock
-            Grid.Row="8"
-            Grid.Column="5"
-            Text="Max primary particle distance" />
-        <TextBox
-            x:Name="Config_Delta"
-            Grid.Row="8"
-            Grid.Column="7"
-            MinWidth="50"
-            HorizontalAlignment="Right" />
+            <TextBlock
+                Margin="0,10,0,0"
+                HorizontalAlignment="Center"
+                FontWeight="Bold"
+                Text="Advanced Settings" />
 
-        <!--  Row 9  -->
-        <TextBlock
-            Grid.Row="9"
-            Grid.Column="1"
-            Text="Primary particle radius mean mode" />
+            <!--  Row 6  -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto " />
+                    <RowDefinition Height="auto " />
+                </Grid.RowDefinitions>
 
-        <ComboBox
-            x:Name="AvailablePSDMeanModes"
-            Grid.Row="9"
-            Grid.Column="3"
-            MinWidth="100"
-            SelectedItem="{Binding Path=SelectedPSDMeanMode}" />
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="0,5,0,0"
+                    Text="Min contact distance" />
+                <TextBox
+                    x:Name="Config_Epsilon"
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    MinWidth="139" />
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="10,5,0,0"
+                    Text="Max contact distance" />
+                <TextBox
+                    x:Name="Config_Delta"
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    MinWidth="139"
+                    Margin="10,0,0,0" />
+            </Grid>
 
-        <TextBlock
-            Grid.Row="9"
-            Grid.Column="5"
-            Text="Aggregate size mean mode" />
-        <ComboBox
-            x:Name="AvailableASDMeanModes"
-            Grid.Row="9"
-            Grid.Column="7"
-            MinWidth="100"
-            SelectedItem="{Binding Path=SelectedASDMeanMode}" />
+            <!--  Row 7  -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto " />
+                    <RowDefinition Height="auto " />
+                </Grid.RowDefinitions>
 
-        <!--  Row 11  -->
-        <TextBlock
-            Grid.Row="11"
-            Grid.Column="1"
-            Grid.ColumnSpan="10"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            FontWeight="Bold"
-            Text="Advanced Settings" />
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="0,5,0,0"
+                    Text="Max attempts cluster" />
+                <TextBox
+                    x:Name="Config_MaxAttemptsPerCluster"
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    MinWidth="139" />
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="10,5,0,0"
+                    Text="Max attempts aggregate" />
+                <TextBox
+                    x:Name="Config_MaxAttemptsPerAggregate"
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    MinWidth="139"
+                    Margin="10,0,0,0" />
+            </Grid>
 
-        <!--  Row 12  -->
-        <TextBlock
-            Grid.Row="12"
-            Grid.Column="1"
-            Text="Max attemps cluster" />
-        <TextBox
-            x:Name="Config_MaxAttemptsPerCluster"
-            Grid.Row="12"
-            Grid.Column="3"
-            MinWidth="50"
-            HorizontalAlignment="Right" />
+            <!--  Row 8  -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto " />
+                    <RowDefinition Height="auto " />
+                </Grid.RowDefinitions>
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="0,5,0,0"
+                    Text="Mean method radius" />
+                <ComboBox
+                    x:Name="AvailablePSDMeanModes"
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    MinWidth="139"
+                    SelectedItem="{Binding Path=SelectedPSDMeanMode}" />
 
-        <TextBlock
-            Grid.Row="12"
-            Grid.Column="5"
-            Text="Max attemps aggregate" />
-        <TextBox
-            x:Name="Config_MaxAttemptsPerAggregate"
-            Grid.Row="12"
-            Grid.Column="7"
-            MinWidth="50"
-            HorizontalAlignment="Right" />
 
-        <!--  Row 13  -->
-        <TextBlock
-            Grid.Row="13"
-            Grid.Column="1"
-            Text="Random gen seed (-1 = disabled)" />
-        <TextBox
-            x:Name="Config_RandomGeneratorSeed"
-            Grid.Row="13"
-            Grid.Column="3"
-            MinWidth="50"
-            HorizontalAlignment="Right" />
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="10,5,0,0"
+                    Text="Mean method agg size" />
 
-        <TextBlock
-            Grid.Row="13"
-            Grid.Column="5"
-            Text="Add distance to search radius" />
-        <TextBox
-            x:Name="Config_NeighborAddDistance"
-            Grid.Row="13"
-            Grid.Column="7"
-            MinWidth="50"
-            HorizontalAlignment="Right" />
-    </Grid>
+                <ComboBox
+                    x:Name="AvailableASDMeanModes"
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    MinWidth="139"
+                    Margin="10,0,0,0"
+                    SelectedItem="{Binding Path=SelectedASDMeanMode}" />
+
+            </Grid>
+
+            <!--  Row 9  -->
+            <TextBlock Margin="0,5,0,0" Text="Random number generator seed" />
+            <TextBox x:Name="Config_RandomGeneratorSeed" MinWidth="50" />
+        </StackPanel>
+    </Border>
 </UserControl>
+

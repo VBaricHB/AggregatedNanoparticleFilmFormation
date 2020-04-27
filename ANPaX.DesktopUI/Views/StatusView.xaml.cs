@@ -14,11 +14,11 @@ using System.Windows.Shapes;
 namespace ANPaX.DesktopUI.Views
 {
     /// <summary>
-    /// Interaction logic for FirstChildView.xaml
+    /// Interaction logic for StatusView.xaml
     /// </summary>
-    public partial class FirstChildView : UserControl
+    public partial class StatusView : UserControl
     {
-        public FirstChildView()
+        public StatusView()
         {
             InitializeComponent();
         }

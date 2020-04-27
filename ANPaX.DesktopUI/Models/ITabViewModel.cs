@@ -2,6 +2,6 @@
 {
     public interface ITabViewModel
     {
-        public string Header { get; }
+        string Header { get; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace ANPaX.DesktopUI.Models
 {
-    public interface ITabViewModel
+    public interface IConfigViewModel
     {
         string Header { get; }
     }

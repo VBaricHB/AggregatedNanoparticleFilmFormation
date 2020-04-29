@@ -41,6 +41,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Views\AggregateFormationViews\ClusterConfigView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\AggregateFormationViews\PrimaryParticleConfigView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\AggregateFormationViews\AggregateConfigView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\AggregateFormationViews\AdvancedConfigView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
     <Page Update="Styles\Fonts.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -48,6 +63,18 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Styles\Buttons.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\AggregateFormationViews\ClusterConfigView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\AggregateFormationViews\PrimaryParticleConfigView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\AggregateFormationViews\AggregateConfigView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\AggregateFormationViews\AdvancedConfigView.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

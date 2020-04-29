@@ -3,11 +3,11 @@
 namespace ANPaX.DesktopUI.Views
 {
     /// <summary>
-    /// Interaction logic for MainControlView.xaml
+    /// Interaction logic for AggregateFormationConfigView.xaml
     /// </summary>
-    public partial class MainControlView : UserControl
+    public partial class AggregateFormationConfigView : ContentControl
     {
-        public MainControlView()
+        public AggregateFormationConfigView()
         {
             InitializeComponent();
         }

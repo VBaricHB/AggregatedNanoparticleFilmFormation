@@ -2,12 +2,13 @@
     x:Class="ANPaX.DesktopUI.Views.MainView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cal="clr-namespace:Caliburn.Micro;assembly=Caliburn.Micro.Platform"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ANPaX.DesktopUI.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="MainView"
-    Width="600"
-    Height="600"
+    Width="800"
+    Height="500"
     mc:Ignorable="d">
 
     <Window.Resources>
@@ -20,7 +21,8 @@
             <TextBlock
                 HorizontalAlignment="Center"
                 FontSize="10"
-                Text="Here comes the subtext" />
+                Text="Generate random aggregates based on the fractal theory"
+                TextWrapping="Wrap" />
         </StackPanel>
 
         <StackPanel x:Key="AggFormationButtonText2">
@@ -32,7 +34,8 @@
             <TextBlock
                 HorizontalAlignment="Center"
                 FontSize="10"
-                Text="Here comes the subtext" />
+                Text="Generate random aggregates based on the fractal theory"
+                TextWrapping="Wrap" />
         </StackPanel>
 
         <StackPanel x:Key="FilmFormationButtonText">
@@ -90,11 +93,14 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="60" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="150" />
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="600" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
         <!--  Menu Bar  -->
-        <Grid Grid.Row="0">
+        <Grid Grid.Row="0" Grid.Column="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
@@ -104,7 +110,7 @@
             <Button
                 x:Name="AggFormationButton"
                 Grid.Column="0"
-                Click="AggFormationButton_Click"
+                cal:Message.Attach="[Event Click] = [Action AggFormationButtonClick($view)]"
                 Content="{StaticResource AggFormationButtonText}"
                 Style="{StaticResource MenuButton}"
                 Visibility="Hidden" />
@@ -119,7 +125,9 @@
             <Button
                 x:Name="FilmFormationButton"
                 Grid.Column="1"
-                Click="FilmFormationButton_Click"
+                Width="200"
+                HorizontalAlignment="Right"
+                cal:Message.Attach="[Event Click] = [Action FilmFormationButtonClick($view)]"
                 Content="{StaticResource FilmFormationButtonText}"
                 Style="{StaticResource MenuButton}"
                 Visibility="Visible" />
@@ -134,7 +142,7 @@
             <Button
                 x:Name="FilmAnalysisButton"
                 Grid.Column="2"
-                Click="FilmAnalysisButton_Click"
+                cal:Message.Attach="[Event Click] = [Action FilmAnalysisButtonClick($view)]"
                 Content="{StaticResource FilmAnalysisButtonText}"
                 Style="{StaticResource MenuButton}"
                 Visibility="Visible" />
@@ -148,16 +156,23 @@
 
 
         <!--  Controls Views  -->
-        <ContentControl x:Name="ActiveItem" Grid.Row="1" />
+
+        <ContentControl
+            x:Name="ActiveItem"
+            Grid.Row="1"
+            Grid.Column="0" />
 
         <!--  Logging and Stauts  -->
-        <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <ContentControl x:Name="StatusViewModel" Grid.Column="0" />
-            <ContentControl x:Name="LoggingViewModel" Grid.Column="1" />
+        <Grid
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <ContentControl x:Name="StatusViewModel" Grid.Row="0" />
+            <ContentControl x:Name="LoggingViewModel" Grid.Row="1" />
         </Grid>
 
     </Grid>

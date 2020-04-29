@@ -9,7 +9,7 @@ using Caliburn.Micro;
 
 namespace ANPaX.DesktopUI.ViewModels
 {
-    public class AggregateFormationConfigViewModel : Screen, ITabViewModel
+    public class AggregateFormationConfigViewModel : Screen
     {
         private static string _defaultSizeDistribution = "FSP Standard";
         private static string _defaultAggFormationFactory = "Cluster Cluster Aggregation";

@@ -2,6 +2,7 @@
 using System.Windows;
 
 using ANPaX.DesktopUI.Models;
+using ANPaX.DesktopUI.Views;
 
 using Caliburn.Micro;
 
@@ -9,67 +10,109 @@ namespace ANPaX.DesktopUI.ViewModels
 {
     public class MainViewModel : Conductor<object>
     {
-
         public AggregateFormationConfig AggregateFormationConfig { get; set; }
         public AggFormationControlViewModel AggFormationControlViewModel { get; set; }
         public FilmAnalysisControlViewModel FilmAnalysisControlViewModel { get; set; }
         public FilmFormationControlViewModel FilmFormationControlViewModel { get; set; }
         public LoggingViewModel LoggingViewModel { get; set; }
+        public SimulationProperties SimulationProperties { get; set; }
         public StatusViewModel StatusViewModel { get; set; }
 
         public MainViewModel()
         {
             AggregateFormationConfig = new AggregateFormationConfig();
-            AggFormationControlViewModel = new AggFormationControlViewModel(AggregateFormationConfig);
+            SimulationProperties = new SimulationProperties();
+            AggFormationControlViewModel = new AggFormationControlViewModel(AggregateFormationConfig, SimulationProperties);
             FilmAnalysisControlViewModel = new FilmAnalysisControlViewModel();
             FilmFormationControlViewModel = new FilmFormationControlViewModel();
             LoggingViewModel = new LoggingViewModel();
+
             StatusViewModel = new StatusViewModel();
             ActivateItem(AggFormationControlViewModel);
         }
 
-        public async Task AggFormationButton(object sender, RoutedEventArgs e)
+
+        public async Task AggFormationButtonClick(MainView view)
         {
+
+            SwitchToHideAggFormationButton(view);
+            SwitchToShowFilmAnalysisButton(view);
+            SwitchToShowFilmFormationButton(view);
 
             SwitchToAggFormationControlView();
             await Task.Delay(1000);
         }
 
-        public async Task AggFormationHideButton(object sender, RoutedEventArgs e)
+        public async Task FilmAnalysisButtonClick(MainView view)
         {
-
-            SwitchToAggFormationControlView();
-            await Task.Delay(1000);
-        }
-
-
-        public async Task FilmAnalysisButton(object sender, RoutedEventArgs e)
-        {
+            SwitchToShowAggFormationButton(view);
+            SwitchToHideFilmAnalysisButton(view);
+            SwitchToShowFilmFormationButton(view);
 
             SwitchToFilmAnalysisControlView();
             await Task.Delay(1000);
+
         }
 
-        public async Task FilmFormationButton(object sender, RoutedEventArgs e)
+        public async Task FilmFormationButtonClick(MainView view)
         {
+            SwitchToShowAggFormationButton(view);
+            SwitchToShowFilmAnalysisButton(view);
+            SwitchToHideFilmFormationButton(view);
 
             SwitchToFilmFormationControlView();
             await Task.Delay(1000);
         }
 
-        public void SwitchToAggFormationControlView()
+        private void SwitchToAggFormationControlView()
         {
             ActivateItem(AggFormationControlViewModel);
         }
 
-        public void SwitchToFilmAnalysisControlView()
+        private void SwitchToFilmAnalysisControlView()
         {
             ActivateItem(FilmAnalysisControlViewModel);
         }
 
-        public void SwitchToFilmFormationControlView()
+        private void SwitchToFilmFormationControlView()
         {
             ActivateItem(FilmFormationControlViewModel);
+        }
+
+        private void SwitchToShowAggFormationButton(MainView view)
+        {
+            view.AggFormationButton.Visibility = Visibility.Visible;
+            view.AggFormationHideButton.Visibility = Visibility.Hidden;
+        }
+
+        private void SwitchToHideAggFormationButton(MainView view)
+        {
+            view.AggFormationButton.Visibility = Visibility.Hidden;
+            view.AggFormationHideButton.Visibility = Visibility.Visible;
+        }
+
+        private void SwitchToShowFilmFormationButton(MainView view)
+        {
+            view.FilmFormationButton.Visibility = Visibility.Visible;
+            view.FilmFormationHideButton.Visibility = Visibility.Hidden;
+        }
+
+        private void SwitchToHideFilmFormationButton(MainView view)
+        {
+            view.FilmFormationButton.Visibility = Visibility.Hidden;
+            view.FilmFormationHideButton.Visibility = Visibility.Visible;
+        }
+
+        private void SwitchToShowFilmAnalysisButton(MainView view)
+        {
+            view.FilmAnalysisButton.Visibility = Visibility.Visible;
+            view.FilmAnalysisHideButton.Visibility = Visibility.Hidden;
+        }
+
+        private void SwitchToHideFilmAnalysisButton(MainView view)
+        {
+            view.FilmAnalysisButton.Visibility = Visibility.Hidden;
+            view.FilmAnalysisHideButton.Visibility = Visibility.Visible;
         }
 
 

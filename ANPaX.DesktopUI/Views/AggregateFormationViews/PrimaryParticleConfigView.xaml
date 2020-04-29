@@ -1,0 +1,131 @@
+﻿<ContentControl
+    x:Class="ANPaX.DesktopUI.Views.PrimaryParticleConfigView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ANPaX.DesktopUI.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    MinHeight="120"
+    d:DesignHeight="280"
+    d:DesignWidth="550"
+    Background="{StaticResource UniversityGreyBrush}"
+    mc:Ignorable="d">
+
+    <Border Padding="5">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="15" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <TextBlock
+                x:Name="Header"
+                Grid.Row="0"
+                HorizontalAlignment="Center"
+                FontWeight="Bold"
+                Text="{Binding Header}" />
+
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Orientation="Vertical">
+
+                    <!--  PSD  -->
+                    <TextBlock
+                        Margin="0,5,0,0"
+                        FontSize="10"
+                        Text="Primary particle size distribution" />
+                    <ComboBox
+                        x:Name="AvailablePPSizeDistributions"
+                        MinWidth="100"
+                        FontSize="10"
+                        SelectedItem="{Binding Path=SelectedPPSizeDistribution}">
+                        <ComboBox.Style>
+                            <Style TargetType="{x:Type ComboBox}">
+                                <Setter Property="IsReadOnly" Value="True" />
+                                <Setter Property="Background" Value="LightGray" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Config_UseDefaultGenerationMethods}" Value="false">
+                                        <Setter Property="IsReadOnly" Value="False" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ComboBox.Style>
+                    </ComboBox>
+
+                    <!--  Mean Values  -->
+                    <Grid>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20" />
+                            <RowDefinition Height="auto" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Margin="0,5,0,0"
+                            FontSize="10"
+                            Text="Mean primary particle radius" />
+                        <TextBox
+                            x:Name="MeanPPRadius"
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            FontSize="10">
+
+                            <TextBox.Style>
+                                <Style TargetType="{x:Type TextBox}">
+                                    <Setter Property="IsReadOnly" Value="True" />
+                                    <Setter Property="Background" Value="LightGray" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Config_UseDefaultGenerationMethods}" Value="true">
+                                            <Setter Property="IsReadOnly" Value="True" />
+
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding SelectedPPSizeDistribution}" Value="Monodisperse">
+                                            <Setter Property="IsReadOnly" Value="False" />
+                                            <Setter Property="Background" Value="White" />
+                                        </DataTrigger>
+
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Margin="10,5,0,0"
+                            FontSize="10"
+                            Text="standard deviation" />
+                        <TextBox
+                            x:Name="SdevPPRadius"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="10,0,0,0"
+                            FontSize="10">
+
+                            <TextBox.Style>
+                                <Style TargetType="{x:Type TextBox}">
+                                    <Setter Property="IsReadOnly" Value="True" />
+                                    <Setter Property="Background" Value="LightGray" />
+                                    <Style.Triggers />
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
+                    </Grid>
+
+
+
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Border>
+
+</ContentControl>
+

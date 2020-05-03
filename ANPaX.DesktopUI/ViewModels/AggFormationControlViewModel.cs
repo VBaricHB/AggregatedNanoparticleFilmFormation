@@ -19,7 +19,7 @@ namespace ANPaX.DesktopUI.ViewModels
         #region private variables
 
         private string _selectedAggFileFormat = "xml";
-        private readonly ILogger _logger;
+        private readonly ILogger _logger = new Mock<ILogger>().Object;
         #endregion
 
         AdvancedConfigViewModel AdvancedConfigViewModel { get; set; }

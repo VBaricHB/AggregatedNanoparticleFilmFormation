@@ -19,5 +19,11 @@ namespace ANPaX.Extensions
                 .Select(x => x.Select(v => v.Value).ToList())
                 .ToList();
         }
+
+        public static int GetNumberOfPrimaryParticles(this IList<Aggregate> aggregates)
+        {
+            return aggregates.SelectMany(a => a.Cluster.SelectMany(c => c.PrimaryParticles)).Count();
+        }
+
     }
 }

@@ -4,7 +4,6 @@ using System.IO;
 
 using ANPaX.AggregateFormation.interfaces;
 using ANPaX.Collection;
-using ANPaX.Export;
 using ANPaX.Extensions;
 
 using Moq;
@@ -39,8 +38,6 @@ namespace ANPaX.AggregateFormation.tests
             var cca = new ClusterClusterAggregationFactory(_monoPSD, _config, _logger, _seed);
             var agg = cca.Build(24);
             Assert.Equal(24, agg.NumberOfPrimaryParticles);
-            var export = new ExportToLAMMPS(agg);
-            export.WriteToFile("AggregateFormationTest.trj");
         }
 
         [Fact]
@@ -52,8 +49,6 @@ namespace ANPaX.AggregateFormation.tests
             var cca = new ClusterClusterAggregationFactory(psd, _config, _logger, _seed);
             var agg = cca.Build(24);
             Assert.Equal(24, agg.NumberOfPrimaryParticles);
-            var export = new ExportToLAMMPS(agg);
-            export.WriteToFile("AggregateFormationTest.trj");
         }
 
         [Fact]
@@ -70,8 +65,7 @@ namespace ANPaX.AggregateFormation.tests
                 Assert.Equal(24, agg.NumberOfPrimaryParticles);
                 aggs.Add(agg);
             }
-            var export = new ExportToLAMMPS(aggs);
-            export.WriteToFile("AggregateFormationTest.trj");
+
         }
 
         [Fact]

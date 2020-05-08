@@ -5,7 +5,6 @@ using System.Linq;
 
 using ANPaX.AggregateFormation.interfaces;
 using ANPaX.Collection;
-using ANPaX.Export;
 using ANPaX.Extensions;
 
 using Moq;
@@ -93,8 +92,6 @@ namespace ANPaX.AggregateFormation.tests
             var realDist = cluster.PrimaryParticles[0].GetDistanceToPrimaryParticle(cluster.PrimaryParticles[1]);
             Assert.True(realDist >= _config.Epsilon * dist);
             Assert.True(realDist <= _config.Delta * dist);
-            var export = new ExportToLAMMPS(cluster);
-            export.WriteToFile("ClusterOf4.trj");
         }
 
         [Fact]
@@ -114,8 +111,6 @@ namespace ANPaX.AggregateFormation.tests
                     }
                 }
             }
-            var export = new ExportToLAMMPS(cluster);
-            export.WriteToFile("ClusterOf20.trj");
         }
 
         [Fact]
@@ -158,8 +153,6 @@ namespace ANPaX.AggregateFormation.tests
             var pca = new ParticleClusterAggregationFactory(psd, _rndGen, _config, _logger);
             var cluster = pca.Build(4);
             Assert.Equal(4, cluster.PrimaryParticles.Count());
-            var export = new ExportToLAMMPS(cluster);
-            export.WriteToFile("ClusterOf4.trj");
         }
 
         [Fact]
@@ -181,8 +174,6 @@ namespace ANPaX.AggregateFormation.tests
                     }
                 }
             }
-            var export = new ExportToLAMMPS(cluster);
-            export.WriteToFile("ClusterOf20.trj");
         }
 
         [Fact]

@@ -2,8 +2,8 @@
 {
     public class PrimaryParticle
     {
-        public int Id { get; }
-        public Vector3 Position { get; private set; }
+        public int Id { get; set; }
+        public Vector3 Position { get; set; }
 
         public double Radius { get; set; }
 
@@ -28,6 +28,11 @@
         {
         }
 
+        public PrimaryParticle()
+        {
+
+        }
+
         public void MoveBy(Vector3 vector)
         {
             Position += vector;
@@ -45,7 +50,7 @@
 
         public override bool Equals(object obj)
         {
-            if (obj == null || obj! is PrimaryParticle)
+            if (obj == null || !(obj is PrimaryParticle))
             {
                 return false;
             }

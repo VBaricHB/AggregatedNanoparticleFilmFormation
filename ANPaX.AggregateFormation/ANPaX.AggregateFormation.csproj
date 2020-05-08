@@ -10,7 +10,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ANPaX.Collection\ANPaX.Collection.csproj" />
-    <ProjectReference Include="..\ANPaX.Export\ANPaX.Export.csproj" />
     <ProjectReference Include="..\ANPaX.Extensions\ANPaX.Extensions.csproj" />
   </ItemGroup>
   <ItemGroup>

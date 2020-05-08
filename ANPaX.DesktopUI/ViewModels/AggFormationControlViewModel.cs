@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading;
 
 using ANPaX.AggregateFormation;
+using ANPaX.Collection;
 using ANPaX.DesktopUI.Models;
 using ANPaX.DesktopUI.Views;
+using ANPaX.Export;
 
 using Caliburn.Micro;
 
@@ -18,21 +22,32 @@ namespace ANPaX.DesktopUI.ViewModels
     {
         #region private variables
 
-        private string _selectedAggFileFormat = "xml";
+        private string _selectedAggFileFormat = "json";
         private readonly ILogger _logger = new Mock<ILogger>().Object;
+        private CancellationTokenSource _cts;
+        private List<Aggregate> _generatedAggregates;
+        private FileExport _export = new FileExport();
         #endregion
 
-        AdvancedConfigViewModel AdvancedConfigViewModel { get; set; }
-        AggregateConfigViewModel AggregateConfigViewModel { get; set; }
-        ClusterConfigViewModel ClusterConfigViewModel { get; set; }
-        PrimaryParticleConfigViewModel PrimaryParticleConfigViewModel { get; set; }
+        public AdvancedConfigViewModel AdvancedConfigViewModel { get; set; }
+        public AggregateConfigViewModel AggregateConfigViewModel { get; set; }
+        public ClusterConfigViewModel ClusterConfigViewModel { get; set; }
+        public PrimaryParticleConfigViewModel PrimaryParticleConfigViewModel { get; set; }
+        public LoggingViewModel LoggingViewModel { get; set; }
+        public StatusViewModel StatusViewModel { get; set; }
 
         public AggregateFormationConfig Config { get; set; }
         public SimulationProperties SimProp { get; set; }
         public AggregateFormationConfigViewModel AggregateFormationConfigViewModel { get; set; }
 
-        public string AggFileName { get; set; } = "Aggregates.xml";
+        public AggregateInformationViewModel AggregateInformationViewModel { get; set; }
+
+        public string AggFileName { get; set; } = "Aggregates.json";
+
+        public FileFormat FileFormat { get; set; } = FileFormat.Json;
         public List<string> AvailableAggFileFormats { get; set; } = new List<string>() { "xml", "json", "none" };
+
+        public bool DoAutoSaveFile { get; set; } = true;
 
         public int NumberOfPrimaryParticles
         {
@@ -50,6 +65,7 @@ namespace ANPaX.DesktopUI.ViewModels
             {
                 _selectedAggFileFormat = value;
                 AdjustAggFileName(value);
+                SetFileFormat(value);
                 NotifyOfPropertyChange(() => SelectedAggFileFormat);
                 NotifyOfPropertyChange(() => AggFileName);
 
@@ -58,7 +74,11 @@ namespace ANPaX.DesktopUI.ViewModels
 
 
 
-        public AggFormationControlViewModel(AggregateFormationConfig config, SimulationProperties simulationProperties)
+        public AggFormationControlViewModel(
+            AggregateFormationConfig config,
+            SimulationProperties simulationProperties,
+            StatusViewModel statusViewModel,
+            LoggingViewModel loggingViewModel)
         {
             Config = config;
             SimProp = simulationProperties;
@@ -67,6 +87,9 @@ namespace ANPaX.DesktopUI.ViewModels
             AggregateConfigViewModel = new AggregateConfigViewModel(Config);
             ClusterConfigViewModel = new ClusterConfigViewModel(Config);
             PrimaryParticleConfigViewModel = new PrimaryParticleConfigViewModel(Config);
+            StatusViewModel = statusViewModel;
+            LoggingViewModel = loggingViewModel;
+            AggregateInformationViewModel = new AggregateInformationViewModel();
         }
 
         private void AdjustAggFileName(string fileEnding)
@@ -90,13 +113,129 @@ namespace ANPaX.DesktopUI.ViewModels
             SimProp.SimulationPath = dialog.SelectedPath;
         }
 
-        public async void GenerateAggregates()
+        public async void GenerateAggregates(AggFormationControlView view)
         {
-            var progress = new Mock<IProgress<ProgressReportModel>>().Object;
+            StatusViewModel.SimulationStatus = SimulationStatus.Running;
+            view.CancelGenerationButton.Visibility = System.Windows.Visibility.Visible;
+            view.GenerateAggregatesButton.Visibility = System.Windows.Visibility.Hidden;
+            LogInfo("Initiating aggregate formation");
+            var progress = new Progress<ProgressReportModel>();
+            progress.ProgressChanged += StatusViewModel.ReportProgress;
+
             var service = new AggregateFormationService(Config, _logger);
-            var result = await service.GenerateAggregates_Parallel_Async(SimProp.NumberOfCPU, progress);
+            _cts = new CancellationTokenSource();
+
+            _generatedAggregates = await service.GenerateAggregates_Parallel_Async(SimProp.NumberOfCPU, progress, _cts.Token);
+            AggregateInformationViewModel.UpdateAggregates(_generatedAggregates);
+
+            if (StatusViewModel.SimulationStatus == SimulationStatus.Canceling)
+            {
+                StatusViewModel.SimulationStatus = SimulationStatus.Canceled;
+            }
+            else
+            {
+                StatusViewModel.SimulationStatus = SimulationStatus.Finished;
+                LogInfo("Aggregate generation finished.");
+                if (DoAutoSaveFile)
+                {
+                    ExportAggregatesToFile();
+                }
+            }
+
+            view.CancelGenerationButton.Visibility = System.Windows.Visibility.Hidden;
+            view.GenerateAggregatesButton.Visibility = System.Windows.Visibility.Visible;
+
+
         }
 
+        public void CancelGeneration(AggFormationControlView view)
+        {
+            _cts.Cancel();
+            LogInfo("Simulation canceled by user");
+            StatusViewModel.SimulationStatus = SimulationStatus.Canceling;
+            view.CancelGenerationButton.Visibility = System.Windows.Visibility.Hidden;
+            view.GenerateAggregatesButton.Visibility = System.Windows.Visibility.Visible;
+
+        }
+
+        public void ExportAggregatesToFile()
+        {
+
+            var isSuccess = RunExportPreCheck();
+            if (!isSuccess)
+            {
+                return;
+            }
+
+            var fileNameWithPath = Path.Join(SimProp.SimulationPath, AggFileName);
+            LogInfo($"Exported aggregates: {fileNameWithPath}");
+            _export.Export(
+                _generatedAggregates,
+                Config,
+                fileNameWithPath, FileFormat);
+        }
+
+        private void SetFileFormat(string fileFormatString)
+        {
+            switch (fileFormatString)
+            {
+                case "json":
+                    FileFormat = FileFormat.Json;
+                    break;
+                case "xml":
+                    FileFormat = FileFormat.Xml;
+                    break;
+                case "none":
+                    FileFormat = FileFormat.None;
+                    break;
+                default:
+                    return;
+            }
+        }
+
+        private bool RunExportPreCheck()
+        {
+            if (!_generatedAggregates.Any())
+            {
+                LogWarning("Did not save file, no loaded aggregates");
+                return false;
+            }
+
+            if (SimProp.SimulationPath == "<Select path>")
+            {
+                LogWarning("Did not save file, no simulation path chosen");
+                return false;
+            }
+
+            if (FileFormat == FileFormat.None)
+            {
+                LogWarning("Did not save file, no file format chosen");
+                return false;
+            }
+
+            if (!DoFormatEndingMatch())
+            {
+                LogWarning("File format and ending do not match");
+            }
+            return true;
+        }
+
+        private bool DoFormatEndingMatch()
+        {
+            var fileEnding = AggFileName.Split('.')[1];
+            if ((fileEnding == "xml" && FileFormat == FileFormat.Xml) ||
+                (fileEnding == "json" && FileFormat == FileFormat.Json))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private void LogInfo(string message) => LoggingViewModel.LogInfo(message);
+        private void LogWarning(string message) => LoggingViewModel.LogWarning(message);
+
+        #region ViewVisibility
         public void ShowAdvancedConfigView(AggFormationControlView view)
         {
             SwitchToHideAdvancedConfigButton(view);
@@ -162,6 +301,7 @@ namespace ANPaX.DesktopUI.ViewModels
             SwitchToShowPrimaryParticleConfigButton(view);
             DeactivateItem(PrimaryParticleConfigViewModel, false);
         }
+        #endregion
 
         #region ButtonVisibility
         private void SwitchToShowAdvancedConfigButton(AggFormationControlView view)

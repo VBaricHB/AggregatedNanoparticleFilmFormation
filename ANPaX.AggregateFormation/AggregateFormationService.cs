@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 using ANPaX.AggregateFormation.interfaces;
@@ -89,6 +90,8 @@ namespace ANPaX.AggregateFormation
             }
             Debug.WriteLine($"Total ComputationTime {totalTime.Elapsed}");
             totalTime.Stop();
+
+            AggregateIndexingHelper.SetAggregateIndices(aggregates);
             return aggregates;
         }
 
@@ -103,6 +106,7 @@ namespace ANPaX.AggregateFormation
 
             var aggregates = await Task.WhenAll(aggregateGenTasks);
 
+            AggregateIndexingHelper.SetAggregateIndices(aggregates);
             return aggregates.ToList();
 
         }
@@ -130,14 +134,16 @@ namespace ANPaX.AggregateFormation
                 Debug.WriteLine($"{DateTime.Now}: Built aggregate {aggregates.Count}/{aggregateSizes.Count} with {aggregates.Last().NumberOfPrimaryParticles} PP in {stopwatch.Elapsed}");
 
             });
+            AggregateIndexingHelper.SetAggregateIndices(aggregates);
             return aggregates;
         }
 
-        public async Task<List<Aggregate>> GenerateAggregates_Parallel_Async(int maxCPU, IProgress<ProgressReportModel> progress)
+        public async Task<List<Aggregate>> GenerateAggregates_Parallel_Async(int maxCPU, IProgress<ProgressReportModel> progress, CancellationToken ct)
         {
             var opt = new ParallelOptions
             {
-                MaxDegreeOfParallelism = maxCPU
+                MaxDegreeOfParallelism = maxCPU,
+                CancellationToken = ct
             };
             var aggregateSizes = GenerateAggregateSizes();
             var aggregates = new List<Aggregate>();
@@ -147,26 +153,41 @@ namespace ANPaX.AggregateFormation
             {
                 rndGen = new Random(_seed);
             }
+            try
+            {
+                await Task.Run(() =>
+                    Parallel.ForEach<int>(aggregateSizes, opt, size =>
+                    {
+                        var stopwatch = new Stopwatch();
+                        stopwatch.Start();
+                        aggregates.Add(_particleFactory.Build(size));
+                        UpdateProgress(progress, aggregateSizes, aggregates, report, stopwatch);
 
-            await Task.Run(() =>
-                Parallel.ForEach<int>(aggregateSizes, opt, size =>
-                {
-                    var stopwatch = new Stopwatch();
-                    stopwatch.Start();
-                    aggregates.Add(_particleFactory.Build(size));
-                    UpdateProgress(progress, aggregateSizes, aggregates, report, stopwatch);
+                        // If the job is canceled, an error is thrown which is catched below
+                        opt.CancellationToken.ThrowIfCancellationRequested();
+                    }));
 
-                }));
+            }
+            catch (OperationCanceledException e)
+            {
+                _logger.Warn($"Operation canceled: {e.Message}");
+            }
+
+
+
+            AggregateIndexingHelper.SetAggregateIndices(aggregates);
             return aggregates;
         }
 
         private static void UpdateProgress(IProgress<ProgressReportModel> progress, List<int> aggregateSizes, List<Aggregate> aggregates, ProgressReportModel report, Stopwatch stopwatch)
         {
             report.PercentageComplete = (aggregates.Count * 100) / aggregateSizes.Count;
-            report.TotalAggregates = aggregates.Count;
-            report.TotalPrimaryParticles += aggregates.Last().NumberOfPrimaryParticles;
+            report.CumulatedAggregates = aggregates.Count;
+            report.TotalAggregates = aggregateSizes.Count;
+            report.CumulatedPrimaryParticles += aggregates.Last().NumberOfPrimaryParticles;
             report.PrimaryParticlesLastAggregate = aggregates.Last().NumberOfPrimaryParticles;
-            report.ProcessingTimeLastAggregate = stopwatch.ElapsedMilliseconds;
+            report.SimulationTime += stopwatch.ElapsedMilliseconds;
+            report.TotalPrimaryParticles = aggregateSizes.Sum();
             progress.Report(report);
         }
 

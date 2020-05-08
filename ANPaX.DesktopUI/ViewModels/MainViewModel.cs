@@ -18,16 +18,20 @@ namespace ANPaX.DesktopUI.ViewModels
         public SimulationProperties SimulationProperties { get; set; }
         public StatusViewModel StatusViewModel { get; set; }
 
+
         public MainViewModel()
         {
+
             AggregateFormationConfig = new AggregateFormationConfig();
             SimulationProperties = new SimulationProperties();
-            AggFormationControlViewModel = new AggFormationControlViewModel(AggregateFormationConfig, SimulationProperties);
+
             FilmAnalysisControlViewModel = new FilmAnalysisControlViewModel();
             FilmFormationControlViewModel = new FilmFormationControlViewModel();
             LoggingViewModel = new LoggingViewModel();
 
-            StatusViewModel = new StatusViewModel();
+            StatusViewModel = new StatusViewModel(LoggingViewModel);
+
+            AggFormationControlViewModel = new AggFormationControlViewModel(AggregateFormationConfig, SimulationProperties, StatusViewModel, LoggingViewModel);
             ActivateItem(AggFormationControlViewModel);
         }
 

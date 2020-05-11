@@ -10,13 +10,19 @@ namespace ANPaX.Collection
     {
         public Aggregate(IEnumerable<Cluster> cluster)
         {
-            Cluster = cluster;
+            Cluster = cluster.ToList();
         }
 
-        public IEnumerable<Cluster> Cluster { get; private set; }
+        public Aggregate()
+        {
+
+        }
+
+        public List<Cluster> Cluster { get; private set; }
         public int NumberOfPrimaryParticles => Cluster.Sum(c => c.PrimaryParticles.Count);
         public int NumberOfClusters => Cluster.Count();
         public bool IsDeposited { get; set; }
+        public int Id { get; set; }
 
         public Vector3 GetCenterOfMass()
         {

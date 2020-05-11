@@ -26,7 +26,7 @@ namespace ANPaX.DesktopUI.Models
 
         public int ClusterSize { get; set; } = 6;
 
-        public int TotalPrimaryParticles { get; set; } = 100;
+        public int TotalPrimaryParticles { get; set; } = 5000;
 
         public MeanMethod RadiusMeanCalculationMethod { get; set; } = MeanMethod.Geometric;
 

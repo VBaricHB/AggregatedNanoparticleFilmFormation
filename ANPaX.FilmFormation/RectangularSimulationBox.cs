@@ -2,13 +2,13 @@
 
 namespace ANPaX.FilmFormation
 {
-    internal class RectangularSimulationBox : ISimulationBox
+    internal class AbsoluteTetragonalSimulationBox : ISimulationBox
     {
         public BoxDimension XDim { get; }
         public BoxDimension YDim { get; }
         public BoxDimension ZDim { get; }
 
-        public RectangularSimulationBox(double width)
+        public AbsoluteTetragonalSimulationBox(double width)
         {
             XDim = new BoxDimension(-0.5 * width, 0.5 * width);
             YDim = new BoxDimension(-0.5 * width, 0.5 * width);

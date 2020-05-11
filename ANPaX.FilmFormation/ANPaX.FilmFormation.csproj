@@ -6,9 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Accord" Version="3.8.0" />
-    <PackageReference Include="Accord.MachineLearning" Version="3.8.0" />
-    <PackageReference Include="Accord.Math" Version="3.8.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.assert" Version="2.4.1" />
     <PackageReference Include="xunit.core" Version="2.4.1" />
@@ -20,5 +17,6 @@
   <ItemGroup>
     <ProjectReference Include="..\ANPaX.Collection\ANPaX.Collection.csproj" />
     <ProjectReference Include="..\ANPaX.AggregateFormation\ANPaX.AggregateFormation.csproj" />
+    <ProjectReference Include="..\ANPaX.Core.Neighborslist\ANPaX.Core.Neighborslist.csproj" />
   </ItemGroup>
 </Project>

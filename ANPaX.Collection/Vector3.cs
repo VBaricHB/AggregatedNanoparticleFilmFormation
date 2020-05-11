@@ -2,11 +2,11 @@
 
 namespace ANPaX.Collection
 {
-    public struct Vector3
+    public class Vector3
     {
-        public double X { get; }
-        public double Y { get; }
-        public double Z { get; }
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Z { get; set; }
 
         public double Length => Math.Sqrt(Math.Pow(X, 2) + Math.Pow(Y, 2) + Math.Pow(Z, 2));
 
@@ -15,6 +15,11 @@ namespace ANPaX.Collection
             X = x;
             Y = y;
             Z = z;
+        }
+
+        public Vector3()
+        {
+
         }
 
         public static Vector3 operator +(Vector3 self, Vector3 other)

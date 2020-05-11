@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Accord.Collections;
-
 using ANPaX.AggregateFormation.interfaces;
 using ANPaX.Collection;
+using ANPaX.Core.Neighborslist;
 using ANPaX.Extensions;
 
 using NLog;
@@ -32,17 +31,20 @@ namespace ANPaX.AggregateFormation
         private readonly Random _rndGen;
         private readonly IAggregateFormationConfig _config;
         private readonly ILogger _logger;
+        private readonly INeighborslistFactory _neighborslistFactory;
 
         public ParticleClusterAggregationFactory(
             ISizeDistribution<double> psd,
             Random rndGen,
             IAggregateFormationConfig config,
+            INeighborslistFactory neighborslistFactory,
             ILogger logger)
         {
             _psd = psd;
             _rndGen = rndGen;
             _config = config;
             _logger = logger;
+            _neighborslistFactory = neighborslistFactory;
         }
 
         /// <summary>
@@ -74,9 +76,11 @@ namespace ANPaX.AggregateFormation
             SetFirstPrimaryParticle(primaryParticles);
             SetSecondPrimaryParticle(primaryParticles);
 
+            // the neighborslist speeds up the search
+            var neighborslist = _neighborslistFactory.Build3DNeighborslist(primaryParticles);
             while (primaryParticles.Count < size)
             {
-                if (!AddNextPrimaryParticle(primaryParticles, count))
+                if (!AddNextPrimaryParticle(primaryParticles, count, neighborslist))
                 {
                     return null;
                 }
@@ -127,7 +131,7 @@ namespace ANPaX.AggregateFormation
         /// <param name="primaryParticles"></param>
         /// <param name="count"></param>
         /// <returns></returns>
-        public bool AddNextPrimaryParticle(List<PrimaryParticle> primaryParticles, int count)
+        public bool AddNextPrimaryParticle(List<PrimaryParticle> primaryParticles, int count, INeighborslist neighborslist)
         {
             var com = primaryParticles.GetCenterOfMass();
 
@@ -140,15 +144,13 @@ namespace ANPaX.AggregateFormation
             var found = false;
             var rndPosition = new Vector3();
 
-            // the neighborslist speeds up the search
-            var tree = primaryParticles.ToNeighborsList();
             while (!found)
             {
                 // get a new random position on the sphere of allowed positions
                 rndPosition = ParticleFormationUtil.GetRandomPosition(_rndGen, ppDistance) + com;
 
                 // check if that position is valid
-                found = IsPrimaryParticlePositionValid(particle, rndPosition, tree, primaryParticles, _config);
+                found = IsPrimaryParticlePositionValid(particle, rndPosition, neighborslist, primaryParticles, _config);
                 if (count > _config.MaxAttemptsPerCluster)
                 {
                     _logger.Debug("Resetting cluster generation. Time limit exceeded.");
@@ -158,6 +160,7 @@ namespace ANPaX.AggregateFormation
             }
             particle.MoveTo(rndPosition);
             primaryParticles.Add(particle);
+            neighborslist.AddParticlesToNeighborsList(particle);
             return true;
         }
 
@@ -175,22 +178,20 @@ namespace ANPaX.AggregateFormation
         public bool IsPrimaryParticlePositionValid(
             PrimaryParticle particle,
             Vector3 rndPosition,
-            KDTree<double> tree,
+            INeighborslist neighborslist,
             IEnumerable<PrimaryParticle> primaryParticles,
             IAggregateFormationConfig config)
         {
             // Get all neighbors within potential reach of the primary particle
-            var neighbors = ParticleFormationUtil.GetPossibleNeighbors(particle, rndPosition, tree, primaryParticles, config);
-
-            var isInContact = false;
-            var hasNoOverlap = true;
+            var searchRadius = (particle.Radius + primaryParticles.GetMaxRadius()) * config.Delta;
+            var neighborsWithDistance = neighborslist.GetPrimaryParticlesAndDistanceWithinRadius(rndPosition, searchRadius);
 
             // no neighbor: invalid position
-            if (!neighbors.Any())
+            if (!neighborsWithDistance.Any())
             {
                 return false;
             }
-            return IsAnyNeighborPositionValid(particle, primaryParticles, config, neighbors);
+            return IsAnyNeighborPositionValid(particle, rndPosition, config, neighborsWithDistance);
         }
 
         /// <summary>
@@ -205,11 +206,11 @@ namespace ANPaX.AggregateFormation
         /// <returns></returns>
         private static bool IsAnyNeighborPositionValid(
             PrimaryParticle particle,
-            IEnumerable<PrimaryParticle> primaryParticles,
+            Vector3 setToPosition,
             IAggregateFormationConfig config,
-            List<NodeDistance<KDTreeNode<double>>> neighbors)
+            IEnumerable<Tuple<PrimaryParticle, double>> neighborsWithDistance)
         {
-            var (isInContact, hasNoOverlap) = ParticleFormationUtil.IsAnyNeighborInContactOrOverlapping(particle, primaryParticles, config, neighbors);
+            var (isInContact, hasNoOverlap) = ParticleFormationUtil.IsAnyNeighborInContactOrOverlapping(particle, setToPosition, config, neighborsWithDistance);
             return isInContact && hasNoOverlap;
         }
 

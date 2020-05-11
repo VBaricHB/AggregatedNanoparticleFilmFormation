@@ -4,9 +4,9 @@ namespace ANPaX.Collection.interfaces
 {
     public interface IAggregate
     {
-        IEnumerable<Cluster> Cluster { get; }
+        List<Cluster> Cluster { get; }
         int NumberOfPrimaryParticles { get; }
-        int NumberOfClusters { get;  }
+        int NumberOfClusters { get; }
         bool IsDeposited { get; set; }
     }
 }

@@ -14,11 +14,16 @@ namespace ANPaX.Collection
             PrimaryParticles = primaryParticles;
         }
 
+        public Cluster()
+        {
+
+        }
+
         public int NumberOfPrimaryParticles => PrimaryParticles.Count();
 
-        public List<PrimaryParticle> PrimaryParticles { get; }
+        public List<PrimaryParticle> PrimaryParticles { get; set; }
 
-        public int Id { get; }
+        public int Id { get; set; }
 
         public override string ToString()
         {

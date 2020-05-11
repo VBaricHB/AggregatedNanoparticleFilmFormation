@@ -1,9 +1,12 @@
-﻿using ANPaX.AggregateFormation;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
 using ANPaX.Collection;
+using ANPaX.Core.Neighborslist;
 using ANPaX.Extensions;
 using ANPaX.FilmFormation.interfaces;
-using System;
-using System.Collections.Generic;
+
 using Xunit;
 
 namespace ANPaX.FilmFormation.tests
@@ -12,6 +15,8 @@ namespace ANPaX.FilmFormation.tests
     {
 
         private IFilmFormationConfig _config = new TestFilmFormationConfig();
+
+        private INeighborslistFactory _neighborslistFactory = new AccordNeighborslistFactory();
 
         [Fact]
         private void DistanceToCenterLine_CorrectDistanceComputed()
@@ -34,8 +39,7 @@ namespace ANPaX.FilmFormation.tests
             var pos = new Vector3(0, 0, 100);
             var primaryParticle = new PrimaryParticle(0, pos, r);
 
-            var searchRadius = 5.0;
-            var handler = new BallisticSingleParticleDepositionHandler(_config, searchRadius);
+            var handler = new BallisticSingleParticleDepositionHandler(_config);
 
             var pos2 = new Vector3(0, 3, 10);
             var pos3 = new Vector3(3, -3, 10);
@@ -46,12 +50,17 @@ namespace ANPaX.FilmFormation.tests
             var pp4 = new PrimaryParticle(3, pos4, r);
             var pp5 = new PrimaryParticle(4, pos5, r);
 
-            var neighbors = handler.GetNeighbors(primaryParticle, new List<PrimaryParticle>() { pp2, pp3, pp4, pp5 });
+            var particles = new List<PrimaryParticle>() { pp2, pp3, pp4, pp5 };
+            var neighborsList = _neighborslistFactory.Build2DNeighborslist(particles);
+            var maxRadius = particles.GetMaxRadius();
+            var searchRadius = (primaryParticle.Radius + maxRadius) * _config.Delta;
+            var neighbors = neighborsList.GetPrimaryParticlesWithinRadius(primaryParticle.Position, searchRadius);
+            //var neighbors = handler.GetNeighbors(primaryParticle, neighborsList, maxRadius);
 
-            Assert.Equal(3, neighbors.Count);
-            foreach(var neighbor in neighbors)
+            Assert.Equal(3, neighbors.Count());
+            foreach (var neighbor in neighbors)
             {
-                Assert.NotEqual<double>(new[] { -30.0, -30.0 }, neighbor.Node.Position);
+                Assert.NotEqual(pos5, neighbor.Position);
             }
         }
 
@@ -61,9 +70,8 @@ namespace ANPaX.FilmFormation.tests
             var r = 1.0;
             var pos = new Vector3(0, 0, 100);
             var primaryParticle = new PrimaryParticle(0, pos, r);
-            
-            var searchRadius = 2.0;
-            var handler = new BallisticSingleParticleDepositionHandler(_config, searchRadius);
+
+            var handler = new BallisticSingleParticleDepositionHandler(_config);
 
             var neighborPosition = new double[] { 1, 0, 10 };
             var neighborRadius = 1.0;
@@ -83,8 +91,7 @@ namespace ANPaX.FilmFormation.tests
             var pos = new Vector3(0, 0, 100);
             var primaryParticle = new PrimaryParticle(0, pos, r);
 
-            var searchRadius = 2.0;
-            var handler = new BallisticSingleParticleDepositionHandler(_config, searchRadius);
+            var handler = new BallisticSingleParticleDepositionHandler(_config);
 
             var neighborPosition = new double[] { 5, 0, 10 };
             var neighborRadius = 1.0;
@@ -104,14 +111,14 @@ namespace ANPaX.FilmFormation.tests
             var pos = new Vector3(0, 0, 100);
             var primaryParticle = new PrimaryParticle(0, pos, r);
 
-            var searchRadius = 2.0;
-            var handler = new BallisticSingleParticleDepositionHandler(_config, searchRadius);
+            var handler = new BallisticSingleParticleDepositionHandler(_config);
 
             var pos2 = new Vector3(1, 0, 10);
             var pp2 = new PrimaryParticle(1, pos2, r);
             var otherParticles = new List<PrimaryParticle>() { pp2 };
+            var neighborsList = _neighborslistFactory.Build2DNeighborslist(otherParticles);
 
-            var dist = handler.GetMinDepositionDistance(primaryParticle, otherParticles);
+            var dist = handler.GetMinDepositionDistance(primaryParticle, otherParticles, neighborsList);
 
             // Math.Sqrt(3) results from the square of the combined radius (4) - the distance to centerline. 
             // This origins from the triangle: final position pp1. position neigbor, center projection neighbor.
@@ -126,8 +133,7 @@ namespace ANPaX.FilmFormation.tests
             var pos = new Vector3(0, 0, 100);
             var primaryParticle = new PrimaryParticle(0, pos, r);
 
-            var searchRadius = 2.0;
-            var handler = new BallisticSingleParticleDepositionHandler(_config, searchRadius);
+            var handler = new BallisticSingleParticleDepositionHandler(_config);
 
             var pos2 = new Vector3(1, 0, 10);
             var pp2 = new PrimaryParticle(1, pos2, r);
@@ -135,7 +141,9 @@ namespace ANPaX.FilmFormation.tests
             var pp3 = new PrimaryParticle(1, pos3, r);
             var otherParticles = new List<PrimaryParticle>() { pp2, pp3 };
 
-            var dist = handler.GetMinDepositionDistance(primaryParticle, otherParticles);
+            var neighborsList = _neighborslistFactory.Build2DNeighborslist(otherParticles);
+
+            var dist = handler.GetMinDepositionDistance(primaryParticle, otherParticles, neighborsList);
 
             var shouldBeDistance = 90 - Math.Sqrt(3);
             Assert.Equal(shouldBeDistance, dist);
@@ -148,14 +156,15 @@ namespace ANPaX.FilmFormation.tests
             var pos = new Vector3(0, 0, 100);
             var primaryParticle = new PrimaryParticle(0, pos, r);
 
-            var searchRadius = 2.0;
-            var handler = new BallisticSingleParticleDepositionHandler(_config, searchRadius);
+            var handler = new BallisticSingleParticleDepositionHandler(_config);
 
             var pos2 = new Vector3(5, 0, 10);
             var pp2 = new PrimaryParticle(1, pos2, r);
             var otherParticles = new List<PrimaryParticle>() { pp2 };
 
-            var dist = handler.GetMinDepositionDistance(primaryParticle, otherParticles);
+            var neighborsList = _neighborslistFactory.Build2DNeighborslist(otherParticles);
+
+            var dist = handler.GetMinDepositionDistance(primaryParticle, otherParticles, neighborsList);
 
             var shouldBeDistance = _config.LargeNumber;
             Assert.Equal(shouldBeDistance, dist);

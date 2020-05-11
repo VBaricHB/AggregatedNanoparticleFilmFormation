@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 using ANPaX.AggregateFormation.interfaces;
 using ANPaX.Collection;
+using ANPaX.Core.Neighborslist;
 
 using NLog;
 
@@ -17,6 +19,7 @@ namespace ANPaX.AggregateFormation
         private ISizeDistribution<int> _asd;
         private ISizeDistribution<double> _psd;
         private IParticleFactory<Aggregate> _particleFactory;
+        private INeighborslistFactory _neighborslistFactory;
         private readonly IAggregateFormationConfig _config;
         private readonly ILogger _logger;
 
@@ -25,6 +28,7 @@ namespace ANPaX.AggregateFormation
         {
             _config = config;
             _logger = logger;
+            _neighborslistFactory = new AccordNeighborslistFactory();
 
             if (config.UseDefaultGenerationMethods)
             {
@@ -52,7 +56,7 @@ namespace ANPaX.AggregateFormation
             }
             _asd = DefaultConfigurationBuilder.GetAggreateSizeDistribution(rndGen, _config);
             _psd = DefaultConfigurationBuilder.GetPrimaryParticleSizeDistribution(rndGen, _config);
-            _particleFactory = new ClusterClusterAggregationFactory(_psd, _config, _logger, _config.RandomGeneratorSeed);
+            _particleFactory = new ClusterClusterAggregationFactory(_psd, _config, _logger, _neighborslistFactory, _config.RandomGeneratorSeed);
         }
 
         internal AggregateFormationService
@@ -89,6 +93,8 @@ namespace ANPaX.AggregateFormation
             }
             Debug.WriteLine($"Total ComputationTime {totalTime.Elapsed}");
             totalTime.Stop();
+
+            AggregateIndexingHelper.SetAggregateIndices(aggregates);
             return aggregates;
         }
 
@@ -103,6 +109,7 @@ namespace ANPaX.AggregateFormation
 
             var aggregates = await Task.WhenAll(aggregateGenTasks);
 
+            AggregateIndexingHelper.SetAggregateIndices(aggregates);
             return aggregates.ToList();
 
         }
@@ -130,43 +137,60 @@ namespace ANPaX.AggregateFormation
                 Debug.WriteLine($"{DateTime.Now}: Built aggregate {aggregates.Count}/{aggregateSizes.Count} with {aggregates.Last().NumberOfPrimaryParticles} PP in {stopwatch.Elapsed}");
 
             });
+            AggregateIndexingHelper.SetAggregateIndices(aggregates);
             return aggregates;
         }
 
-        public async Task<List<Aggregate>> GenerateAggregates_Parallel_Async(int maxCPU, IProgress<ProgressReportModel> progress)
+        public async Task<List<Aggregate>> GenerateAggregates_Parallel_Async(int maxCPU, IProgress<ProgressReportModel> progress, CancellationToken ct)
         {
             var opt = new ParallelOptions
             {
-                MaxDegreeOfParallelism = maxCPU
+                MaxDegreeOfParallelism = maxCPU,
+                CancellationToken = ct
             };
             var aggregateSizes = GenerateAggregateSizes();
             var aggregates = new List<Aggregate>();
             var report = new ProgressReportModel();
             var rndGen = new Random();
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
             if (_seed != -1)
             {
                 rndGen = new Random(_seed);
             }
+            try
+            {
+                await Task.Run(() =>
+                    Parallel.ForEach<int>(aggregateSizes, opt, size =>
+                    {
+                        aggregates.Add(_particleFactory.Build(size));
+                        UpdateProgress(progress, aggregateSizes, aggregates, report, stopwatch);
 
-            await Task.Run(() =>
-                Parallel.ForEach<int>(aggregateSizes, opt, size =>
-                {
-                    var stopwatch = new Stopwatch();
-                    stopwatch.Start();
-                    aggregates.Add(_particleFactory.Build(size));
-                    UpdateProgress(progress, aggregateSizes, aggregates, report, stopwatch);
+                        // If the job is canceled, an error is thrown which is catched below
+                        opt.CancellationToken.ThrowIfCancellationRequested();
+                    }));
 
-                }));
+            }
+            catch (OperationCanceledException e)
+            {
+                _logger.Warn($"Operation canceled: {e.Message}");
+            }
+
+
+
+            AggregateIndexingHelper.SetAggregateIndices(aggregates);
             return aggregates;
         }
 
         private static void UpdateProgress(IProgress<ProgressReportModel> progress, List<int> aggregateSizes, List<Aggregate> aggregates, ProgressReportModel report, Stopwatch stopwatch)
         {
             report.PercentageComplete = (aggregates.Count * 100) / aggregateSizes.Count;
-            report.TotalAggregates = aggregates.Count;
-            report.TotalPrimaryParticles += aggregates.Last().NumberOfPrimaryParticles;
+            report.CumulatedAggregates = aggregates.Count;
+            report.TotalAggregates = aggregateSizes.Count;
+            report.CumulatedPrimaryParticles += aggregates.Last().NumberOfPrimaryParticles;
             report.PrimaryParticlesLastAggregate = aggregates.Last().NumberOfPrimaryParticles;
-            report.ProcessingTimeLastAggregate = stopwatch.ElapsedMilliseconds;
+            report.SimulationTime = stopwatch.ElapsedMilliseconds;
+            report.TotalPrimaryParticles = aggregateSizes.Sum();
             progress.Report(report);
         }
 

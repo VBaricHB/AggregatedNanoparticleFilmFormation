@@ -11,6 +11,7 @@ namespace ANPaX.DesktopUI.ViewModels
     public class MainViewModel : Conductor<object>
     {
         public AggregateFormationConfig AggregateFormationConfig { get; set; }
+        public FilmFormationConfig FilmFormationConfig { get; set; }
         public AggFormationControlViewModel AggFormationControlViewModel { get; set; }
         public FilmAnalysisControlViewModel FilmAnalysisControlViewModel { get; set; }
         public FilmFormationControlViewModel FilmFormationControlViewModel { get; set; }
@@ -18,16 +19,32 @@ namespace ANPaX.DesktopUI.ViewModels
         public SimulationProperties SimulationProperties { get; set; }
         public StatusViewModel StatusViewModel { get; set; }
 
+
         public MainViewModel()
         {
-            AggregateFormationConfig = new AggregateFormationConfig();
-            SimulationProperties = new SimulationProperties();
-            AggFormationControlViewModel = new AggFormationControlViewModel(AggregateFormationConfig, SimulationProperties);
-            FilmAnalysisControlViewModel = new FilmAnalysisControlViewModel();
-            FilmFormationControlViewModel = new FilmFormationControlViewModel();
-            LoggingViewModel = new LoggingViewModel();
 
-            StatusViewModel = new StatusViewModel();
+            AggregateFormationConfig = new AggregateFormationConfig();
+            FilmFormationConfig = new FilmFormationConfig();
+            SimulationProperties = new SimulationProperties();
+
+            LoggingViewModel = new LoggingViewModel();
+            StatusViewModel = new StatusViewModel(LoggingViewModel);
+
+            AggFormationControlViewModel = new AggFormationControlViewModel(
+                AggregateFormationConfig,
+                SimulationProperties,
+                StatusViewModel,
+                LoggingViewModel);
+
+            FilmFormationControlViewModel = new FilmFormationControlViewModel(
+                FilmFormationConfig,
+                SimulationProperties,
+                AggFormationControlViewModel,
+                StatusViewModel,
+                LoggingViewModel);
+
+            FilmAnalysisControlViewModel = new FilmAnalysisControlViewModel();
+
             ActivateItem(AggFormationControlViewModel);
         }
 

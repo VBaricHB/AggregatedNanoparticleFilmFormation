@@ -6,101 +6,70 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ANPaX.DesktopUI.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="MainView"
-    Width="800"
+    Title="ANPaX Gui"
+    Width="1000"
     Height="500"
     mc:Ignorable="d">
 
     <Window.Resources>
-        <StackPanel x:Key="AggFormationButtonText">
-            <TextBlock
-                HorizontalAlignment="Center"
-                FontSize="16"
-                FontWeight="Bold"
-                Text="Aggregate Formation" />
-            <TextBlock
-                HorizontalAlignment="Center"
-                FontSize="10"
-                Text="Generate random aggregates based on the fractal theory"
-                TextWrapping="Wrap" />
-        </StackPanel>
+        <TextBlock
+            x:Key="AggFormationButtonText"
+            HorizontalAlignment="Center"
+            FontSize="16"
+            FontWeight="Bold"
+            Text="Aggregate Formation" />
 
-        <StackPanel x:Key="AggFormationButtonText2">
-            <TextBlock
-                HorizontalAlignment="Center"
-                FontSize="16"
-                FontWeight="Bold"
-                Text="Aggregate Formation" />
-            <TextBlock
-                HorizontalAlignment="Center"
-                FontSize="10"
-                Text="Generate random aggregates based on the fractal theory"
-                TextWrapping="Wrap" />
-        </StackPanel>
+        <TextBlock
+            x:Key="AggFormationButtonText2"
+            HorizontalAlignment="Center"
+            FontSize="16"
+            FontWeight="Bold"
+            Text="Aggregate Formation" />
 
-        <StackPanel x:Key="FilmFormationButtonText">
-            <TextBlock
-                HorizontalAlignment="Center"
-                FontSize="16"
-                FontWeight="Bold"
-                Text="Film Formation" />
-            <TextBlock
-                HorizontalAlignment="Center"
-                FontSize="10"
-                Text="Generate films from generated or read aggreates"
-                TextWrapping="Wrap" />
-        </StackPanel>
+        <TextBlock
+            x:Key="FilmFormationButtonText"
+            HorizontalAlignment="Center"
+            FontSize="16"
+            FontWeight="Bold"
+            Text="Film Formation" />
 
-        <StackPanel x:Key="FilmFormationButtonText2">
-            <TextBlock
-                HorizontalAlignment="Center"
-                FontSize="16"
-                FontWeight="Bold"
-                Text="Film Formation" />
-            <TextBlock
-                HorizontalAlignment="Center"
-                FontSize="10"
-                Text="Generate films from generated or read aggreates"
-                TextWrapping="Wrap" />
-        </StackPanel>
+        <TextBlock
+            x:Key="FilmFormationButtonText2"
+            HorizontalAlignment="Center"
+            FontSize="16"
+            FontWeight="Bold"
+            Text="Film Formation" />
 
-        <StackPanel x:Key="FilmAnalysisButtonText">
-            <TextBlock
-                HorizontalAlignment="Center"
-                FontSize="16"
-                FontWeight="Bold"
-                Text="Film Analysis" />
-            <TextBlock
-                HorizontalAlignment="Center"
-                FontSize="10"
-                Text="Characterize Films" />
-        </StackPanel>
+        <TextBlock
+            x:Key="FilmAnalysisButtonText"
+            HorizontalAlignment="Center"
+            FontSize="16"
+            FontWeight="Bold"
+            Text="Film Analysis" />
 
-        <StackPanel x:Key="FilmAnalysisButtonText2">
-            <TextBlock
-                HorizontalAlignment="Center"
-                FontSize="16"
-                FontWeight="Bold"
-                Text="Film Analysis" />
-            <TextBlock
-                HorizontalAlignment="Center"
-                FontSize="10"
-                Text="Characterize Films" />
-        </StackPanel>
+        <TextBlock
+            x:Key="FilmAnalysisButtonText2"
+            HorizontalAlignment="Center"
+            FontSize="16"
+            FontWeight="Bold"
+            Text="Film Analysis" />
     </Window.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="60" />
+            <RowDefinition Height="40" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="600" />
+            <ColumnDefinition Width="570" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
         <!--  Menu Bar  -->
-        <Grid Grid.Row="0" Grid.Column="0">
+        <Grid
+            Grid.Row="0"
+            Grid.Column="0"
+            Grid.ColumnSpan="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
@@ -113,6 +82,10 @@
                 cal:Message.Attach="[Event Click] = [Action AggFormationButtonClick($view)]"
                 Content="{StaticResource AggFormationButtonText}"
                 Style="{StaticResource MenuButton}"
+                ToolTip="Generate random aggregates based on the fractal theory"
+                ToolTipService.BetweenShowDelay="10000"
+                ToolTipService.InitialShowDelay="500"
+                ToolTipService.ShowDuration="2000"
                 Visibility="Hidden" />
 
             <Button
@@ -120,16 +93,22 @@
                 Grid.Column="0"
                 Content="{StaticResource AggFormationButtonText2}"
                 Style="{StaticResource MenuButtonPressed}"
+                ToolTip="Generate random aggregates based on the fractal theory"
+                ToolTipService.BetweenShowDelay="10000"
+                ToolTipService.InitialShowDelay="500"
+                ToolTipService.ShowDuration="2000"
                 Visibility="Visible" />
 
             <Button
                 x:Name="FilmFormationButton"
                 Grid.Column="1"
-                Width="200"
-                HorizontalAlignment="Right"
                 cal:Message.Attach="[Event Click] = [Action FilmFormationButtonClick($view)]"
                 Content="{StaticResource FilmFormationButtonText}"
                 Style="{StaticResource MenuButton}"
+                ToolTip="Generate films from generated or read aggreates"
+                ToolTipService.BetweenShowDelay="10000"
+                ToolTipService.InitialShowDelay="500"
+                ToolTipService.ShowDuration="2000"
                 Visibility="Visible" />
 
             <Button
@@ -137,6 +116,10 @@
                 Grid.Column="1"
                 Content="{StaticResource FilmFormationButtonText2}"
                 Style="{StaticResource MenuButtonPressed}"
+                ToolTip="Generate films from generated or read aggreates"
+                ToolTipService.BetweenShowDelay="10000"
+                ToolTipService.InitialShowDelay="500"
+                ToolTipService.ShowDuration="2000"
                 Visibility="Hidden" />
 
             <Button
@@ -145,12 +128,20 @@
                 cal:Message.Attach="[Event Click] = [Action FilmAnalysisButtonClick($view)]"
                 Content="{StaticResource FilmAnalysisButtonText}"
                 Style="{StaticResource MenuButton}"
+                ToolTip="Run several film analysis methods"
+                ToolTipService.BetweenShowDelay="10000"
+                ToolTipService.InitialShowDelay="500"
+                ToolTipService.ShowDuration="2000"
                 Visibility="Visible" />
             <Button
                 x:Name="FilmAnalysisHideButton"
                 Grid.Column="2"
                 Content="{StaticResource FilmAnalysisButtonText2}"
                 Style="{StaticResource MenuButtonPressed}"
+                ToolTip="Run several film analysis methods"
+                ToolTipService.BetweenShowDelay="10000"
+                ToolTipService.InitialShowDelay="500"
+                ToolTipService.ShowDuration="2000"
                 Visibility="Hidden" />
         </Grid>
 
@@ -162,11 +153,30 @@
             Grid.Row="1"
             Grid.Column="0" />
 
-        <!--  Logging and Stauts  -->
-        <Grid
+        <!--  Logging and Status  -->
+        <Border
             Grid.Row="0"
-            Grid.RowSpan="2"
-            Grid.Column="1">
+            Grid.Column="1"
+            Background="{StaticResource UniversityBlueBrush}"
+            BorderBrush="{StaticResource UniversityBlueBrush}"
+            BorderThickness="2">
+            <StackPanel Orientation="Vertical">
+
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Top"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Foreground="White"
+                    Text="ANPaX" />
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    Foreground="White"
+                    Text="Aggregated NanoParticle Library" />
+
+            </StackPanel>
+        </Border>
+        <Grid Grid.Row="1" Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="*" />

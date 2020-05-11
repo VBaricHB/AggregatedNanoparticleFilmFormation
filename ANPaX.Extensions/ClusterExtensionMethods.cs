@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Accord.Collections;
-
 using ANPaX.Collection;
 
 namespace ANPaX.Extensions
@@ -19,12 +17,6 @@ namespace ANPaX.Extensions
         public static double GetGyrationRadius(this Cluster cluster)
         {
             return cluster.PrimaryParticles.GetGyrationRadius();
-        }
-
-        public static KDTree<double> ToNeighborsList(this IEnumerable<Cluster> cluster)
-        {
-            var particles = cluster.SelectMany(c => c.PrimaryParticles);
-            return KDTree.FromData<double>(particles.ToPositionArray());
         }
 
         public static Vector3 GetCenterOfMass(this IEnumerable<Cluster> cluster)

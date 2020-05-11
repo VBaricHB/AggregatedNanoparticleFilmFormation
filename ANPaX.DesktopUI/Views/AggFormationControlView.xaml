@@ -22,6 +22,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
+        <!--  Side Menu Bar  -->
         <Border
             Grid.Column="0"
             Background="{StaticResource UniversityBlueBrush}"
@@ -43,12 +44,14 @@
                     Grid.Row="0"
                     cal:Message.Attach="ShowPrimaryParticleConfigView($view)"
                     Content="PrimaryParticleConfig"
+                    Style="{StaticResource ShowPrimaryParticleConfigButton}"
                     Visibility="Visible" />
                 <Button
                     x:Name="HidePrimaryParticleConfigButton"
                     Grid.Row="0"
                     cal:Message.Attach="HidePrimaryParticleConfigView($view)"
                     Content="PrimaryParticleConfig"
+                    Style="{StaticResource HidePrimaryParticleConfigButton}"
                     Visibility="Hidden" />
 
                 <!--  Cluster Config  -->
@@ -57,12 +60,14 @@
                     Grid.Row="1"
                     cal:Message.Attach="ShowClusterConfigView($view)"
                     Content="ClusterConfig"
+                    Style="{StaticResource ShowClusterConfigButton}"
                     Visibility="Visible" />
                 <Button
                     x:Name="HideClusterConfigButton"
                     Grid.Row="1"
                     cal:Message.Attach="HideClusterConfigView($view)"
                     Content="ClusterConfig"
+                    Style="{StaticResource HideClusterConfigButton}"
                     Visibility="Hidden" />
 
                 <!--  Aggregate Config  -->
@@ -71,12 +76,14 @@
                     Grid.Row="2"
                     cal:Message.Attach="ShowAggregateConfigView($view)"
                     Content="AggregateConfig"
+                    Style="{StaticResource ShowAggregateConfigButton}"
                     Visibility="Visible" />
                 <Button
                     x:Name="HideAggregateConfigButton"
                     Grid.Row="2"
                     cal:Message.Attach="HideAggregateConfigView($view)"
                     Content="AggregateConfig"
+                    Style="{StaticResource HideAggregateConfigButton}"
                     Visibility="Hidden" />
 
                 <!--  Advanced Config  -->
@@ -85,21 +92,23 @@
                     Grid.Row="3"
                     cal:Message.Attach="ShowAdvancedConfigView($view)"
                     Content="AdvancedConfig"
+                    Style="{StaticResource ShowAdvancedConfigButton}"
                     Visibility="Visible" />
                 <Button
                     x:Name="HideAdvancedConfigButton"
                     Grid.Row="3"
                     cal:Message.Attach="HideAdvancedConfigView($view)"
                     Content="AdvancedConfig"
+                    Style="{StaticResource HideAdvancedConfigButton}"
                     Visibility="Hidden" />
             </Grid>
         </Border>
-
 
         <!--  Active Content  -->
         <Border Grid.Column="1" Background="{StaticResource UniversityGreyBrush}">
             <ContentControl x:Name="ActiveItem" />
         </Border>
+
         <!--  General  -->
         <Border
             Grid.Column="2"
@@ -139,24 +148,115 @@
                             Grid.Row="1"
                             Grid.Column="1"
                             Content="Select"
-                            FontSize="10" />
+                            FontSize="10"
+                            Style="{StaticResource DefaultButton}" />
                     </Grid>
+                    <!--  Main Controls  -->
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock
+                            Grid.Row="0"
+                            Margin="0,5,0,0"
+                            FontSize="10"
+                            Text="Number of primary particles" />
+                        <TextBox
+                            x:Name="Config_TotalPrimaryParticles"
+                            Grid.Row="1"
+                            FontSize="10" />
 
-                    <TextBlock
-                        Margin="0,5,0,0"
-                        FontSize="10"
-                        Text="Number of primary particles" />
-                    <TextBox x:Name="Config_TotalPrimaryParticles" FontSize="10" />
+                        <TextBlock
+                            Grid.Row="2"
+                            Margin="0,5,0,0"
+                            FontSize="10"
+                            Text="Max number of CPU" />
+                        <TextBox
+                            x:Name="SimProp_NumberOfCPU"
+                            Grid.Row="3"
+                            FontSize="10" />
 
-                    <TextBlock
-                        Margin="0,5,0,0"
-                        FontSize="10"
-                        Text="Use CPU" />
-                    <TextBox x:Name="SimProp_NumberOfCPU" FontSize="10" />
+                        <CheckBox
+                            x:Name="DoAutoSaveFile"
+                            Grid.Row=" 4"
+                            Margin="0,10,0,0"
+                            Content="Save aggregates after generation" />
 
+
+                        <Button
+                            Name="GenerateAggregatesButton"
+                            Grid.Row="5"
+                            Margin="0,10,0,0"
+                            cal:Message.Attach="GenerateAggregates($view)"
+                            Content="Generate Aggregates"
+                            Style="{StaticResource DefaultButton}" />
+
+                        <Button
+                            Name="CancelGenerationButton"
+                            Grid.Row="5"
+                            Margin="0,10,0,0"
+                            cal:Message.Attach="CancelGeneration($view)"
+                            Content="Cancel Generation"
+                            Style="{StaticResource DefaultButton}"
+                            Visibility="Hidden" />
+                    </Grid>
                 </StackPanel>
 
                 <!--  Right side  -->
+
+                <Grid Margin="50,0,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+
+                    </Grid.RowDefinitions>
+
+                    <!--  Row 0  -->
+                    <ContentControl x:Name="AggregateInformationViewModel" Grid.Row="0" />
+
+
+                    <TextBlock
+                        Grid.Row="1"
+                        Margin="0,5,0,0"
+                        FontSize="10"
+                        Text="Filename" />
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox
+                            x:Name="AggFileName"
+                            Grid.Column="0"
+                            FontSize="10" />
+                        <ComboBox
+                            x:Name="AvailableAggFileFormats"
+                            Grid.Column="1"
+                            FontSize="10"
+                            SelectedItem="{Binding Path=SelectedAggFileFormat}" />
+                    </Grid>
+
+                    <!--  Row 1  -->
+                    <Button
+                        x:Name="ExportAggregatesButton"
+                        Grid.Row="3"
+                        Margin="0,10,0,0"
+                        cal:Message.Attach="ExportAggregatesToFile()"
+                        Content="Save aggregates"
+                        Style="{StaticResource DefaultButton}" />
+
+                </Grid>
             </StackPanel>
 
         </Border>

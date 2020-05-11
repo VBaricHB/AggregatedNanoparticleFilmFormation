@@ -4,6 +4,7 @@ using System.IO;
 
 using ANPaX.AggregateFormation.interfaces;
 using ANPaX.Collection;
+using ANPaX.Core.Neighborslist;
 using ANPaX.Extensions;
 
 using Moq;
@@ -22,12 +23,14 @@ namespace ANPaX.AggregateFormation.tests
         private IAggregateFormationConfig _config = new TestAggregateFormationConfig();
         private ILogger _logger = new Mock<ILogger>().Object;
         private ISizeDistribution<double> _monoPSD = new MonodispersePrimaryParticleSizeDistribution(5);
+        private INeighborslistFactory _neighborslistFactory = new AccordNeighborslistFactory();
 
         [Fact]
         public void CorrectClusterSizeTest()
         {
-            var clusterSizes = ClusterClusterAggregationFactory.GetClusterSizes(20, _config);
-            Assert.Equal(4, ClusterClusterAggregationFactory.GetNumberOfCluster(20, _config));
+            var ccaf = new ClusterClusterAggregationFactory(_monoPSD, _config, _logger, _neighborslistFactory);
+            var clusterSizes = ccaf.GetClusterSizes(20);
+            Assert.Equal(4, ccaf.GetNumberOfCluster(20));
             Assert.Equal(new List<int>() { 5, 5, 5, 5 }, clusterSizes);
         }
 
@@ -35,7 +38,7 @@ namespace ANPaX.AggregateFormation.tests
         public void BuildAggregateTest()
         {
 
-            var cca = new ClusterClusterAggregationFactory(_monoPSD, _config, _logger, _seed);
+            var cca = new ClusterClusterAggregationFactory(_monoPSD, _config, _logger, _neighborslistFactory, _seed);
             var agg = cca.Build(24);
             Assert.Equal(24, agg.NumberOfPrimaryParticles);
         }
@@ -46,7 +49,7 @@ namespace ANPaX.AggregateFormation.tests
             var file = _resources + "FSP_PrimaryParticleSizeDistribution.xml";
             var dist = XMLSizeDistributionBuilder<double>.Read(file);
             var psd = new TabulatedPrimaryParticleSizeDistribution(dist, _rndGen, _config, integrate: true);
-            var cca = new ClusterClusterAggregationFactory(psd, _config, _logger, _seed);
+            var cca = new ClusterClusterAggregationFactory(psd, _config, _logger, _neighborslistFactory, _seed);
             var agg = cca.Build(24);
             Assert.Equal(24, agg.NumberOfPrimaryParticles);
         }
@@ -58,7 +61,7 @@ namespace ANPaX.AggregateFormation.tests
             var dist = XMLSizeDistributionBuilder<double>.Read(file);
             var psd = new TabulatedPrimaryParticleSizeDistribution(dist, _rndGen, _config, integrate: true);
             var aggs = new List<Aggregate>();
-            var cca = new ClusterClusterAggregationFactory(psd, _config, _logger, _seed);
+            var cca = new ClusterClusterAggregationFactory(psd, _config, _logger, _neighborslistFactory, _seed);
             for (var i = 0; i < 4; i++)
             {
                 var agg = cca.Build(24);
@@ -74,6 +77,8 @@ namespace ANPaX.AggregateFormation.tests
             var logger = new Mock<ILogger>().Object;
             var rndGen = new Random(_seed);
 
+            var cca = new ClusterClusterAggregationFactory(_monoPSD, _config, _logger, _neighborslistFactory, _seed);
+
             var pp1 = new PrimaryParticle(1, new Vector3(0, 0, 0), 5);
             var pp2 = new PrimaryParticle(2, new Vector3(0, 0, 10), 5);
 
@@ -83,23 +88,24 @@ namespace ANPaX.AggregateFormation.tests
                 cluster1
             };
 
-            var tree = cluster1.PrimaryParticles.ToNeighborsList();
+            var neighborslist = _neighborslistFactory.Build3DNeighborslist(cluster1.PrimaryParticles);
+
 
             var pp3 = new PrimaryParticle(3, new Vector3(0, 0, 25), 5);
             var pp4 = new PrimaryParticle(4, new Vector3(0, 0, 19), 5);
             var pp5 = new PrimaryParticle(4, new Vector3(0, 0, 20.02), 5);
 
-            var (anyNearby1, allFeasible1) = ClusterClusterAggregationFactory.IsPrimaryParticlePositionValid(tree, pp3, depositedCluster.GetPrimaryParticles(), _config);
+            var (anyNearby1, allFeasible1) = cca.IsPrimaryParticlePositionValid(neighborslist, pp3, depositedCluster.GetPrimaryParticles());
 
             Assert.False(anyNearby1);
             Assert.True(allFeasible1);
 
-            var (anyNearby2, allFeasible2) = ClusterClusterAggregationFactory.IsPrimaryParticlePositionValid(tree, pp4, depositedCluster.GetPrimaryParticles(), _config);
+            var (anyNearby2, allFeasible2) = cca.IsPrimaryParticlePositionValid(neighborslist, pp4, depositedCluster.GetPrimaryParticles());
 
             Assert.True(anyNearby2);
             Assert.False(allFeasible2);
 
-            var (anyNearby3, allFeasible3) = ClusterClusterAggregationFactory.IsPrimaryParticlePositionValid(tree, pp5, depositedCluster.GetPrimaryParticles(), _config);
+            var (anyNearby3, allFeasible3) = cca.IsPrimaryParticlePositionValid(neighborslist, pp5, depositedCluster.GetPrimaryParticles());
 
             Assert.True(anyNearby3);
             Assert.True(allFeasible3);
@@ -111,32 +117,32 @@ namespace ANPaX.AggregateFormation.tests
         {
             var pp1 = new PrimaryParticle(1, new Vector3(0, 0, 0), 5);
             var pp2 = new PrimaryParticle(2, new Vector3(0, 0, 10), 5);
-
+            var cca = new ClusterClusterAggregationFactory(_monoPSD, _config, _logger, _neighborslistFactory, _seed);
             var cluster1 = new Cluster(1, new List<PrimaryParticle>() { pp1, pp2 });
             var depositedCluster = new List<Cluster>
             {
                 cluster1
             };
-            var tree = cluster1.PrimaryParticles.ToNeighborsList();
+            var neighborslist = _neighborslistFactory.Build3DNeighborslist(cluster1.PrimaryParticles);
 
             var pp3 = new PrimaryParticle(3, new Vector3(0, 0, 30), 5);
             var pp4 = new PrimaryParticle(4, new Vector3(0, 0, 20), 5);
             var cluster2 = new Cluster(1, new List<PrimaryParticle>() { pp3, pp4 });
             var position = new Vector3(0, 0, 25.02);
             cluster2.MoveTo(position);
-            var set = ClusterClusterAggregationFactory.IsClusterPositionValid(cluster2, tree, depositedCluster, _config);
+            var set = cca.IsClusterPositionValid(cluster2, neighborslist, depositedCluster);
             Assert.True(set);
 
             var position2 = new Vector3(0, 0, 24);
             cluster2.MoveTo(position2);
-            var set2 = ClusterClusterAggregationFactory.IsClusterPositionValid(cluster2, tree, depositedCluster, _config);
+            var set2 = cca.IsClusterPositionValid(cluster2, neighborslist, depositedCluster);
             Assert.False(set2);
         }
 
         [Fact]
         public void NoOverlappingParticlesTest()
         {
-            var cca = new ClusterClusterAggregationFactory(_monoPSD, _config, _logger, _seed);
+            var cca = new ClusterClusterAggregationFactory(_monoPSD, _config, _logger, _neighborslistFactory, _seed);
             var logger = new Mock<ILogger>().Object;
             var rndGen = new Random(_seed);
             for (var i = 0; i < 100; i++)

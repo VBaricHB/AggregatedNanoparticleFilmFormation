@@ -5,6 +5,7 @@ using System.Linq;
 
 using ANPaX.AggregateFormation.interfaces;
 using ANPaX.Collection;
+using ANPaX.Core.Neighborslist;
 using ANPaX.Extensions;
 
 using Moq;
@@ -23,6 +24,7 @@ namespace ANPaX.AggregateFormation.tests
         private ILogger _logger = new Mock<ILogger>().Object;
         private Random _rndGen = new Random(_seed);
         private IAggregateFormationConfig _config = new TestAggregateFormationConfig();
+        private INeighborslistFactory _neighborslistFactory = new AccordNeighborslistFactory();
 
 
         [Fact]
@@ -45,9 +47,9 @@ namespace ANPaX.AggregateFormation.tests
             var com = primaryParticles.GetCenterOfMass();
             var setPosition = new Vector3(-11.098618, 1.316368, -6.026161) + com;
             var psd = new MonodispersePrimaryParticleSizeDistribution(5);
-            var pca = new ParticleClusterAggregationFactory(psd, _rndGen, _config, _logger);
-            var tree = primaryParticles.ToNeighborsList();
-            var check = pca.IsPrimaryParticlePositionValid(pp3, setPosition, tree, primaryParticles, _config);
+            var pca = new ParticleClusterAggregationFactory(psd, _rndGen, _config, _neighborslistFactory, _logger);
+            var neighborslist = _neighborslistFactory.Build3DNeighborslist(primaryParticles);
+            var check = pca.IsPrimaryParticlePositionValid(pp3, setPosition, neighborslist, primaryParticles, _config);
             Assert.True(check);
         }
 
@@ -56,7 +58,7 @@ namespace ANPaX.AggregateFormation.tests
         {
             var config = new TestAggregateFormationConfig();
             var psd = new MonodispersePrimaryParticleSizeDistribution(5);
-            var pca = new ParticleClusterAggregationFactory(psd, _rndGen, _config, _logger);
+            var pca = new ParticleClusterAggregationFactory(psd, _rndGen, _config, _neighborslistFactory, _logger);
             var cluster = pca.Build(2);
             Assert.Equal(2, cluster.PrimaryParticles.Count());
             var dist = Math.Round(config.Epsilon
@@ -69,10 +71,10 @@ namespace ANPaX.AggregateFormation.tests
         public void FormClusterOfThreeParticlesTest()
         {
             var logger = new Mock<ILogger>().Object;
-            TestAggregateFormationConfig config = new TestAggregateFormationConfig();
+            var config = new TestAggregateFormationConfig();
             var psd = new MonodispersePrimaryParticleSizeDistribution(5);
             var rndGen = new Random(_seed);
-            var pca = new ParticleClusterAggregationFactory(psd, _rndGen, _config, _logger);
+            var pca = new ParticleClusterAggregationFactory(psd, _rndGen, _config, _neighborslistFactory, _logger);
             var cluster = pca.Build(3);
             Assert.Equal(3, cluster.PrimaryParticles.Count());
             var dist = Math.Round(cluster.PrimaryParticles[0].Radius + cluster.PrimaryParticles[1].Radius, 6);
@@ -85,7 +87,7 @@ namespace ANPaX.AggregateFormation.tests
         public void FormClusterOfFourParticlesTest()
         {
             var psd = new MonodispersePrimaryParticleSizeDistribution(5);
-            var pca = new ParticleClusterAggregationFactory(psd, _rndGen, _config, _logger);
+            var pca = new ParticleClusterAggregationFactory(psd, _rndGen, _config, _neighborslistFactory, _logger);
             var cluster = pca.Build(4);
             Assert.Equal(4, cluster.PrimaryParticles.Count());
             var dist = Math.Round(cluster.PrimaryParticles[1].Radius + cluster.PrimaryParticles[2].Radius, 6);
@@ -98,7 +100,7 @@ namespace ANPaX.AggregateFormation.tests
         public void FormClusterOfTwentyParticlesTest()
         {
             var psd = new MonodispersePrimaryParticleSizeDistribution(5);
-            var pca = new ParticleClusterAggregationFactory(psd, _rndGen, _config, _logger);
+            var pca = new ParticleClusterAggregationFactory(psd, _rndGen, _config, _neighborslistFactory, _logger);
             var cluster = pca.Build(20);
             Assert.Equal(20, cluster.PrimaryParticles.Count());
             foreach (var pp1 in cluster.PrimaryParticles)
@@ -119,7 +121,7 @@ namespace ANPaX.AggregateFormation.tests
             var file = _resources + "FSP_PrimaryParticleSizeDistribution.xml";
             var dist = XMLSizeDistributionBuilder<double>.Read(file);
             var psd = new TabulatedPrimaryParticleSizeDistribution(dist, _rndGen, _config, integrate: true);
-            var pca = new ParticleClusterAggregationFactory(psd, _rndGen, _config, _logger);
+            var pca = new ParticleClusterAggregationFactory(psd, _rndGen, _config, _neighborslistFactory, _logger);
             var cluster = pca.Build(2);
             Assert.Equal(2, cluster.PrimaryParticles.Count());
             var distance = Math.Round(_config.Epsilon
@@ -134,7 +136,7 @@ namespace ANPaX.AggregateFormation.tests
             var file = _resources + "FSP_PrimaryParticleSizeDistribution.xml";
             var dist = XMLSizeDistributionBuilder<double>.Read(file);
             var psd = new TabulatedPrimaryParticleSizeDistribution(dist, _rndGen, _config, integrate: true);
-            var pca = new ParticleClusterAggregationFactory(psd, _rndGen, _config, _logger);
+            var pca = new ParticleClusterAggregationFactory(psd, _rndGen, _config, _neighborslistFactory, _logger);
             var cluster = pca.Build(3);
             Assert.Equal(3, cluster.PrimaryParticles.Count());
             var distance = Math.Round(cluster.PrimaryParticles[0].Radius + cluster.PrimaryParticles[1].Radius, 6);
@@ -150,7 +152,7 @@ namespace ANPaX.AggregateFormation.tests
             var file = _resources + "FSP_PrimaryParticleSizeDistribution.xml";
             var dist = XMLSizeDistributionBuilder<double>.Read(file);
             var psd = new TabulatedPrimaryParticleSizeDistribution(dist, _rndGen, _config, integrate: true);
-            var pca = new ParticleClusterAggregationFactory(psd, _rndGen, _config, _logger);
+            var pca = new ParticleClusterAggregationFactory(psd, _rndGen, _config, _neighborslistFactory, _logger);
             var cluster = pca.Build(4);
             Assert.Equal(4, cluster.PrimaryParticles.Count());
         }
@@ -161,7 +163,7 @@ namespace ANPaX.AggregateFormation.tests
             var file = _resources + "FSP_PrimaryParticleSizeDistribution.xml";
             var dist = XMLSizeDistributionBuilder<double>.Read(file);
             var psd = new TabulatedPrimaryParticleSizeDistribution(dist, _rndGen, _config, integrate: true);
-            var pca = new ParticleClusterAggregationFactory(psd, _rndGen, _config, _logger);
+            var pca = new ParticleClusterAggregationFactory(psd, _rndGen, _config, _neighborslistFactory, _logger);
             var cluster = pca.Build(20);
             Assert.Equal(20, cluster.PrimaryParticles.Count());
             foreach (var pp1 in cluster.PrimaryParticles)
@@ -182,7 +184,7 @@ namespace ANPaX.AggregateFormation.tests
             var file = _resources + "FSP_PrimaryParticleSizeDistribution.xml";
             var dist = XMLSizeDistributionBuilder<double>.Read(file);
             var psd = new TabulatedPrimaryParticleSizeDistribution(dist, _rndGen, _config, integrate: true);
-            var pca = new ParticleClusterAggregationFactory(psd, _rndGen, _config, _logger);
+            var pca = new ParticleClusterAggregationFactory(psd, _rndGen, _config, _neighborslistFactory, _logger);
             for (var i = 0; i < 4; i++)
             {
                 var cluster = pca.Build(6);

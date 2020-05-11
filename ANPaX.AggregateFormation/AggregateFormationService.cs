@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using ANPaX.AggregateFormation.interfaces;
 using ANPaX.Collection;
+using ANPaX.Core.Neighborslist;
 
 using NLog;
 
@@ -18,6 +19,7 @@ namespace ANPaX.AggregateFormation
         private ISizeDistribution<int> _asd;
         private ISizeDistribution<double> _psd;
         private IParticleFactory<Aggregate> _particleFactory;
+        private INeighborslistFactory _neighborslistFactory;
         private readonly IAggregateFormationConfig _config;
         private readonly ILogger _logger;
 
@@ -26,6 +28,7 @@ namespace ANPaX.AggregateFormation
         {
             _config = config;
             _logger = logger;
+            _neighborslistFactory = new AccordNeighborslistFactory();
 
             if (config.UseDefaultGenerationMethods)
             {
@@ -53,7 +56,7 @@ namespace ANPaX.AggregateFormation
             }
             _asd = DefaultConfigurationBuilder.GetAggreateSizeDistribution(rndGen, _config);
             _psd = DefaultConfigurationBuilder.GetPrimaryParticleSizeDistribution(rndGen, _config);
-            _particleFactory = new ClusterClusterAggregationFactory(_psd, _config, _logger, _config.RandomGeneratorSeed);
+            _particleFactory = new ClusterClusterAggregationFactory(_psd, _config, _logger, _neighborslistFactory, _config.RandomGeneratorSeed);
         }
 
         internal AggregateFormationService
@@ -149,6 +152,8 @@ namespace ANPaX.AggregateFormation
             var aggregates = new List<Aggregate>();
             var report = new ProgressReportModel();
             var rndGen = new Random();
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
             if (_seed != -1)
             {
                 rndGen = new Random(_seed);
@@ -158,8 +163,6 @@ namespace ANPaX.AggregateFormation
                 await Task.Run(() =>
                     Parallel.ForEach<int>(aggregateSizes, opt, size =>
                     {
-                        var stopwatch = new Stopwatch();
-                        stopwatch.Start();
                         aggregates.Add(_particleFactory.Build(size));
                         UpdateProgress(progress, aggregateSizes, aggregates, report, stopwatch);
 
@@ -186,7 +189,7 @@ namespace ANPaX.AggregateFormation
             report.TotalAggregates = aggregateSizes.Count;
             report.CumulatedPrimaryParticles += aggregates.Last().NumberOfPrimaryParticles;
             report.PrimaryParticlesLastAggregate = aggregates.Last().NumberOfPrimaryParticles;
-            report.SimulationTime += stopwatch.ElapsedMilliseconds;
+            report.SimulationTime = stopwatch.ElapsedMilliseconds;
             report.TotalPrimaryParticles = aggregateSizes.Sum();
             progress.Report(report);
         }

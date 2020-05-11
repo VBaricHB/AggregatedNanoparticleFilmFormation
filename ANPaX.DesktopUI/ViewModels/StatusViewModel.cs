@@ -130,9 +130,26 @@ namespace ANPaX.DesktopUI.ViewModels
             LogProgress(e);
         }
 
+        public void ReportFilmProgress(object sender, ProgressReportModel e)
+        {
+            CurrentProgress = e.PercentageComplete;
+            AggregatesDoneString = $"{e.CumulatedAggregates} / {e.TotalAggregates}";
+            PrimaryParticlesDoneString = $"{e.CumulatedPrimaryParticles} / {e.TotalPrimaryParticles}";
+            SimulationTimeString = TimeSpan.FromMilliseconds(e.SimulationTime).ToString(@"hh\:mm\:ss");
+            var timePerAggregate = e.SimulationTime / e.CumulatedAggregates;
+            var remainingTime = (e.TotalAggregates - e.CumulatedAggregates) * timePerAggregate;
+            RemainingTimeString = TimeSpan.FromMilliseconds(remainingTime).ToString(@"hh\:mm\:ss");
+            LogFilmProgress(e);
+        }
+
         private void LogProgress(ProgressReportModel e)
         {
             LoggingViewModel.LogInfo($"Aggregate {e.CumulatedAggregates} complete ({e.PrimaryParticlesLastAggregate} primary particles).");
+        }
+
+        private void LogFilmProgress(ProgressReportModel e)
+        {
+            LoggingViewModel.LogInfo($"Aggregate {e.CumulatedAggregates} deposited ({e.PrimaryParticlesLastAggregate} primary particles).");
         }
     }
 }

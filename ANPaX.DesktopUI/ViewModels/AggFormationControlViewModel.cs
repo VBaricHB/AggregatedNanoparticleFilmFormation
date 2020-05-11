@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 using ANPaX.AggregateFormation;
 using ANPaX.Collection;
@@ -25,10 +26,11 @@ namespace ANPaX.DesktopUI.ViewModels
         private string _selectedAggFileFormat = "json";
         private readonly ILogger _logger = new Mock<ILogger>().Object;
         private CancellationTokenSource _cts;
-        private List<Aggregate> _generatedAggregates;
+
         private FileExport _export = new FileExport();
         #endregion
 
+        public List<Aggregate> GeneratedAggregates { get; set; }
         public AdvancedConfigViewModel AdvancedConfigViewModel { get; set; }
         public AggregateConfigViewModel AggregateConfigViewModel { get; set; }
         public ClusterConfigViewModel ClusterConfigViewModel { get; set; }
@@ -113,11 +115,15 @@ namespace ANPaX.DesktopUI.ViewModels
             SimProp.SimulationPath = dialog.SelectedPath;
         }
 
-        public async void GenerateAggregates(AggFormationControlView view)
+        public async Task GenerateAggregates(AggFormationControlView view)
         {
             StatusViewModel.SimulationStatus = SimulationStatus.Running;
-            view.CancelGenerationButton.Visibility = System.Windows.Visibility.Visible;
-            view.GenerateAggregatesButton.Visibility = System.Windows.Visibility.Hidden;
+            if (!(view is null))
+            {
+                view.CancelGenerationButton.Visibility = System.Windows.Visibility.Visible;
+                view.GenerateAggregatesButton.Visibility = System.Windows.Visibility.Hidden;
+            }
+
             LogInfo("Initiating aggregate formation");
             var progress = new Progress<ProgressReportModel>();
             progress.ProgressChanged += StatusViewModel.ReportProgress;
@@ -125,26 +131,27 @@ namespace ANPaX.DesktopUI.ViewModels
             var service = new AggregateFormationService(Config, _logger);
             _cts = new CancellationTokenSource();
 
-            _generatedAggregates = await service.GenerateAggregates_Parallel_Async(SimProp.NumberOfCPU, progress, _cts.Token);
-            AggregateInformationViewModel.UpdateAggregates(_generatedAggregates);
+            GeneratedAggregates = await service.GenerateAggregates_Parallel_Async(SimProp.NumberOfCPU, progress, _cts.Token);
+            AggregateInformationViewModel.UpdateAggregates(GeneratedAggregates);
 
             if (StatusViewModel.SimulationStatus == SimulationStatus.Canceling)
             {
-                StatusViewModel.SimulationStatus = SimulationStatus.Canceled;
+                StatusViewModel.SimulationStatus = SimulationStatus.Idle;
             }
             else
             {
-                StatusViewModel.SimulationStatus = SimulationStatus.Finished;
+                StatusViewModel.SimulationStatus = SimulationStatus.Idle;
                 LogInfo("Aggregate generation finished.");
                 if (DoAutoSaveFile)
                 {
                     ExportAggregatesToFile();
                 }
             }
-
-            view.CancelGenerationButton.Visibility = System.Windows.Visibility.Hidden;
-            view.GenerateAggregatesButton.Visibility = System.Windows.Visibility.Visible;
-
+            if (!(view is null))
+            {
+                view.CancelGenerationButton.Visibility = System.Windows.Visibility.Hidden;
+                view.GenerateAggregatesButton.Visibility = System.Windows.Visibility.Visible;
+            }
 
         }
 
@@ -170,9 +177,9 @@ namespace ANPaX.DesktopUI.ViewModels
             var fileNameWithPath = Path.Join(SimProp.SimulationPath, AggFileName);
             LogInfo($"Exported aggregates: {fileNameWithPath}");
             _export.Export(
-                _generatedAggregates,
+                GeneratedAggregates,
                 Config,
-                fileNameWithPath, FileFormat);
+                fileNameWithPath, FileFormat, false);
         }
 
         private void SetFileFormat(string fileFormatString)
@@ -195,7 +202,7 @@ namespace ANPaX.DesktopUI.ViewModels
 
         private bool RunExportPreCheck()
         {
-            if (!_generatedAggregates.Any())
+            if (!GeneratedAggregates.Any())
             {
                 LogWarning("Did not save file, no loaded aggregates");
                 return false;

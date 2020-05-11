@@ -15,5 +15,6 @@
   <ItemGroup>
     <ProjectReference Include="..\ANPaX.AggregateFormation\ANPaX.AggregateFormation.csproj" />
     <ProjectReference Include="..\ANPaX.Collection\ANPaX.Collection.csproj" />
+    <ProjectReference Include="..\ANPaX.FilmFormation\ANPaX.FilmFormation.csproj" />
   </ItemGroup>
 </Project>

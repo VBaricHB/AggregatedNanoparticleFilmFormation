@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 using ANPaX.AggregateFormation.interfaces;
 using ANPaX.Collection;
+using ANPaX.FilmFormation.interfaces;
 
 namespace ANPaX.Export
 {
@@ -10,11 +10,13 @@ namespace ANPaX.Export
     {
         private ANPaXJsonSerializer _jsonSerializer;
         private ANPaXXmlSerializer _xmlSerializer;
+        private LammpsDumpSerializer _lammpsSerializer;
 
         public FileExport()
         {
             _jsonSerializer = new ANPaXJsonSerializer();
             _xmlSerializer = new ANPaXXmlSerializer();
+            _lammpsSerializer = new LammpsDumpSerializer();
         }
 
         public void Export(
@@ -22,10 +24,10 @@ namespace ANPaX.Export
             IAggregateFormationConfig config,
             string filename,
             FileFormat fileFormat,
-            bool convertToSI)
+            bool doUseSI)
         {
 
-            var output = AggregateOutputMapper.MapToAggregateOutput(aggregates, config, convertToSI);
+            var output = AggregateOutputMapper.MapToAggregateOutput(aggregates, config, doUseSI);
 
             switch (fileFormat)
             {
@@ -54,25 +56,31 @@ namespace ANPaX.Export
                    true);
         }
 
-
-
-        private static FileFormat GetFileFormat(string filename)
+        public void Export(
+            IParticleFilm<Aggregate> particleFilm,
+            string filename,
+            FileFormat fileFormat,
+            bool doUseSI)
         {
-            if (filename.EndsWith("xml"))
+            switch (fileFormat)
             {
-                return FileFormat.Xml;
+                case FileFormat.Json:
+                    _jsonSerializer.Serialize(particleFilm, filename);
+                    break;
+                case FileFormat.Xml:
+                    _xmlSerializer.Serialize(particleFilm, filename);
+                    break;
+                case FileFormat.LammpsDump:
+                    _lammpsSerializer.Serialize(particleFilm, filename);
+                    break;
+                default:
+                    return;
             }
-            else if (filename.EndsWith("json"))
-            {
-                return FileFormat.Json;
-            }
-            else if (filename.Contains(".trj") || filename.Contains("lammps"))
-            {
-                return FileFormat.LammpsDump;
-            }
-
-            throw new ArgumentException($"Invalid filetype {filename}.");
         }
+
+
+
+
 
     }
 }

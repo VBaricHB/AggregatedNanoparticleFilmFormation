@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-using Accord.Collections;
-
 using ANPaX.AggregateFormation.interfaces;
 using ANPaX.Collection;
+using ANPaX.Core.Neighborslist;
 using ANPaX.Extensions;
 
 using NLog;
@@ -34,17 +33,20 @@ namespace ANPaX.AggregateFormation
         private readonly IAggregateFormationConfig _config;
         private readonly ILogger _logger;
         private readonly int _seed;
+        private readonly INeighborslistFactory _neighborslistFactory;
 
         public ClusterClusterAggregationFactory(
             ISizeDistribution<double> primaryParticleSizeDistribution,
             IAggregateFormationConfig config,
             ILogger logger,
+            INeighborslistFactory neighborslistFactory,
             int seed = -1)
         {
             _psd = primaryParticleSizeDistribution;
             _config = config;
             _logger = logger;
             _seed = seed;
+            _neighborslistFactory = neighborslistFactory;
         }
 
         /// <summary>
@@ -106,11 +108,11 @@ namespace ANPaX.AggregateFormation
         internal IEnumerable<Cluster> GenerateCluster(int numberOfPrimaryParticles, Random rndGen)
         {
             // instantiate the ParticleClusterAggregationFactory to generate clusters
-            var pca = new ParticleClusterAggregationFactory(_psd, rndGen, _config, _logger);
+            var pca = new ParticleClusterAggregationFactory(_psd, rndGen, _config, _neighborslistFactory, _logger);
 
             // determine the size of the clusters dependent on the total number of primary particles
             // and the given cluster size
-            var clusterSizes = GetClusterSizes(numberOfPrimaryParticles, _config);
+            var clusterSizes = GetClusterSizes(numberOfPrimaryParticles);
 
             // form the individual cluster
             var clusterToSet = clusterSizes.Select(s => pca.Build(s));
@@ -130,9 +132,11 @@ namespace ANPaX.AggregateFormation
 
             var depositedCluster = new List<Cluster>();
 
+
+
             foreach (var cluster in clusterToSet)
             {
-                if (!PositionCluster(cluster, depositedCluster, count, rndGen, _config, _psd, _logger))
+                if (!PositionCluster(cluster, depositedCluster, count, rndGen))
                 {
                     // When the algorithm fails to position the cluster return null to
                     // restart the algorithm
@@ -155,14 +159,11 @@ namespace ANPaX.AggregateFormation
         /// <param name="primaryParticleSizeDistribution">The primary particle size distribution providing the mean radius for the calculation of the position of the next cluster.</param>
         /// <param name="logger"></param>
         /// <returns></returns>
-        private static bool PositionCluster(
+        private bool PositionCluster(
             Cluster cluster,
             List<Cluster> depositedCluster,
             int count,
-            Random rndGen,
-            IAggregateFormationConfig config,
-            ISizeDistribution<double> primaryParticleSizeDistribution,
-            ILogger logger)
+            Random rndGen)
         {
             if (!depositedCluster.Any())
             {
@@ -173,38 +174,35 @@ namespace ANPaX.AggregateFormation
             else
             {
                 // Try to position the next cluster based on CCA. If it fails return false to invoke the restart of the formation procedure.
-                return PositionNextCluster(cluster, depositedCluster, count, rndGen, config, primaryParticleSizeDistribution, logger);
+                return PositionNextCluster(cluster, depositedCluster, count, rndGen);
             }
         }
 
         /// <summary>
         /// Position the next cluster depending on the already positioned cluster.
         /// </summary>
-        private static bool PositionNextCluster(Cluster nextCluster,
+        private bool PositionNextCluster(Cluster nextCluster,
                                            List<Cluster> depositedCluster,
                                            int count,
-                                           Random rndGen,
-                                           IAggregateFormationConfig config,
-                                           ISizeDistribution<double> psd,
-                                           ILogger logger)
+                                           Random rndGen)
         {
             // Compute the distance of the center of mass (COM) of next cluster to the
             // COM of the already depositioned cluster based on the equation of the CCA
-            var distance = GetDistanceFromCOMForNextCluster(nextCluster, depositedCluster, config, psd);
+            var distance = GetDistanceFromCOMForNextCluster(nextCluster, depositedCluster);
             MoveClusterToCOM(depositedCluster);
 
             // build the neigborlist to speed up the search for the correct position
-            var tree = depositedCluster.ToNeighborsList();
+            var neighborslist = _neighborslistFactory.Build3DNeighborslist(depositedCluster);
             var isValid = false;
             while (!isValid)
             {
-                isValid = IsRandomPositionValid(nextCluster, depositedCluster, rndGen, config, distance, tree);
+                isValid = IsRandomPositionValid(nextCluster, depositedCluster, rndGen, distance, neighborslist);
 
                 // With the current configuration (primary particle sizes) no suitable position of the cluster is found
                 // therefore, a restart is invoked.
-                if (count > config.MaxAttemptsPerAggregate)
+                if (count > _config.MaxAttemptsPerAggregate)
                 {
-                    logger.Debug("Resetting aggregate generation. Time limit exceeded.");
+                    _logger.Debug("Resetting aggregate generation. Time limit exceeded.");
                     return false;
                 }
                 count++;
@@ -216,13 +214,12 @@ namespace ANPaX.AggregateFormation
 
         }
 
-        private static bool IsRandomPositionValid(
+        private bool IsRandomPositionValid(
             Cluster nextCluster,
             List<Cluster> depositedCluster,
             Random rndGen,
-            IAggregateFormationConfig config,
             double distance,
-            KDTree<double> tree)
+            INeighborslist neighborslist)
         {
             bool found;
             // Get a new random position for the COM on the sphere around the deposited cluster
@@ -232,7 +229,7 @@ namespace ANPaX.AggregateFormation
             nextCluster.MoveTo(rndPosition);
 
             // Check if that random position is valid (no overlap, but connection between nextCluster an the deposited cluster)
-            found = IsClusterPositionValid(nextCluster, tree, depositedCluster, config);
+            found = IsClusterPositionValid(nextCluster, neighborslist, depositedCluster);
             return found;
         }
 
@@ -256,18 +253,17 @@ namespace ANPaX.AggregateFormation
         /// <param name="depositedCluster"></param>
         /// <param name="config"></param>
         /// <returns></returns>
-        public static bool IsClusterPositionValid(
+        public bool IsClusterPositionValid(
             Cluster nextCluster,
-            KDTree<double> tree,
-            List<Cluster> depositedCluster,
-            IAggregateFormationConfig config)
+            INeighborslist neighborslist,
+            List<Cluster> depositedCluster)
         {
 
             var isValid = false;
 
             foreach (var particle in nextCluster.PrimaryParticles)
             {
-                var (anyNearby, allFeasible) = IsPrimaryParticlePositionValid(tree, particle, depositedCluster.GetPrimaryParticles(), config);
+                var (anyNearby, allFeasible) = IsPrimaryParticlePositionValid(neighborslist, particle, depositedCluster.GetPrimaryParticles());
                 if (!allFeasible)
                 {
                     return false;
@@ -288,20 +284,21 @@ namespace ANPaX.AggregateFormation
         /// <param name="otherPrimaryParticles">all other fixed primary particles</param>
         /// <param name="config"></param>
         /// <returns></returns>
-        public static (bool isInContact, bool hasNoOverlap) IsPrimaryParticlePositionValid(
-            KDTree<double> tree,
+        public (bool isInContact, bool hasNoOverlap) IsPrimaryParticlePositionValid(
+            INeighborslist neighborslist,
             PrimaryParticle primaryParticle,
-            IEnumerable<PrimaryParticle> otherPrimaryParticles,
-            IAggregateFormationConfig config)
+            IEnumerable<PrimaryParticle> otherPrimaryParticles)
         {
-            var neighbors = ParticleFormationUtil.GetPossibleNeighbors(primaryParticle, primaryParticle.Position, tree, otherPrimaryParticles, config);
+            //var neighbors = ParticleFormationUtil.GetPossibleNeighbors(primaryParticle, primaryParticle.Position, tree, otherPrimaryParticles, config);
+            var searchRadius = (primaryParticle.Radius + otherPrimaryParticles.GetMaxRadius()) * _config.Delta;
+            var neighborsWithDistance = neighborslist.GetPrimaryParticlesAndDistanceWithinRadius(primaryParticle.Position, searchRadius);
 
-            if (!neighbors.Any())
+            if (!neighborsWithDistance.Any())
             {
                 return (isInContact: false, hasNoOverlap: true);
             }
 
-            return ParticleFormationUtil.IsAnyNeighborInContactOrOverlapping(primaryParticle, otherPrimaryParticles, config, neighbors);
+            return ParticleFormationUtil.IsAnyNeighborInContactOrOverlapping(primaryParticle, primaryParticle.Position, _config, neighborsWithDistance);
         }
 
         /// <summary>
@@ -311,11 +308,9 @@ namespace ANPaX.AggregateFormation
         /// <param name="targetAggregateSize"></param>
         /// <param name="config"></param>
         /// <returns></returns>
-        public static List<int> GetClusterSizes(
-            int targetAggregateSize,
-            IAggregateFormationConfig config)
+        public List<int> GetClusterSizes(int targetAggregateSize)
         {
-            var nCluster = GetNumberOfCluster(targetAggregateSize, config);
+            var nCluster = GetNumberOfCluster(targetAggregateSize);
             var clusterSizes = new List<int>();
             for (var i = 0; i < nCluster; i++)
             {
@@ -345,9 +340,9 @@ namespace ANPaX.AggregateFormation
         /// <param name="targetAggregateSize"></param>
         /// <param name="config"></param>
         /// <returns></returns>
-        public static int GetNumberOfCluster(int targetAggregateSize, IAggregateFormationConfig config)
+        public int GetNumberOfCluster(int targetAggregateSize)
         {
-            return Convert.ToInt32(Math.Ceiling(targetAggregateSize / Convert.ToDouble(config.ClusterSize)));
+            return Convert.ToInt32(Math.Ceiling(targetAggregateSize / Convert.ToDouble(_config.ClusterSize)));
         }
 
         /// <summary>
@@ -358,11 +353,9 @@ namespace ANPaX.AggregateFormation
         /// <param name="config"></param>
         /// <param name="psd"></param>
         /// <returns></returns>
-        public static double GetDistanceFromCOMForNextCluster(
+        public double GetDistanceFromCOMForNextCluster(
             Cluster nextCluster,
-            List<Cluster> depositedCluster,
-            IAggregateFormationConfig config,
-            ISizeDistribution<double> psd)
+            List<Cluster> depositedCluster)
         {
             var rgNext = nextCluster.GetGyrationRadius();
             var rgExist = depositedCluster.GetGyrationRadius();
@@ -370,8 +363,8 @@ namespace ANPaX.AggregateFormation
             var nExist = depositedCluster.Sum(c => c.NumberOfPrimaryParticles);
 
             return Math.Sqrt(
-                (Math.Pow(psd.Mean, 2) * Math.Pow(nNext + nExist, 2) / (nExist * nNext))
-                * Math.Pow((nExist + nNext) / config.Kf, 2 / config.Df)
+                (Math.Pow(_psd.Mean, 2) * Math.Pow(nNext + nExist, 2) / (nExist * nNext))
+                * Math.Pow((nExist + nNext) / _config.Kf, 2 / _config.Df)
                 - ((nExist + nNext) / nExist) * Math.Pow(rgNext, 2)
                 - ((nExist + nNext) / nNext) * Math.Pow(rgExist, 2));
         }

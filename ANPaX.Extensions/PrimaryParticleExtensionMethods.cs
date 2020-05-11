@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Accord.Collections;
-
 using ANPaX.Collection;
 
 namespace ANPaX.Extensions
@@ -55,6 +53,13 @@ namespace ANPaX.Extensions
                 );
         }
 
+        public static double GetDistanceToVerticalAxis(this PrimaryParticle primaryParticle, PrimaryParticle neighbor)
+        {
+            return Math.Sqrt(Math.Pow(primaryParticle.Position.X - neighbor.Position.X, 2) +
+                             Math.Pow(primaryParticle.Position.Y - neighbor.Position.Y, 2)
+                );
+        }
+
         public static Vector3 GetCenterOfMass(this IEnumerable<PrimaryParticle> particles)
         {
             var M = particles.Sum(p => Math.Pow(p.Radius, 3));
@@ -97,16 +102,6 @@ namespace ANPaX.Extensions
                 array[p] = lparticles[p].Position.ToXYArray();
             }
             return array;
-        }
-
-        public static KDTree<double> ToNeighborsList(this IEnumerable<PrimaryParticle> particles)
-        {
-            return KDTree.FromData<double>(particles.ToPositionArray());
-        }
-
-        public static KDTree<double> ToXYNeighborsList(this IEnumerable<PrimaryParticle> particles)
-        {
-            return KDTree.FromData<double>(particles.ToXYPositionArray());
         }
     }
 }

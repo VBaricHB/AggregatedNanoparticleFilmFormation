@@ -55,6 +55,24 @@ namespace ANPaX.Collection
             return (isInContact, hasNoOverlap);
         }
 
+        public static (bool isInContact, bool hasNoOverlap) IsAnyNeighborInContactOrOverlapping(
+            PrimaryParticle particle,
+            Vector3 setToPosition,
+            IAggregateFormationConfig config,
+            IEnumerable<Tuple<PrimaryParticle, double>> neighborsWithDistance)
+        {
+            var isInContact = false;
+            var hasNoOverlap = true;
+            foreach (var neigh in neighborsWithDistance)
+            {
+                var radiusParticle2 = neigh.Item1.Radius;
+                var distance = neigh.Item2;
+                isInContact = isInContact || IsInContact(distance, particle.Radius, radiusParticle2, config.Delta);
+                hasNoOverlap = hasNoOverlap && HasNoOverlap(distance, particle.Radius, radiusParticle2, config.Epsilon);
+            }
+            return (isInContact, hasNoOverlap);
+        }
+
 
         /// <summary>
         /// Search in a defined radius around the primary particles if there are any more primary particles.
@@ -112,6 +130,13 @@ namespace ANPaX.Collection
                                                      && Math.Abs(p.Position.Y - position[1]) < 0.01
                                                      && Math.Abs(p.Position.Z - position[2]) < 0.01
                                                   ).Radius;
+        }
+
+        public static PrimaryParticle GetPrimaryParticleFromXYNode(double[] position, IEnumerable<PrimaryParticle> primaryParticles)
+        {
+            return primaryParticles.FirstOrDefault(p => Math.Abs(p.Position.X - position[0]) < 0.01
+                                                     && Math.Abs(p.Position.Y - position[1]) < 0.01
+                                                  );
         }
 
         public static double GetRadiusOfXYNodePrimaryParticle(double[] position, IEnumerable<PrimaryParticle> primaryParticles)

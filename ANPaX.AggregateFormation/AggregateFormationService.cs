@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using ANPaX.AggregateFormation.interfaces;
-using ANPaX.Collection;
+using ANPaX.Core;
 using ANPaX.Core.Neighborslist;
 
 using NLog;
@@ -151,13 +151,8 @@ namespace ANPaX.AggregateFormation
             var aggregateSizes = GenerateAggregateSizes();
             var aggregates = new List<Aggregate>();
             var report = new ProgressReportModel();
-            var rndGen = new Random();
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            if (_seed != -1)
-            {
-                rndGen = new Random(_seed);
-            }
             try
             {
                 await Task.Run(() =>
@@ -175,8 +170,6 @@ namespace ANPaX.AggregateFormation
             {
                 _logger.Warn($"Operation canceled: {e.Message}");
             }
-
-
 
             AggregateIndexingHelper.SetAggregateIndices(aggregates);
             return aggregates;

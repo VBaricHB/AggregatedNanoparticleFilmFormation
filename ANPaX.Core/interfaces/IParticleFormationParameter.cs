@@ -1,4 +1,4 @@
-﻿namespace ANPaX.Collection.interfaces
+﻿namespace ANPaX.Core.interfaces
 {
     public interface IParticleFormationParameters
     {

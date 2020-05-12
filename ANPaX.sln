@@ -6,13 +6,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ANPaX.FilmFormation", "ANPa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ANPaX.AggregateFormation", "ANPaX.AggregateFormation\ANPaX.AggregateFormation.csproj", "{43D1EB3E-2404-4DD0-9B29-7AF43A89DB1A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ANPaX.Collection", "ANPaX.Collection\ANPaX.Collection.csproj", "{A82DDAF0-4D05-4A62-B0DA-A0D1A15D2D72}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ANPaX.Core", "ANPaX.Core\ANPaX.Core.csproj", "{A82DDAF0-4D05-4A62-B0DA-A0D1A15D2D72}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ANPaX.Export", "ANPaX.Export\ANPaX.Export.csproj", "{0245D7E1-BDEB-4050-AF32-DDC4E3CCBBE8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ANPaX.ConsoleUI", "ANPaX.ConsoleUI\ANPaX.ConsoleUI.csproj", "{AA769A30-ACCE-43F6-BE03-64AD48752462}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ANPaX.Extensions", "ANPaX.Extensions\ANPaX.Extensions.csproj", "{11D5C0BB-FE47-4ABF-B538-C9CC63E57649}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ANPaX.Core.Extensions", "ANPaX.Core.Extensions\ANPaX.Core.Extensions.csproj", "{11D5C0BB-FE47-4ABF-B538-C9CC63E57649}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DE131C92-1DD5-4FFB-BB87-A3F25AB79C35}"
 	ProjectSection(SolutionItems) = preProject
@@ -21,7 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ANPaX.DesktopUI", "ANPaX.DesktopUI\ANPaX.DesktopUI.csproj", "{BA738508-5F55-4A35-83E2-5D7486835805}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ANPaX.Core.Neighborslist", "ANPaX.Core.Neighborslist\ANPaX.Core.Neighborslist.csproj", "{EB1439D0-9D48-49D0-AE45-62A7B5EFFF45}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ANPaX.Core.Neighborslist", "ANPaX.Core.Neighborslist\ANPaX.Core.Neighborslist.csproj", "{EB1439D0-9D48-49D0-AE45-62A7B5EFFF45}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

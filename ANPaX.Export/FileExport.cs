@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 using ANPaX.AggregateFormation.interfaces;
-using ANPaX.Collection;
+using ANPaX.Core;
 using ANPaX.FilmFormation.interfaces;
 
 namespace ANPaX.Export

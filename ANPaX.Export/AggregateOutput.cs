@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-using ANPaX.Collection;
+using ANPaX.Core;
 
 namespace ANPaX.Export
 {

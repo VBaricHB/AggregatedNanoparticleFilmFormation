@@ -15,8 +15,8 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ANPaX.Collection\ANPaX.Collection.csproj" />
     <ProjectReference Include="..\ANPaX.AggregateFormation\ANPaX.AggregateFormation.csproj" />
     <ProjectReference Include="..\ANPaX.Core.Neighborslist\ANPaX.Core.Neighborslist.csproj" />
+    <ProjectReference Include="..\ANPaX.Core\ANPaX.Core.csproj" />
   </ItemGroup>
 </Project>

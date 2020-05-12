@@ -5,9 +5,9 @@ using System.Linq;
 using Accord.Collections;
 
 using ANPaX.AggregateFormation.interfaces;
-using ANPaX.Extensions;
+using ANPaX.Core.Extensions;
 
-namespace ANPaX.Collection
+namespace ANPaX.Core
 {
     public static class ParticleFormationUtil
     {

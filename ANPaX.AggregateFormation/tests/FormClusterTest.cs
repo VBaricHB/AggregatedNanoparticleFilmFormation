@@ -4,9 +4,9 @@ using System.IO;
 using System.Linq;
 
 using ANPaX.AggregateFormation.interfaces;
-using ANPaX.Collection;
+using ANPaX.Core;
 using ANPaX.Core.Neighborslist;
-using ANPaX.Extensions;
+using ANPaX.Core.Extensions;
 
 using Moq;
 

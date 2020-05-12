@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 using ANPaX.AggregateFormation;
-using ANPaX.Collection;
+using ANPaX.Core;
 using ANPaX.DesktopUI.Models;
 using ANPaX.Export;
 using ANPaX.FilmFormation;
@@ -20,6 +21,9 @@ namespace ANPaX.DesktopUI.ViewModels
 
         public IFilmFormationConfig FilmFormationConfig { get; set; }
         public AggFormationControlViewModel AggFormationControlViewModel { get; set; }
+
+        private CancellationTokenSource _cts;
+
         public AggregateFilmFormationService AggregateFilmFormationService { get; set; }
         private StatusViewModel _statusViewModel;
         private LoggingViewModel _loggingViewModel;
@@ -64,8 +68,10 @@ namespace ANPaX.DesktopUI.ViewModels
             _loggingViewModel.LogInfo("Initiating film generation.");
             _statusViewModel.SimulationStatus = SimulationStatus.Running;
 
+            _cts = new CancellationTokenSource();
+
             AggregateFilmFormationService = new AggregateFilmFormationService(FilmFormationConfig);
-            ParticleFilm = await AggregateFilmFormationService.BuildFilm_Async2(_aggregates, progress);
+            ParticleFilm = await AggregateFilmFormationService.BuildFilm_Async(_aggregates, progress, _cts.Token);
             ExportFilm();
             _loggingViewModel.LogInfo("Film generation complete.");
             _statusViewModel.SimulationStatus = SimulationStatus.Idle;

@@ -1,4 +1,4 @@
-﻿using ANPaX.Collection;
+﻿using ANPaX.Core;
 using System.Collections.Generic;
 
 namespace ANPaX.FilmFormation.interfaces

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using ANPaX.Collection;
+using ANPaX.Core;
 using ANPaX.Core.Neighborslist;
-using ANPaX.Extensions;
+using ANPaX.Core.Extensions;
 using ANPaX.FilmFormation.interfaces;
 
 namespace ANPaX.FilmFormation

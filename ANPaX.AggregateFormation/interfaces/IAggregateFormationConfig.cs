@@ -1,4 +1,4 @@
-﻿using ANPaX.Collection;
+﻿using ANPaX.Core;
 
 namespace ANPaX.AggregateFormation.interfaces
 {

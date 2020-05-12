@@ -1,6 +1,6 @@
 ﻿using ANPaX.AggregateFormation;
 using ANPaX.AggregateFormation.interfaces;
-using ANPaX.Collection;
+using ANPaX.Core;
 
 namespace ANPaX.DesktopUI.Models
 {

@@ -9,9 +9,9 @@
     <Compile Remove="Program.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ANPaX.Collection\ANPaX.Collection.csproj" />
+    <ProjectReference Include="..\ANPaX.Core\ANPaX.Core.csproj" />
+    <ProjectReference Include="..\ANPaX.Core.Extensions\ANPaX.Core.Extensions.csproj" />
     <ProjectReference Include="..\ANPaX.Core.Neighborslist\ANPaX.Core.Neighborslist.csproj" />
-    <ProjectReference Include="..\ANPaX.Extensions\ANPaX.Extensions.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="DocumentFormat.OpenXml" Version="2.10.1" />

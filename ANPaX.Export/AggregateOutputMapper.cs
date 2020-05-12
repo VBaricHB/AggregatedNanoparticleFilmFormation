@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 using ANPaX.AggregateFormation.interfaces;
-using ANPaX.Collection;
+using ANPaX.Core;
 
 namespace ANPaX.Export
 {

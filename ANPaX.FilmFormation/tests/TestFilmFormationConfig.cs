@@ -1,4 +1,5 @@
-﻿using ANPaX.FilmFormation.interfaces;
+﻿using System;
+using ANPaX.FilmFormation.interfaces;
 
 namespace ANPaX.FilmFormation.tests
 {
@@ -9,5 +10,7 @@ namespace ANPaX.FilmFormation.tests
         public double Delta => 1.01;
 
         public double FilmWidthAbsolute => 2000;
+
+        public int MaxCPU => Environment.ProcessorCount;
     }
 }

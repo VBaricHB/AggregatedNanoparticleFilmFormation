@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-using ANPaX.Collection;
+using ANPaX.Core;
 
 namespace ANPaX.Export
 {

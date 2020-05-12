@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ANPaX.Export\ANPaX.Export.csproj" />
-    <ProjectReference Include="..\ANPaX.Collection\ANPaX.Collection.csproj" />
+    <ProjectReference Include="..\ANPaX.Core\ANPaX.Core.csproj" />
     <ProjectReference Include="..\ANPaX.AggregateFormation\ANPaX.AggregateFormation.csproj" />
   </ItemGroup>
 </Project>

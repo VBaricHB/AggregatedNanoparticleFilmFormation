@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using ANPaX.Collection.interfaces;
+using ANPaX.Core.interfaces;
 
-namespace ANPaX.Collection
+namespace ANPaX.Core
 {
     public class Aggregate : IAggregate
     {

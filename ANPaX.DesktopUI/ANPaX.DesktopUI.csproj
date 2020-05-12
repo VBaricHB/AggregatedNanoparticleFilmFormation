@@ -38,9 +38,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ANPaX.AggregateFormation\ANPaX.AggregateFormation.csproj" />
-    <ProjectReference Include="..\ANPaX.Collection\ANPaX.Collection.csproj" />
+    <ProjectReference Include="..\ANPaX.Core\ANPaX.Core.csproj" />
+    <ProjectReference Include="..\ANPaX.Core.Extensions\ANPaX.Core.Extensions.csproj" />
     <ProjectReference Include="..\ANPaX.Export\ANPaX.Export.csproj" />
-    <ProjectReference Include="..\ANPaX.Extensions\ANPaX.Extensions.csproj" />
     <ProjectReference Include="..\ANPaX.FilmFormation\ANPaX.FilmFormation.csproj" />
   </ItemGroup>
 

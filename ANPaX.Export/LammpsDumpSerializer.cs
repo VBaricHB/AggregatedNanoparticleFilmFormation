@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.IO;
 
-using ANPaX.Collection;
+using ANPaX.Core;
 using ANPaX.FilmFormation.interfaces;
 
 namespace ANPaX.Export
@@ -21,21 +21,21 @@ namespace ANPaX.Export
 
         private void SerializeParticleFilm(IParticleFilm<Aggregate> particleFilm, string filename)
         {
-            var text = $"ITEM: TIMESTEP{Environment.NewLine}0{Environment.NewLine}";
-            text += $"ITEM: NUMBER OF ATOMS{Environment.NewLine}{particleFilm.NumberOfPrimaryParticles}{Environment.NewLine}";
-            text += GetBoxDimensionString(particleFilm);
-            text += $"ITEM: ATOMS id type aggregate cluster x y z Radius{Environment.NewLine}";
+            using var outfile = new StreamWriter(filename);
+            outfile.Write($"ITEM: TIMESTEP{Environment.NewLine}0{Environment.NewLine}");
+            outfile.Write($"ITEM: NUMBER OF ATOMS{Environment.NewLine}{particleFilm.NumberOfPrimaryParticles}{Environment.NewLine}");
+            outfile.Write(GetBoxDimensionString(particleFilm));
+            outfile.Write($"ITEM: ATOMS id type aggregate cluster x y z Radius{Environment.NewLine}");
             foreach (var agg in particleFilm.Particles)
             {
                 foreach (var cluster in agg.Cluster)
                 {
                     foreach (var particle in cluster.PrimaryParticles)
                     {
-                        text += GetPrimaryParticleString(particle, cluster, agg);
+                        outfile.Write(GetPrimaryParticleString(particle, cluster, agg));
                     }
                 }
             }
-            File.WriteAllText(filename, text);
         }
 
         private string GetPrimaryParticleString(PrimaryParticle particle, Cluster cluster, Aggregate agg)

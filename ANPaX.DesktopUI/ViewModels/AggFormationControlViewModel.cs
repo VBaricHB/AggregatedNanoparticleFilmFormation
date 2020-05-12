@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using ANPaX.AggregateFormation;
-using ANPaX.Collection;
+using ANPaX.Core;
 using ANPaX.DesktopUI.Models;
 using ANPaX.DesktopUI.Views;
 using ANPaX.Export;

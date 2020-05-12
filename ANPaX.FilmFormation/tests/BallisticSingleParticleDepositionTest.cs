@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using ANPaX.Collection;
+using ANPaX.Core;
 using ANPaX.Core.Neighborslist;
-using ANPaX.Extensions;
+using ANPaX.Core.Extensions;
 using ANPaX.FilmFormation.interfaces;
 
 using Xunit;
@@ -73,10 +73,9 @@ namespace ANPaX.FilmFormation.tests
 
             var handler = new BallisticSingleParticleDepositionHandler(_config);
 
-            var neighborPosition = new double[] { 1, 0, 10 };
-            var neighborRadius = 1.0;
+            var neighbor = new PrimaryParticle(1, new Vector3(1, 0, 10), 1.0);
 
-            var dist = handler.Get1DDistanceToNeighbor(primaryParticle, neighborPosition, neighborRadius);
+            var dist = handler.Get1DDistanceToNeighbor(primaryParticle, neighbor);
 
             // Math.Sqrt(3) results from the square of the combined radius (4) - the distance to centerline. 
             // This origins from the triangle: final position pp1. position neigbor, center projection neighbor.
@@ -93,10 +92,9 @@ namespace ANPaX.FilmFormation.tests
 
             var handler = new BallisticSingleParticleDepositionHandler(_config);
 
-            var neighborPosition = new double[] { 5, 0, 10 };
-            var neighborRadius = 1.0;
+            var neighbor = new PrimaryParticle(1, new Vector3(5, 0, 10), 1.0);
 
-            var dist = handler.Get1DDistanceToNeighbor(primaryParticle, neighborPosition, neighborRadius);
+            var dist = handler.Get1DDistanceToNeighbor(primaryParticle, neighbor);
 
             // Math.Sqrt(3) results from the square of the combined radius (4) - the distance to centerline. 
             // This origins from the triangle: final position pp1. position neigbor, center projection neighbor.
@@ -118,7 +116,7 @@ namespace ANPaX.FilmFormation.tests
             var otherParticles = new List<PrimaryParticle>() { pp2 };
             var neighborsList = _neighborslistFactory.Build2DNeighborslist(otherParticles);
 
-            var dist = handler.GetMinDepositionDistance(primaryParticle, otherParticles, neighborsList);
+            var dist = handler.GetMinDepositionDistance(primaryParticle, otherParticles, neighborsList, otherParticles.GetMaxRadius());
 
             // Math.Sqrt(3) results from the square of the combined radius (4) - the distance to centerline. 
             // This origins from the triangle: final position pp1. position neigbor, center projection neighbor.
@@ -143,7 +141,7 @@ namespace ANPaX.FilmFormation.tests
 
             var neighborsList = _neighborslistFactory.Build2DNeighborslist(otherParticles);
 
-            var dist = handler.GetMinDepositionDistance(primaryParticle, otherParticles, neighborsList);
+            var dist = handler.GetMinDepositionDistance(primaryParticle, otherParticles, neighborsList, otherParticles.GetMaxRadius());
 
             var shouldBeDistance = 90 - Math.Sqrt(3);
             Assert.Equal(shouldBeDistance, dist);
@@ -164,7 +162,7 @@ namespace ANPaX.FilmFormation.tests
 
             var neighborsList = _neighborslistFactory.Build2DNeighborslist(otherParticles);
 
-            var dist = handler.GetMinDepositionDistance(primaryParticle, otherParticles, neighborsList);
+            var dist = handler.GetMinDepositionDistance(primaryParticle, otherParticles, neighborsList, otherParticles.GetMaxRadius());
 
             var shouldBeDistance = _config.LargeNumber;
             Assert.Equal(shouldBeDistance, dist);

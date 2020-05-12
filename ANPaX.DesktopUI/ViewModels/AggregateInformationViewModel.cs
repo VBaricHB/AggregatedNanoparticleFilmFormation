@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
-using ANPaX.Collection;
-using ANPaX.Extensions;
+using ANPaX.Core;
+using ANPaX.Core.Extensions;
 
 using Caliburn.Micro;
 

@@ -4,8 +4,8 @@ using System.Linq;
 
 using Accord.Collections;
 
-using ANPaX.Collection;
-using ANPaX.Extensions;
+using ANPaX.Core;
+using ANPaX.Core.Extensions;
 
 namespace ANPaX.Core.Neighborslist
 {

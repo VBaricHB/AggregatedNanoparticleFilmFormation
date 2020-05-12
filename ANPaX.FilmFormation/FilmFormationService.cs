@@ -5,10 +5,11 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using ANPaX.AggregateFormation;
-using ANPaX.Collection;
+using ANPaX.Core;
 using ANPaX.Core.Neighborslist;
-using ANPaX.Extensions;
+using ANPaX.Core.Extensions;
 using ANPaX.FilmFormation.interfaces;
+using System.Threading;
 
 namespace ANPaX.FilmFormation
 {
@@ -16,6 +17,7 @@ namespace ANPaX.FilmFormation
     {
 
         private readonly IAggregateDepositionHandler _aggregateDepositionHandler;
+        private readonly IFilmFormationConfig _filmFormationConfig;
         private readonly IWallCollisionHandler _wallCollisionHandler;
         private readonly Random _rndGen;
         private ISimulationBox _simulationBox;
@@ -32,6 +34,7 @@ namespace ANPaX.FilmFormation
         {
             _simulationBox = new AbsoluteTetragonalSimulationBox(filmFormationConfig.FilmWidthAbsolute);
             var primaryParticleDepositionHandler = new BallisticSingleParticleDepositionHandler(filmFormationConfig);
+            _filmFormationConfig = filmFormationConfig;
             _aggregateDepositionHandler = new BallisticAggregateDepositionHandler(primaryParticleDepositionHandler, filmFormationConfig);
             _wallCollisionHandler = new WallCollisionHandler(_simulationBox);
             _neighborslistFactory = new AccordNeighborslistFactory();
@@ -43,26 +46,13 @@ namespace ANPaX.FilmFormation
 
         }
 
-        public async Task<IParticleFilm<Aggregate>> BuildFilm_Async(IEnumerable<Aggregate> aggregates, IProgress<ProgressReportModel> progress)
-        {
-            ParticleFilm = new TetragonalAggregatedParticleFilm(_simulationBox, _neighborslistFactory);
-            var filmFormationTasks = new List<Task>();
-            foreach (var aggregate in aggregates)
-            {
-                filmFormationTasks.Add(Task.Run(() => ProcessAggregate(aggregate)));
-            }
-            await Task.WhenAll(filmFormationTasks);
-
-            return ParticleFilm;
-        }
-
-        public async Task<IParticleFilm<Aggregate>> BuildFilm_Async2(IEnumerable<Aggregate> aggregates, IProgress<ProgressReportModel> progress)
+        public async Task<IParticleFilm<Aggregate>> BuildFilm_Async(IEnumerable<Aggregate> aggregates, IProgress<ProgressReportModel> progress, CancellationToken ct)
         {
             ParticleFilm = new TetragonalAggregatedParticleFilm(_simulationBox, _neighborslistFactory);
             var report = new ProgressReportModel();
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            await Task.Run(() => ProcessAggregates(aggregates, progress, report, stopwatch));
+            await Task.Run(() => ProcessAggregates(aggregates, progress, report, stopwatch, ct));
 
             return ParticleFilm;
         }
@@ -79,19 +69,20 @@ namespace ANPaX.FilmFormation
             progress.Report(report);
         }
 
-        private void ProcessAggregates(IEnumerable<Aggregate> aggregates, IProgress<ProgressReportModel> progress, ProgressReportModel report, Stopwatch stopwatch)
+        private async Task ProcessAggregates(IEnumerable<Aggregate> aggregates, IProgress<ProgressReportModel> progress, ProgressReportModel report, Stopwatch stopwatch, CancellationToken ct)
         {
+            var maxRadius = aggregates.GetPrimaryParticles().GetMaxRadius();
             foreach (var aggregate in aggregates)
             {
-                ProcessAggregate(aggregate);
+                await ProcessAggregate(aggregate, maxRadius, ct);
                 UpdateProgress(progress, report, aggregates, stopwatch);
             }
         }
 
-        private void ProcessAggregate(Aggregate aggregate)
+        private async Task ProcessAggregate(Aggregate aggregate, double maxRadius, CancellationToken ct)
         {
             InitializeAggregate(aggregate);
-            _aggregateDepositionHandler.DepositAggregate(aggregate, ParticleFilm.PrimaryParticles, ParticleFilm.Neighborslist2D);
+            await _aggregateDepositionHandler.DepositAggregate_Async(aggregate, ParticleFilm.PrimaryParticles, ParticleFilm.Neighborslist2D, maxRadius, _filmFormationConfig.MaxCPU, ct);
             ParticleFilm.AddDepositedParticlesToFilm(aggregate);
 
         }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ANPaX.Collection
+namespace ANPaX.Core
 {
     public class Vector3
     {

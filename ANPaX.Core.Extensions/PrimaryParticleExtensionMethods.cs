@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using ANPaX.Collection;
+using ANPaX.Core;
 
-namespace ANPaX.Extensions
+namespace ANPaX.Core.Extensions
 {
     public static class PrimaryParticleExtensionMethods
     {

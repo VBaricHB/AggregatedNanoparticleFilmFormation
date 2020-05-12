@@ -1,4 +1,4 @@
-﻿namespace ANPaX.Collection
+﻿namespace ANPaX.Core
 {
     public class PrimaryParticle
     {

@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using ANPaX.Core.interfaces;
-
 namespace ANPaX.Core
 {
-    public class Cluster : ICluster
+    public class Cluster
     {
         public Cluster(int id, List<PrimaryParticle> primaryParticles)
         {

@@ -1,0 +1,10 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:fa="http://schemas.fontawesome.io/icons/"
+    xmlns:local="clr-namespace:ANPaX.UI.DesktopUI">
+    <!--<FontFamily x:Key="FontAwesome">pack://application:,,,/Styles/#FontAwesome</FontFamily>-->
+    <FontFamily x:Key="FontAwesome">/fonts/fontawesome-webfont.ttf#FontAwesome</FontFamily>
+
+
+</ResourceDictionary>

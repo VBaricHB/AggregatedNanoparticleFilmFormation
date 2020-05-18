@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using ANPaX.Core.interfaces;
-
 namespace ANPaX.Core
 {
-    public class Aggregate : IAggregate
+    public class Aggregate
     {
         public Aggregate(IEnumerable<Cluster> cluster)
         {
@@ -18,7 +16,7 @@ namespace ANPaX.Core
 
         }
 
-        public List<Cluster> Cluster { get; private set; }
+        public List<Cluster> Cluster { get; set; }
         public int NumberOfPrimaryParticles => Cluster.Sum(c => c.PrimaryParticles.Count);
         public int NumberOfClusters => Cluster.Count();
         public bool IsDeposited { get; set; }

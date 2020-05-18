@@ -1,0 +1,758 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:fa="http://schemas.fontawesome.io/icons/"
+    xmlns:local="clr-namespace:ANPaX.UI.DesktopUI">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Colors.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <Style x:Key="DefaultButton" TargetType="{x:Type Button}">
+        <Setter Property="Background" Value="{StaticResource UniversityBlueBrush}" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="BorderBrush" Value="{StaticResource UniversityBlueBrush}" />
+        <Setter Property="BorderThickness" Value="10" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{StaticResource UniversityBlueBrush}"
+                        BorderThickness="1">
+                        <ContentPresenter
+                            x:Name="MyContentPresenter"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Content="{TemplateBinding Content}" />
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="White" />
+                            <Setter Property="Foreground" Value="{StaticResource UniversityBlueBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="{StaticResource BackgroundVeryLightBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource UniversityBlueBrush}" />
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="MenuButton" TargetType="{x:Type Button}">
+        <Setter Property="Background" Value="{StaticResource BackgroundVeryLightBrush}" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="{StaticResource ForegroundVeryDarkBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource BackgroundDarkBrush}" />
+        <Setter Property="BorderThickness" Value="10" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}">
+                        <StackPanel Orientation="Vertical">
+                            <Rectangle
+                                x:Name="Button_Rect"
+                                Height="3"
+                                Margin="4,1,4,0"
+                                Fill="{StaticResource ForegroundVeryDarkBrush}" />
+
+                            <ContentPresenter
+                                x:Name="MyContentPresenter"
+                                Margin="0,5,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Content="{TemplateBinding Content}" />
+                        </StackPanel>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{StaticResource UniversityBlueBrush}" />
+                            <Setter Property="Foreground" Value="White" />
+                            <Setter TargetName="Button_Rect" Property="Fill" Value="White" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="{StaticResource BackgroundVeryLightBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource UniversityBlueBrush}" />
+                            <Setter TargetName="Button_Rect" Property="Fill" Value="{StaticResource UniversityBlueBrush}" />
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="MenuButtonPressed" TargetType="{x:Type Button}">
+        <Setter Property="Background" Value="{StaticResource UniversityGreyBrush}" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="{StaticResource UniversityBlueBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource UniversityBlueBrush}" />
+        <Setter Property="BorderThickness" Value="10" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}">
+                        <StackPanel Orientation="Vertical">
+                            <Rectangle
+                                x:Name="Button_Rect"
+                                Height="3"
+                                Margin="4,1,4,0"
+                                Fill="{StaticResource UniversityBlueBrush}" />
+
+                            <ContentPresenter
+                                x:Name="MyContentPresenter"
+                                Margin="0,5,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Content="{TemplateBinding Content}" />
+                        </StackPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ShowPrimaryParticleConfigButton" TargetType="{x:Type Button}">
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="Width" Value="120" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Background" Value="{StaticResource UniversityBlueBrush}" />
+        <Setter Property="LayoutTransform">
+            <Setter.Value>
+                <RotateTransform Angle="-90" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{StaticResource UniversityGreyBrush}"
+                        BorderThickness=".5">
+                        <Grid Margin="10,0,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="auto" />
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0">
+                                <Image.Source>
+                                    <DrawingImage>
+                                        <DrawingImage.Drawing>
+                                            <GeometryDrawing Brush="{StaticResource UniversityGreyBrush}">
+                                                <GeometryDrawing.Geometry>
+                                                    <GeometryGroup>
+                                                        <EllipseGeometry
+                                                            Center="0,0"
+                                                            RadiusX="1"
+                                                            RadiusY="1" />
+                                                        <EllipseGeometry
+                                                            Center="2,2"
+                                                            RadiusX=".6"
+                                                            RadiusY=".6" />
+                                                        <EllipseGeometry
+                                                            Center="-2,-2"
+                                                            RadiusX=".6"
+                                                            RadiusY=".6" />
+                                                    </GeometryGroup>
+                                                </GeometryDrawing.Geometry>
+                                            </GeometryDrawing>
+                                        </DrawingImage.Drawing>
+                                    </DrawingImage>
+                                </Image.Source>
+                            </Image>
+                            <StackPanel Grid.Column="1" Orientation="Vertical">
+                                <TextBlock
+                                    Margin="10,0,0,0"
+                                    HorizontalAlignment="Center"
+                                    Text="Primary particle" />
+                                <TextBlock
+                                    Margin="10,0,0,0"
+                                    HorizontalAlignment="Center"
+                                    Text="config" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="White" />
+                            <Setter Property="Foreground" Value="{StaticResource UniversityBlueBrush}" />
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ShowClusterConfigButton" TargetType="{x:Type Button}">
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="Width" Value="110" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Background" Value="{StaticResource UniversityBlueBrush}" />
+        <Setter Property="LayoutTransform">
+            <Setter.Value>
+                <RotateTransform Angle="-90" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{StaticResource UniversityGreyBrush}"
+                        BorderThickness=".5">
+                        <Grid Margin="10,0,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="auto" />
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0">
+                                <Image.Source>
+                                    <DrawingImage>
+                                        <DrawingImage.Drawing>
+                                            <GeometryDrawing Brush="{StaticResource UniversityGreyBrush}">
+                                                <GeometryDrawing.Geometry>
+                                                    <GeometryGroup>
+                                                        <EllipseGeometry
+                                                            Center="0,0"
+                                                            RadiusX=".6"
+                                                            RadiusY=".6" />
+                                                        <EllipseGeometry
+                                                            Center="1,1"
+                                                            RadiusX=".8"
+                                                            RadiusY=".8" />
+                                                        <EllipseGeometry
+                                                            Center="-0.4,1.1"
+                                                            RadiusX=".6"
+                                                            RadiusY=".6" />
+                                                        <EllipseGeometry
+                                                            Center="1.9,0.4"
+                                                            RadiusX=".3"
+                                                            RadiusY=".3" />
+                                                    </GeometryGroup>
+                                                </GeometryDrawing.Geometry>
+                                            </GeometryDrawing>
+                                        </DrawingImage.Drawing>
+                                    </DrawingImage>
+                                </Image.Source>
+                            </Image>
+                            <TextBlock
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="Cluster config" />
+                        </Grid>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="White" />
+                            <Setter Property="Foreground" Value="{StaticResource UniversityBlueBrush}" />
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ShowAggregateConfigButton" TargetType="{x:Type Button}">
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="Width" Value="130" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Background" Value="{StaticResource UniversityBlueBrush}" />
+        <Setter Property="LayoutTransform">
+            <Setter.Value>
+                <RotateTransform Angle="-90" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{StaticResource UniversityGreyBrush}"
+                        BorderThickness=".5">
+                        <Grid Margin="10,0,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="auto" />
+                            </Grid.ColumnDefinitions>
+                            <Image Name="Image" Grid.Column="0">
+                                <Image.Source>
+                                    <DrawingImage>
+                                        <DrawingImage.Drawing>
+                                            <GeometryDrawing Brush="{StaticResource UniversityGreyBrush}">
+                                                <GeometryDrawing.Geometry>
+                                                    <GeometryGroup>
+                                                        <EllipseGeometry
+                                                            Center="0,0"
+                                                            RadiusX=".6"
+                                                            RadiusY=".6" />
+                                                        <EllipseGeometry
+                                                            Center="1,1"
+                                                            RadiusX=".8"
+                                                            RadiusY=".8" />
+                                                        <EllipseGeometry
+                                                            Center="-0.4,1.1"
+                                                            RadiusX=".6"
+                                                            RadiusY=".6" />
+                                                        <EllipseGeometry
+                                                            Center="1.9,0.4"
+                                                            RadiusX=".3"
+                                                            RadiusY=".3" />
+
+                                                        <EllipseGeometry
+                                                            Center="0,2"
+                                                            RadiusX=".6"
+                                                            RadiusY=".6" />
+                                                        <EllipseGeometry
+                                                            Center="-1.5,2"
+                                                            RadiusX=".8"
+                                                            RadiusY=".8" />
+                                                        <EllipseGeometry
+                                                            Center="-1,3"
+                                                            RadiusX=".6"
+                                                            RadiusY=".6" />
+                                                        <EllipseGeometry
+                                                            Center="0,2.8"
+                                                            RadiusX=".3"
+                                                            RadiusY=".3" />
+                                                    </GeometryGroup>
+                                                </GeometryDrawing.Geometry>
+                                            </GeometryDrawing>
+                                        </DrawingImage.Drawing>
+                                    </DrawingImage>
+                                </Image.Source>
+                            </Image>
+                            <TextBlock
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="Aggregate config" />
+                        </Grid>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="White" />
+                            <Setter Property="Foreground" Value="{StaticResource UniversityBlueBrush}" />
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ShowAdvancedConfigButton" TargetType="{x:Type Button}">
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="Width" Value="40" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Background" Value="{StaticResource UniversityBlueBrush}" />
+        <Setter Property="LayoutTransform">
+            <Setter.Value>
+                <RotateTransform Angle="-90" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{StaticResource UniversityGreyBrush}"
+                        BorderThickness=".5">
+                        <TextBlock
+                            Margin="0,0,0,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontFamily="{StaticResource FontAwesome}"
+                            FontSize="20"
+                            Text="&#xf0ad;" />
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="White" />
+                            <Setter Property="Foreground" Value="{StaticResource UniversityBlueBrush}" />
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="HidePrimaryParticleConfigButton" TargetType="{x:Type Button}">
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="Width" Value="120" />
+        <Setter Property="Foreground" Value="{StaticResource UniversityBlueBrush}" />
+        <Setter Property="Background" Value="White" />
+        <Setter Property="LayoutTransform">
+            <Setter.Value>
+                <RotateTransform Angle="-90" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}">
+                        <Grid Margin="10,0,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="auto" />
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0">
+                                <Image.Source>
+                                    <DrawingImage>
+                                        <DrawingImage.Drawing>
+                                            <GeometryDrawing Brush="{StaticResource UniversityBlueBrush}">
+                                                <GeometryDrawing.Geometry>
+                                                    <GeometryGroup>
+                                                        <EllipseGeometry
+                                                            Center="0,0"
+                                                            RadiusX="1"
+                                                            RadiusY="1" />
+                                                        <EllipseGeometry
+                                                            Center="2,2"
+                                                            RadiusX=".6"
+                                                            RadiusY=".6" />
+                                                        <EllipseGeometry
+                                                            Center="-2,-2"
+                                                            RadiusX=".6"
+                                                            RadiusY=".6" />
+                                                    </GeometryGroup>
+                                                </GeometryDrawing.Geometry>
+                                            </GeometryDrawing>
+                                        </DrawingImage.Drawing>
+                                    </DrawingImage>
+                                </Image.Source>
+                            </Image>
+                            <StackPanel Grid.Column="1" Orientation="Vertical">
+                                <TextBlock
+                                    Margin="10,0,0,0"
+                                    HorizontalAlignment="Center"
+                                    Text="Primary particle" />
+                                <TextBlock
+                                    Margin="10,0,0,0"
+                                    HorizontalAlignment="Center"
+                                    Text="config" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{StaticResource UniversityGreyBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource UniversityBlueBrush}" />
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="HideClusterConfigButton" TargetType="{x:Type Button}">
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="Width" Value="110" />
+        <Setter Property="Background" Value="White" />
+        <Setter Property="Foreground" Value="{StaticResource UniversityBlueBrush}" />
+        <Setter Property="LayoutTransform">
+            <Setter.Value>
+                <RotateTransform Angle="-90" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}">
+                        <Grid Margin="10,0,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="auto" />
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0">
+                                <Image.Source>
+                                    <DrawingImage>
+                                        <DrawingImage.Drawing>
+                                            <GeometryDrawing Brush="{StaticResource UniversityBlueBrush}">
+                                                <GeometryDrawing.Geometry>
+                                                    <GeometryGroup>
+                                                        <EllipseGeometry
+                                                            Center="0,0"
+                                                            RadiusX=".6"
+                                                            RadiusY=".6" />
+                                                        <EllipseGeometry
+                                                            Center="1,1"
+                                                            RadiusX=".8"
+                                                            RadiusY=".8" />
+                                                        <EllipseGeometry
+                                                            Center="-0.4,1.1"
+                                                            RadiusX=".6"
+                                                            RadiusY=".6" />
+                                                        <EllipseGeometry
+                                                            Center="1.9,0.4"
+                                                            RadiusX=".3"
+                                                            RadiusY=".3" />
+                                                    </GeometryGroup>
+                                                </GeometryDrawing.Geometry>
+                                            </GeometryDrawing>
+                                        </DrawingImage.Drawing>
+                                    </DrawingImage>
+                                </Image.Source>
+                            </Image>
+                            <TextBlock
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="Cluster config" />
+                        </Grid>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{StaticResource UniversityGreyBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource UniversityBlueBrush}" />
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="HideAggregateConfigButton" TargetType="{x:Type Button}">
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="Width" Value="130" />
+        <Setter Property="Background" Value="White" />
+        <Setter Property="Foreground" Value="{StaticResource UniversityBlueBrush}" />
+        <Setter Property="LayoutTransform">
+            <Setter.Value>
+                <RotateTransform Angle="-90" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}">
+                        <Grid Margin="10,0,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="auto" />
+                            </Grid.ColumnDefinitions>
+                            <Image Name="Image" Grid.Column="0">
+                                <Image.Source>
+                                    <DrawingImage>
+                                        <DrawingImage.Drawing>
+                                            <GeometryDrawing Brush="{StaticResource UniversityBlueBrush}">
+                                                <GeometryDrawing.Geometry>
+                                                    <GeometryGroup>
+                                                        <EllipseGeometry
+                                                            Center="0,0"
+                                                            RadiusX=".6"
+                                                            RadiusY=".6" />
+                                                        <EllipseGeometry
+                                                            Center="1,1"
+                                                            RadiusX=".8"
+                                                            RadiusY=".8" />
+                                                        <EllipseGeometry
+                                                            Center="-0.4,1.1"
+                                                            RadiusX=".6"
+                                                            RadiusY=".6" />
+                                                        <EllipseGeometry
+                                                            Center="1.9,0.4"
+                                                            RadiusX=".3"
+                                                            RadiusY=".3" />
+
+                                                        <EllipseGeometry
+                                                            Center="0,2"
+                                                            RadiusX=".6"
+                                                            RadiusY=".6" />
+                                                        <EllipseGeometry
+                                                            Center="-1.5,2"
+                                                            RadiusX=".8"
+                                                            RadiusY=".8" />
+                                                        <EllipseGeometry
+                                                            Center="-1,3"
+                                                            RadiusX=".6"
+                                                            RadiusY=".6" />
+                                                        <EllipseGeometry
+                                                            Center="0,2.8"
+                                                            RadiusX=".3"
+                                                            RadiusY=".3" />
+                                                    </GeometryGroup>
+                                                </GeometryDrawing.Geometry>
+                                            </GeometryDrawing>
+                                        </DrawingImage.Drawing>
+                                    </DrawingImage>
+                                </Image.Source>
+                            </Image>
+                            <TextBlock
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="Aggregate config" />
+                        </Grid>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{StaticResource UniversityGreyBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource UniversityBlueBrush}" />
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="HideAdvancedConfigButton" TargetType="{x:Type Button}">
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="Width" Value="40" />
+        <Setter Property="Background" Value="White" />
+        <Setter Property="Foreground" Value="{StaticResource UniversityBlueBrush}" />
+        <Setter Property="LayoutTransform">
+            <Setter.Value>
+                <RotateTransform Angle="-90" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}">
+                        <TextBlock
+                            Margin="0,0,0,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontFamily="{StaticResource FontAwesome}"
+                            FontSize="20"
+                            Text="&#xf0ad;" />
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{StaticResource UniversityGreyBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource UniversityBlueBrush}" />
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ShowConfigMenuButton" TargetType="{x:Type Button}">
+        <Setter Property="Background" Value="{StaticResource BackgroundVeryLightBrush}" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="{StaticResource ForegroundVeryDarkBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource BackgroundDarkBrush}" />
+        <Setter Property="BorderThickness" Value="10" />
+        <Setter Property="LayoutTransform">
+            <Setter.Value>
+                <RotateTransform Angle="-90" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}">
+                        <StackPanel Orientation="Vertical">
+                            <Rectangle
+                                x:Name="Button_Rect"
+                                Height="3"
+                                Margin="4,1,4,0"
+                                Fill="{StaticResource ForegroundVeryDarkBrush}" />
+
+                            <ContentPresenter
+                                x:Name="MyContentPresenter"
+                                Margin="0,5,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Content="{TemplateBinding Content}" />
+                        </StackPanel>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{StaticResource UniversityBlueBrush}" />
+                            <Setter Property="Foreground" Value="White" />
+                            <Setter TargetName="Button_Rect" Property="Fill" Value="White" />
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="HideConfigMenuButton" TargetType="{x:Type Button}">
+        <Setter Property="Background" Value="{StaticResource BackgroundVeryLightBrush}" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="{StaticResource UniversityBlueBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource BackgroundVeryLightBrush}" />
+        <Setter Property="BorderThickness" Value="10" />
+        <Setter Property="LayoutTransform">
+            <Setter.Value>
+                <RotateTransform Angle="-90" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}">
+                        <StackPanel Orientation="Vertical">
+                            <Rectangle
+                                x:Name="Button_Rect"
+                                Height="3"
+                                Margin="4,1,4,0"
+                                Fill="{StaticResource UniversityBlueBrush}" />
+
+                            <ContentPresenter
+                                x:Name="MyContentPresenter"
+                                Margin="0,5,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Content="{TemplateBinding Content}" />
+                        </StackPanel>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{StaticResource UniversityBlueBrush}" />
+                            <Setter Property="Foreground" Value="White" />
+                            <Setter TargetName="Button_Rect" Property="Fill" Value="White" />
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+    </Style>
+
+</ResourceDictionary> 

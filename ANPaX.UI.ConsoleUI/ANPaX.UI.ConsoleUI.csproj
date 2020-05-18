@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ANPaX.IO.Export\ANPaX.IO.Export.csproj" />
+    <ProjectReference Include="..\ANPaX.Core\ANPaX.Core.csproj" />
+    <ProjectReference Include="..\ANPaX.Simulation.AggregateFormation\ANPaX.Simulation.AggregateFormation.csproj" />
+  </ItemGroup>
+</Project>

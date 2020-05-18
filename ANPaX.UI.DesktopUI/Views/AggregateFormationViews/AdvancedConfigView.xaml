@@ -1,0 +1,168 @@
+﻿<ContentControl
+    x:Class="ANPaX.UI.DesktopUI.Views.AdvancedConfigView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ANPaX.UI.DesktopUI.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    MinHeight="230"
+    d:DesignHeight="280"
+    d:DesignWidth="550"
+    Background="{StaticResource UniversityGreyBrush}"
+    mc:Ignorable="d">
+    <Border Padding="5">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="15" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <TextBlock
+                x:Name="Header"
+                Grid.Row="0"
+                HorizontalAlignment="Center"
+                FontWeight="Bold"
+                Text="{Binding Header}" />
+            <TextBlock
+                Grid.Row="1"
+                Margin="0,0,0,0"
+                HorizontalAlignment="Center"
+                FontStyle="Italic"
+                Text="Change only if your really know what you do" />
+
+            <Grid Grid.Row="2" HorizontalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Vertical">
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20" />
+                            <RowDefinition Height="auto " />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Margin="0,5,0,0"
+                            FontSize="10"
+                            Text="Min contact distance" />
+                        <TextBox
+                            x:Name="Config_Epsilon"
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            FontSize="10" />
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Margin="10,5,0,0"
+                            FontSize="10"
+                            Text="Max contact distance" />
+                        <TextBox
+                            x:Name="Config_Delta"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="10,0,0,0"
+                            FontSize="10" />
+                    </Grid>
+
+                    <!--  Row 7  -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20 " />
+                            <RowDefinition Height="auto " />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Margin="0,5,0,0"
+                            FontSize="10"
+                            Text="Max attempts cluster" />
+                        <TextBox
+                            x:Name="Config_MaxAttemptsPerCluster"
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            FontSize="10" />
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Margin="10,5,0,0"
+                            FontSize="10"
+                            Text="Max attempts aggregate" />
+                        <TextBox
+                            x:Name="Config_MaxAttemptsPerAggregate"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="10,0,0,0"
+                            FontSize="10" />
+                    </Grid>
+
+                    <!--  Row 8  -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20 " />
+                            <RowDefinition Height="auto " />
+                        </Grid.RowDefinitions>
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Margin="0,5,0,0"
+                            FontSize="10"
+                            Text="Mean method radius" />
+                        <ComboBox
+                            x:Name="AvailablePSDMeanModes"
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            FontSize="10"
+                            SelectedItem="{Binding Path=SelectedPSDMeanMode}" />
+
+
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Margin="10,5,0,0"
+                            FontSize="10"
+                            Text="Mean method agg size" />
+
+                        <ComboBox
+                            x:Name="AvailableASDMeanModes"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="10,0,0,0"
+                            FontSize="10"
+                            SelectedItem="{Binding Path=SelectedASDMeanMode}" />
+
+                    </Grid>
+
+                    <!--  Row 9  -->
+                    <TextBlock
+                        Margin="0,5,0,0"
+                        FontSize="10"
+                        Text="Random number generator seed" />
+                    <TextBox
+                        x:Name="Config_RandomGeneratorSeed"
+                        MinWidth="50"
+                        FontSize="10" />
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Border>
+</ContentControl>
+

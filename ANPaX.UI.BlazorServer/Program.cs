@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace ANPaX.UI.BlazerServer
+namespace ANPaX.UI.BlazorServer
 {
     public class Program
     {

@@ -27,7 +27,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ANPaX.IO.DBConnection", "AN
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "ANPaX.IO.SQLDatabase", "ANPaX.IO.SQLDatabase\ANPaX.IO.SQLDatabase.sqlproj", "{B6F1CB14-72B4-42C1-BCA4-A673BC3EDDAB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ANPaX.UI.BlazerServer", "ANPaX.UI.BlazerServer\ANPaX.UI.BlazerServer.csproj", "{A3CACA96-4219-4F8A-98F7-C2C339E6AEDC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ANPaX.UI.BlazorServer", "ANPaX.UI.BlazorServer\ANPaX.UI.BlazorServer.csproj", "{A3CACA96-4219-4F8A-98F7-C2C339E6AEDC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

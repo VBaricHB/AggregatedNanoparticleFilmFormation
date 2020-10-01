@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace ANPaX.UI.BlazerServer
+namespace ANPaX.UI.BlazorServer
 {
     public class Startup
     {

@@ -10,18 +10,16 @@ using ANPaX.Simulation.FilmFormation.interfaces;
 
 namespace ANPaX.Simulation.FilmFormation
 {
-    internal class BallisticAggregateDepositionHandler : IAggregateDepositionHandler
+    public class BallisticAggregateDepositionHandler : IAggregateDepositionHandler
     {
-        private readonly IFilmFormationConfig _filmFormationConfig;
         private readonly ISingleParticleDepositionHandler _singleParticleDepositionHandler;
 
-        public BallisticAggregateDepositionHandler(ISingleParticleDepositionHandler singleParticleDepositionHandler, IFilmFormationConfig filmFormationConfig)
+        public BallisticAggregateDepositionHandler(ISingleParticleDepositionHandler singleParticleDepositionHandler)
         {
             _singleParticleDepositionHandler = singleParticleDepositionHandler;
-            _filmFormationConfig = filmFormationConfig;
         }
 
-        public async Task DepositAggregate_Async(Aggregate aggregate, IEnumerable<PrimaryParticle> depositedPrimaryParticles, INeighborslist neighborslist, double maxRadius, int maxCPU, CancellationToken ct)
+        public async Task DepositAggregate_Async(Aggregate aggregate, IEnumerable<PrimaryParticle> depositedPrimaryParticles, INeighborslist neighborslist, double maxRadius, int maxCPU, double delta, CancellationToken ct)
         {
             var distancesTasks = new List<Task<double>>();
             var primaryParticles = aggregate.Cluster.SelectMany(c => c.PrimaryParticles);
@@ -34,7 +32,7 @@ namespace ANPaX.Simulation.FilmFormation
 
                 foreach (var primaryParticle in primaryParticles)
                 {
-                    tasks.Add(Task.Run(() => _singleParticleDepositionHandler.GetDepositionDistance(primaryParticle, depositedPrimaryParticles, neighborslist, maxRadius)));
+                    tasks.Add(Task.Run(() => _singleParticleDepositionHandler.GetDepositionDistance(primaryParticle, depositedPrimaryParticles, neighborslist, maxRadius, delta)));
                 }
 
                 var distances = await Task.WhenAll(tasks);
@@ -51,7 +49,7 @@ namespace ANPaX.Simulation.FilmFormation
 
         }
 
-        public void DepositAggregate(Aggregate aggregate, IEnumerable<PrimaryParticle> depositedPrimaryParticles, INeighborslist neighborslist, double maxRadius)
+        public void DepositAggregate(Aggregate aggregate, IEnumerable<PrimaryParticle> depositedPrimaryParticles, INeighborslist neighborslist, double maxRadius, double delta)
         {
             var distancesTasks = new List<Task<double>>();
             var primaryParticles = aggregate.Cluster.SelectMany(c => c.PrimaryParticles);
@@ -64,7 +62,7 @@ namespace ANPaX.Simulation.FilmFormation
                 var distances = new List<double>();
                 foreach (var primaryParticle in primaryParticles)
                 {
-                    distances.Add(_singleParticleDepositionHandler.GetDepositionDistance(primaryParticle, depositedPrimaryParticles, neighborslist, maxRadius));
+                    distances.Add(_singleParticleDepositionHandler.GetDepositionDistance(primaryParticle, depositedPrimaryParticles, neighborslist, maxRadius, delta));
                 }
 
                 distance = distances.Min();
@@ -95,10 +93,10 @@ namespace ANPaX.Simulation.FilmFormation
         /// <param name="distances">List of the distances the individual primary particles can move
         /// before deposition.</param>
         /// <returns></returns>
-        public bool IsWithoutContact(double distance)
+        public bool IsWithoutContact(double distance, double largeNumber)
         {
             // If there is no contact, than all values in distance equal IConfig.LargeNumber.
-            return (Math.Abs(distance - _filmFormationConfig.LargeNumber) < 1e-6);
+            return (Math.Abs(distance - largeNumber) < 1e-6);
         }
 
         /// <summary>

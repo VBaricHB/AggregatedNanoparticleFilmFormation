@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using ANPaX.Core.interfaces;
-using ANPaX.Core.ParticleFilm;
+using ANPaX.Core.ParticleFilm.interfaces;
 
 namespace ANPaX.Core
 {

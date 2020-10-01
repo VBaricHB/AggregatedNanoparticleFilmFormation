@@ -43,9 +43,7 @@
     <ProjectReference Include="..\ANPaX.Core\ANPaX.Core.csproj" />
     <ProjectReference Include="..\ANPaX.Core.Extensions\ANPaX.Core.Extensions.csproj" />
     <ProjectReference Include="..\ANPaX.IO\ANPaX.IO.csproj" />
-    <ProjectReference Include="..\ANPaX.IO.Export\ANPaX.IO.Export.csproj" />
     <ProjectReference Include="..\ANPaX.Simulation.FilmFormation\ANPaX.Simulation.FilmFormation.csproj" />
-    <ProjectReference Include="..\ANPaX.IO.Import\ANPaX.IO.Import.csproj" />
   </ItemGroup>
 
   <ItemGroup>

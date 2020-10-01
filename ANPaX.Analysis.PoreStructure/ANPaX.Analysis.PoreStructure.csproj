@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ANPaX.Core\ANPaX.Core.csproj" />
+    <ProjectReference Include="..\ANPaX.IO\ANPaX.IO.csproj" />
+  </ItemGroup>
+
+</Project>

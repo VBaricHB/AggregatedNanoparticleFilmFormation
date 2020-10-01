@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 using ANPaX.Core;
 using ANPaX.Core.interfaces;
-using ANPaX.Core.ParticleFilm;
+using ANPaX.Core.ParticleFilm.interfaces;
 using ANPaX.Simulation.FilmFormation.interfaces;
 
 namespace ANPaX.Simulation.FilmFormation
@@ -28,30 +28,32 @@ namespace ANPaX.Simulation.FilmFormation
             : this(filmFormationConfig, -1)
         { }
 
+
         public AggregateFilmFormationService(
-            IFilmFormationConfig filmFormationConfig, int seed)
+            IFilmFormationConfig filmFormationConfig,
+            int seed
+            )
         {
-            _simulationBox = new AbsoluteTetragonalSimulationBox(filmFormationConfig.FilmWidthAbsolute);
-            var primaryParticleDepositionHandler = new BallisticSingleParticleDepositionHandler(filmFormationConfig);
-            _filmFormationConfig = filmFormationConfig;
-            _aggregateDepositionHandler = new BallisticAggregateDepositionHandler(primaryParticleDepositionHandler, filmFormationConfig);
-            _wallCollisionHandler = new WallCollisionHandler(_simulationBox);
-            _neighborslistFactory = new AccordNeighborslistFactory();
+            _filmFormationConfig = filmFormationConfig ?? throw new ArgumentException(nameof(filmFormationConfig));
+            _simulationBox = filmFormationConfig.SimulationBoxFactory.Build(_filmFormationConfig);
+            _aggregateDepositionHandler = filmFormationConfig.AggregateDepositionHandler;
+            _wallCollisionHandler = filmFormationConfig.WallCollisionHandler;
+            _neighborslistFactory = filmFormationConfig.NeighborslistFactory;
+
             _rndGen = new Random();
             if (seed > 0)
             {
                 _rndGen = new Random(seed);
             }
-
         }
 
-        public async Task<IParticleFilm<Aggregate>> BuildFilm_Async(IEnumerable<Aggregate> aggregates, IProgress<ProgressReportModel> progress, CancellationToken ct)
+        public async Task<IParticleFilm<Aggregate>> BuildFilm_Async(IEnumerable<Aggregate> aggregates, IProgress<ProgressReportModel> progress, double delta, CancellationToken ct)
         {
             ParticleFilm = new TetragonalAggregatedParticleFilm(_simulationBox, _neighborslistFactory);
             var report = new ProgressReportModel();
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            await ProcessAggregates(aggregates, progress, report, stopwatch, ct);
+            await ProcessAggregates(aggregates, progress, report, stopwatch, delta, ct);
 
 
             return ParticleFilm;
@@ -69,22 +71,22 @@ namespace ANPaX.Simulation.FilmFormation
             progress.Report(report);
         }
 
-        private async Task ProcessAggregates(IEnumerable<Aggregate> aggregates, IProgress<ProgressReportModel> progress, ProgressReportModel report, Stopwatch stopwatch, CancellationToken ct)
+        private async Task ProcessAggregates(IEnumerable<Aggregate> aggregates, IProgress<ProgressReportModel> progress, ProgressReportModel report, Stopwatch stopwatch, double delta, CancellationToken ct)
         {
             var maxRadius = aggregates.GetPrimaryParticles().GetMaxRadius();
             foreach (var aggregate in aggregates)
             {
-                await ProcessAggregate(aggregate, maxRadius, ct);
+                await ProcessAggregate(aggregate, maxRadius, delta, ct);
                 UpdateProgress(progress, report, aggregates, stopwatch);
             }
 
         }
 
 
-        private async Task ProcessAggregate(Aggregate aggregate, double maxRadius, CancellationToken ct)
+        private async Task ProcessAggregate(Aggregate aggregate, double maxRadius, double delta, CancellationToken ct)
         {
             InitializeAggregate(aggregate);
-            await _aggregateDepositionHandler.DepositAggregate_Async(aggregate, ParticleFilm.PrimaryParticles, ParticleFilm.Neighborslist2D, maxRadius, _filmFormationConfig.MaxCPU, ct);
+            await _aggregateDepositionHandler.DepositAggregate_Async(aggregate, ParticleFilm.PrimaryParticles, ParticleFilm.Neighborslist2D, maxRadius, _filmFormationConfig.MaxCPU, delta, ct);
             ParticleFilm.AddDepositedParticlesToFilm(aggregate);
 
         }
@@ -93,7 +95,7 @@ namespace ANPaX.Simulation.FilmFormation
         {
             var rndPos = GetRandomInitialPosition();
             aggregate.MoveTo(rndPos);
-            _wallCollisionHandler.CheckPrimaryParticle(aggregate.Cluster.SelectMany(c => c.PrimaryParticles));
+            _wallCollisionHandler.CheckPrimaryParticle(aggregate.Cluster.SelectMany(c => c.PrimaryParticles), _simulationBox);
         }
 
         private Vector3 GetRandomInitialPosition()

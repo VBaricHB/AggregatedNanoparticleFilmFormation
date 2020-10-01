@@ -58,8 +58,8 @@ namespace ANPaX.Simulation.FilmFormation.tests
         [Fact]
         private void DepositAggregateOnGroundTest()
         {
-            var spHandler = new BallisticSingleParticleDepositionHandler(_config);
-            var aggHandler = new BallisticAggregateDepositionHandler(spHandler, _config);
+            var spHandler = new BallisticSingleParticleDepositionHandler();
+            var aggHandler = new BallisticAggregateDepositionHandler(spHandler);
             var aggregate = GetExampleAggregate();
             aggHandler.DepositOnGround(aggregate);
             Assert.Equal(1.0, aggregate.Cluster.SelectMany(c => c.PrimaryParticles).Select(p => p.Position.Z).Min());
@@ -68,30 +68,30 @@ namespace ANPaX.Simulation.FilmFormation.tests
         [Fact]
         private void IsWithoutContactTest_NoContact_ShouldBeTrue()
         {
-            var spHandler = new BallisticSingleParticleDepositionHandler(_config);
-            var aggHandler = new BallisticAggregateDepositionHandler(spHandler, _config);
+            var spHandler = new BallisticSingleParticleDepositionHandler();
+            var aggHandler = new BallisticAggregateDepositionHandler(spHandler);
 
             var distance = _config.LargeNumber;
 
-            var isWithoutContact = aggHandler.IsWithoutContact(distance);
+            var isWithoutContact = aggHandler.IsWithoutContact(distance, _config.LargeNumber);
             Assert.True(isWithoutContact);
         }
 
         [Fact]
         private void IsWithoutContactTest_HasContact_ShouldBeFalse()
         {
-            var spHandler = new BallisticSingleParticleDepositionHandler(_config);
-            var aggHandler = new BallisticAggregateDepositionHandler(spHandler, _config);
+            var spHandler = new BallisticSingleParticleDepositionHandler();
+            var aggHandler = new BallisticAggregateDepositionHandler(spHandler);
 
-            var isWithoutContact = aggHandler.IsWithoutContact(20);
+            var isWithoutContact = aggHandler.IsWithoutContact(20, _config.LargeNumber);
             Assert.False(isWithoutContact);
         }
 
         [Fact]
         private void DepositAtParticleTest_CorrectDepositionDistance()
         {
-            var spHandler = new BallisticSingleParticleDepositionHandler(_config);
-            var aggHandler = new BallisticAggregateDepositionHandler(spHandler, _config);
+            var spHandler = new BallisticSingleParticleDepositionHandler();
+            var aggHandler = new BallisticAggregateDepositionHandler(spHandler);
 
             var aggregate = GetExampleAggregate();
 
@@ -103,13 +103,13 @@ namespace ANPaX.Simulation.FilmFormation.tests
         [Fact]
         private async Task DepositAggregate_DepositAtPrimaryParticle()
         {
-            var spHandler = new BallisticSingleParticleDepositionHandler(_config);
-            var aggHandler = new BallisticAggregateDepositionHandler(spHandler, _config);
+            var spHandler = new BallisticSingleParticleDepositionHandler();
+            var aggHandler = new BallisticAggregateDepositionHandler(spHandler);
 
             var aggregate = GetExampleAggregate();
             var neighborslist = new Accord2DNeighborslist(GetDepositedParticles());
             var ct = new CancellationToken();
-            await aggHandler.DepositAggregate_Async(aggregate, GetDepositedParticles(), neighborslist, GetDepositedParticles().GetMaxRadius(), Environment.ProcessorCount, ct);
+            await aggHandler.DepositAggregate_Async(aggregate, GetDepositedParticles(), neighborslist, GetDepositedParticles().GetMaxRadius(), Environment.ProcessorCount, _config.Delta, ct);
 
             Assert.Equal(3.0, aggregate.Cluster.SelectMany(c => c.PrimaryParticles).Select(p => p.Position.Z).Min());
         }
@@ -117,13 +117,13 @@ namespace ANPaX.Simulation.FilmFormation.tests
         [Fact]
         private async Task DepositAggregate_DepositOnGround()
         {
-            var spHandler = new BallisticSingleParticleDepositionHandler(_config);
-            var aggHandler = new BallisticAggregateDepositionHandler(spHandler, _config);
+            var spHandler = new BallisticSingleParticleDepositionHandler();
+            var aggHandler = new BallisticAggregateDepositionHandler(spHandler);
 
             var aggregate = GetExampleAggregate();
             var neighborslist = new Mock<INeighborslist>().Object;
             var ct = new CancellationToken();
-            await aggHandler.DepositAggregate_Async(aggregate, GetDepositedParticlesFarAway(), neighborslist, GetDepositedParticlesFarAway().GetMaxRadius(), Environment.ProcessorCount, ct);
+            await aggHandler.DepositAggregate_Async(aggregate, GetDepositedParticlesFarAway(), neighborslist, GetDepositedParticlesFarAway().GetMaxRadius(), Environment.ProcessorCount, _config.Delta, ct);
 
             Assert.Equal(1.0, aggregate.Cluster.SelectMany(c => c.PrimaryParticles).Select(p => p.Position.Z).Min());
         }

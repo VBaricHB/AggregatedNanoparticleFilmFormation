@@ -5,12 +5,13 @@ using ANPaX.Core.interfaces;
 
 namespace ANPaX.Simulation.FilmFormation.interfaces
 {
-    internal interface ISingleParticleDepositionHandler
+    public interface ISingleParticleDepositionHandler
     {
         double GetDepositionDistance(
             PrimaryParticle primaryParticle,
             IEnumerable<PrimaryParticle> depositedPrimaryParticles,
             INeighborslist neighborsList,
-            double maxRadius);
+            double maxRadius,
+            double delta);
     }
 }

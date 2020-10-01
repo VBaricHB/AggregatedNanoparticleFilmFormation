@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ANPaX.Analysis.PoreStructure\ANPaX.Analysis.PoreStructure.csproj" />
+    <ProjectReference Include="..\ANPaX.Analysis.Validation\ANPaX.Analysis.Validation.csproj" />
+    <ProjectReference Include="..\ANPaX.Core\ANPaX.Core.csproj" />
+    <ProjectReference Include="..\ANPaX.IO.DBConnection\ANPaX.IO.DBConnection.csproj" />
+    <ProjectReference Include="..\ANPaX.IO\ANPaX.IO.csproj" />
+    <ProjectReference Include="..\ANPaX.Simulation.AggregateFormation\ANPaX.Simulation.AggregateFormation.csproj" />
+    <ProjectReference Include="..\ANPaX.Simulation.FilmFormation\ANPaX.Simulation.FilmFormation.csproj" />
+  </ItemGroup>
+
+</Project>

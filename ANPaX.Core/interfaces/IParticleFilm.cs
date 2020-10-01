@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-using ANPaX.Core.ParticleFilm;
+using ANPaX.Core.ParticleFilm.interfaces;
 
 namespace ANPaX.Core.interfaces
 {

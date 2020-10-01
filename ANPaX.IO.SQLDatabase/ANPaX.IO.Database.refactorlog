@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <Operation Name="Rename Refactor" Key="1e52b1ac-eccc-478d-9f5e-069eefde119b" ChangeDateTime="09/30/2020 07:23:52">
+    <Property Name="ElementName" Value="[dbo].[AggegrateConfiguration].[ClusterSiye]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[AggegrateConfiguration]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ClusterSize" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="c694c9a7-127d-4dd5-bf0e-a3e066ab9e1b" ChangeDateTime="09/30/2020 07:32:04">
+    <Property Name="ElementName" Value="[dbo].[AggegrateConfiguration].[AggregateSiyeDistribution]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[AggegrateConfiguration]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="AggregateSizeDistribution" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="d865243e-18a4-4f30-af31-4d5425ef9ee1" ChangeDateTime="09/30/2020 07:34:21">
+    <Property Name="ElementName" Value="[dbo].[FilmFormationConfiguration].[MaxCOU]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[FilmFormationConfiguration]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="MaxCPU" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="c2ab92b4-6377-45d9-b9fc-f9845453feaf" ChangeDateTime="09/30/2020 07:38:23">
+    <Property Name="ElementName" Value="[dbo].[ParticleSimulation].[FilmFormationConfig]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ParticleSimulation]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="FilmFormationConfigId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="42e6c73c-4563-4fd2-afb3-964319027fbb" ChangeDateTime="09/30/2020 07:40:02">
+    <Property Name="ElementName" Value="[dbo].[FilmFormationConfiguration].[FilmWidthAbsolute]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[FilmFormationConfiguration]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="XWidth" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="98eedad9-fc24-4fea-8c57-074531879133" ChangeDateTime="09/30/2020 08:58:03">
+    <Property Name="ElementName" Value="[dbo].[ParticleSimulation].[Location]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ParticleSimulation]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="SimulationPath" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="a90e67e3-4aff-44f1-b5dc-49923d7d5db5" ChangeDateTime="09/30/2020 09:12:03">
+    <Property Name="ElementName" Value="[dbo].[FilmFormationConfiguration].[XWith]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[FilmFormationConfiguration]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="XWidth" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="316bf2cb-7976-4c3c-a366-947f665a4f52" ChangeDateTime="09/30/2020 09:12:07">
+    <Property Name="ElementName" Value="[dbo].[FilmFormationConfiguration].[YWith]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[FilmFormationConfiguration]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="YWidth" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="56ec5532-64b2-4c6a-af7e-6ff0ac3e5610" ChangeDateTime="09/30/2020 09:12:10">
+    <Property Name="ElementName" Value="[dbo].[FilmFormationConfiguration].[ZWith]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[FilmFormationConfiguration]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ZWidth" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="661496e8-e2ef-45a3-a2ab-bea5f9b1b576" ChangeDateTime="09/30/2020 09:45:37">
+    <Property Name="ElementName" Value="[dbo].[ParticleSimulation].[XDim]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ParticleSimulation]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="XWidth" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="abfde147-4516-4b17-9ca3-81f325e9aeaa" ChangeDateTime="09/30/2020 09:45:39">
+    <Property Name="ElementName" Value="[dbo].[ParticleSimulation].[YDim]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ParticleSimulation]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="YWidth" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="e6c4d26b-39c2-4fc5-852f-f640117b9771" ChangeDateTime="09/30/2020 09:45:42">
+    <Property Name="ElementName" Value="[dbo].[ParticleSimulation].[ZDim]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ParticleSimulation]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ZWidth" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="0005c8b4-183c-4cb6-aed1-eeba28208a59" ChangeDateTime="09/30/2020 09:46:50">
+    <Property Name="ElementName" Value="[dbo].[ParticleSimulation].[State]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ParticleSimulation]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Status" />
+  </Operation>
+</Operations>

@@ -8,20 +8,19 @@ using ANPaX.Simulation.FilmFormation.interfaces;
 
 namespace ANPaX.Simulation.FilmFormation
 {
-    internal class BallisticSingleParticleDepositionHandler : ISingleParticleDepositionHandler
+    public class BallisticSingleParticleDepositionHandler : ISingleParticleDepositionHandler
     {
-        private readonly IFilmFormationConfig _config;
 
-        public BallisticSingleParticleDepositionHandler(IFilmFormationConfig config)
+        public BallisticSingleParticleDepositionHandler()
         {
-            _config = config;
         }
 
         public double GetDepositionDistance(
             PrimaryParticle primaryParticle,
             IEnumerable<PrimaryParticle> depositedPrimaryParticles,
             INeighborslist neighborsList2D,
-            double maxRadius)
+            double maxRadius,
+            double delta)
         {
             var distance = primaryParticle.Position.Z - primaryParticle.Radius;
             if (!depositedPrimaryParticles.Any())
@@ -29,7 +28,7 @@ namespace ANPaX.Simulation.FilmFormation
                 return distance;
             }
 
-            var searchRadius = (primaryParticle.Radius + maxRadius) * _config.Delta;
+            var searchRadius = (primaryParticle.Radius + maxRadius) * delta;
             var neighbors = neighborsList2D.GetPrimaryParticlesWithinRadius(primaryParticle.Position, searchRadius);
             foreach (var neighbor in neighbors)
             {

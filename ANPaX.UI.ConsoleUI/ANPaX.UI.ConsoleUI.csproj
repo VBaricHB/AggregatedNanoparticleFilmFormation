@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ANPaX.IO.Export\ANPaX.IO.Export.csproj" />
+    <ProjectReference Include="..\ANPaX.IO\ANPaX.IO.csproj" />
     <ProjectReference Include="..\ANPaX.Core\ANPaX.Core.csproj" />
     <ProjectReference Include="..\ANPaX.Simulation.AggregateFormation\ANPaX.Simulation.AggregateFormation.csproj" />
   </ItemGroup>

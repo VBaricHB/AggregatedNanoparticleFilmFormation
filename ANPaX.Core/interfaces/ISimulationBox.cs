@@ -1,4 +1,4 @@
-﻿namespace ANPaX.Core.ParticleFilm
+﻿namespace ANPaX.Core.ParticleFilm.interfaces
 {
     public interface ISimulationBox
     {

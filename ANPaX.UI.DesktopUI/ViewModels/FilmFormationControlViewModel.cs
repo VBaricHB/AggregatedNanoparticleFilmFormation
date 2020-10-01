@@ -11,8 +11,7 @@ using ANPaX.Core;
 using ANPaX.Core.interfaces;
 using ANPaX.DesktopUI.Models;
 using ANPaX.IO;
-using ANPaX.IO.Export;
-using ANPaX.IO.Import;
+
 using ANPaX.Simulation.FilmFormation;
 using ANPaX.Simulation.FilmFormation.interfaces;
 using ANPaX.UI.DesktopUI.Models;
@@ -32,6 +31,7 @@ namespace ANPaX.UI.DesktopUI.ViewModels
         private StatusViewModel _statusViewModel;
         private LoggingViewModel _loggingViewModel;
         private FileExport _export = new FileExport();
+        private FileImport _import = new FileImport();
 
         public SimulationProperties SimProp { get; set; }
         public IParticleFilm<Aggregate> ParticleFilm { get; set; }
@@ -75,7 +75,7 @@ namespace ANPaX.UI.DesktopUI.ViewModels
             _cts = new CancellationTokenSource();
 
             AggregateFilmFormationService = new AggregateFilmFormationService(FilmFormationConfig);
-            ParticleFilm = await Task.Run(() => AggregateFilmFormationService.BuildFilm_Async(_aggregates, progress, _cts.Token));
+            ParticleFilm = await Task.Run(() => AggregateFilmFormationService.BuildFilm_Async(_aggregates, progress, FilmFormationConfig.Delta, _cts.Token));
             _loggingViewModel.LogInfo("Film generation complete.");
             ExportFilm();
             _statusViewModel.SimulationStatus = SimulationStatus.Idle;
@@ -105,7 +105,7 @@ namespace ANPaX.UI.DesktopUI.ViewModels
             _loggingViewModel.LogInfo($"Importing aggregates from {filename}.");
             try
             {
-                _aggregates = await Task.Run(() => FileImport.GetAggregatsFromFile(filename).ToList());
+                _aggregates = await Task.Run(() => _import.GetAggregatsFromFile(filename).ToList());
                 _loggingViewModel.LogInfo($"Finished file import.");
             }
             catch (AggregateException e)

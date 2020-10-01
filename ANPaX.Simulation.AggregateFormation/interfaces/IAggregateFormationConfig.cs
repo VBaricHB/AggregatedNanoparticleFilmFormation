@@ -4,15 +4,15 @@ namespace ANPaX.Simulation.AggregateFormation.interfaces
 {
     public interface IAggregateFormationConfig
     {
-        public double Epsilon { get; }
-        public double Delta { get; }
+        public int TotalPrimaryParticles { get; }
+        public int ClusterSize { get; }
         public double Df { get; }
         public double Kf { get; }
+        public double Epsilon { get; }
+        public double Delta { get; }
         public int MaxAttemptsPerCluster { get; }
         public int MaxAttemptsPerAggregate { get; }
         public double LargeNumber { get; }
-        public int ClusterSize { get; }
-        public int TotalPrimaryParticles { get; }
         public MeanMethod RadiusMeanCalculationMethod { get; }
         public MeanMethod AggregateSizeMeanCalculationMethod { get; }
         public bool UseDefaultGenerationMethods { get; }

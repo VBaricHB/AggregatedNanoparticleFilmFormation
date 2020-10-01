@@ -38,7 +38,7 @@ namespace ANPaX.Simulation.FilmFormation.tests
             var pos = new Vector3(0, 0, 100);
             var primaryParticle = new PrimaryParticle(0, pos, r);
 
-            var handler = new BallisticSingleParticleDepositionHandler(_config);
+            var handler = new BallisticSingleParticleDepositionHandler();
 
             var pos2 = new Vector3(0, 3, 10);
             var pos3 = new Vector3(3, -3, 10);
@@ -105,14 +105,14 @@ namespace ANPaX.Simulation.FilmFormation.tests
             var pos = new Vector3(0, 0, 100);
             var primaryParticle = new PrimaryParticle(0, pos, r);
 
-            var handler = new BallisticSingleParticleDepositionHandler(_config);
+            var handler = new BallisticSingleParticleDepositionHandler();
 
             var pos2 = new Vector3(1, 0, 10);
             var pp2 = new PrimaryParticle(1, pos2, r);
             var otherParticles = new List<PrimaryParticle>() { pp2 };
             var neighborsList = _neighborslistFactory.Build2DNeighborslist(otherParticles);
 
-            var dist = handler.GetDepositionDistance(primaryParticle, otherParticles, neighborsList, otherParticles.GetMaxRadius());
+            var dist = handler.GetDepositionDistance(primaryParticle, otherParticles, neighborsList, otherParticles.GetMaxRadius(), _config.Delta);
 
             // Math.Sqrt(3) results from the square of the combined radius (4) - the distance to centerline. 
             // This origins from the triangle: final position pp1. position neigbor, center projection neighbor.
@@ -127,7 +127,7 @@ namespace ANPaX.Simulation.FilmFormation.tests
             var pos = new Vector3(0, 0, 100);
             var primaryParticle = new PrimaryParticle(0, pos, r);
 
-            var handler = new BallisticSingleParticleDepositionHandler(_config);
+            var handler = new BallisticSingleParticleDepositionHandler();
 
             var pos2 = new Vector3(1, 0, 10);
             var pp2 = new PrimaryParticle(1, pos2, r);
@@ -137,7 +137,7 @@ namespace ANPaX.Simulation.FilmFormation.tests
 
             var neighborsList = _neighborslistFactory.Build2DNeighborslist(otherParticles);
 
-            var dist = handler.GetDepositionDistance(primaryParticle, otherParticles, neighborsList, otherParticles.GetMaxRadius());
+            var dist = handler.GetDepositionDistance(primaryParticle, otherParticles, neighborsList, otherParticles.GetMaxRadius(), _config.Delta);
 
             var shouldBeDistance = 90 - Math.Sqrt(3);
             Assert.Equal(shouldBeDistance, dist);
@@ -150,7 +150,7 @@ namespace ANPaX.Simulation.FilmFormation.tests
             var pos = new Vector3(0, 0, 100);
             var primaryParticle = new PrimaryParticle(0, pos, r);
 
-            var handler = new BallisticSingleParticleDepositionHandler(_config);
+            var handler = new BallisticSingleParticleDepositionHandler();
 
             var pos2 = new Vector3(5, 0, 10);
             var pp2 = new PrimaryParticle(1, pos2, r);
@@ -158,7 +158,7 @@ namespace ANPaX.Simulation.FilmFormation.tests
 
             var neighborsList = _neighborslistFactory.Build2DNeighborslist(otherParticles);
 
-            var dist = handler.GetDepositionDistance(primaryParticle, otherParticles, neighborsList, otherParticles.GetMaxRadius());
+            var dist = handler.GetDepositionDistance(primaryParticle, otherParticles, neighborsList, otherParticles.GetMaxRadius(), _config.Delta);
 
             var shouldBeDistance = primaryParticle.Position.Z - primaryParticle.Radius;
             Assert.Equal(shouldBeDistance, dist);

@@ -1,0 +1,177 @@
+﻿@page "/AggregateConfiguration/Create"
+@inject IAggregateConfigurationData aggConfigData
+
+<h3>Create</h3>
+
+<EditForm Model="@aggregateConfigurationModel" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary Model="@aggregateConfigurationModel" />
+    <div class="form-group">
+        <label class="control-label">Total number of primary particles</label>
+        <InputNumber @bind-Value="aggregateConfigurationModel.TotalPrimaryParticles" class="form-control" />
+        <ValidationMessage For="@(() => aggregateConfigurationModel.TotalPrimaryParticles)" class="text-danger" />
+    </div>
+    <div class="form-group">
+        <label class="control-label">Primary particles per cluster</label>
+        <InputNumber @bind-Value="aggregateConfigurationModel.ClusterSize" class="form-control" />
+        <ValidationMessage For="@(() => aggregateConfigurationModel.ClusterSize)" class="text-danger" />
+    </div>
+    <div class="form-group">
+        <label class="control-label">Fractal dimension</label>
+        <InputNumber TValue="double" @bind-Value="aggregateConfigurationModel.Df" class="form-control" />
+        <ValidationMessage For="@(() => aggregateConfigurationModel.Df)" class="text-danger" />
+    </div>
+    <div class="form-group">
+        <label class="control-label">Fractal prefactor</label>
+        <InputNumber @bind-Value="aggregateConfigurationModel.Kf" class="form-control" />
+        <ValidationMessage For="@(() => aggregateConfigurationModel.Kf)" class="text-danger" />
+    </div>
+    <div class="form-group">
+        <label class="control-label">Description</label>
+        <InputText @bind-Value="aggregateConfigurationModel.Description" class="form-control" />
+        <ValidationMessage For="@(() => aggregateConfigurationModel.Description)" class="text-danger" />
+    </div>
+    <div class="form-group">
+        <label class="control-label">Mean radius calculation method</label>
+        <select @onchange="MeanRadiusMethodChange" class="form-control">
+            <option value="@aggregateConfigurationModel.RadiusMeanCalculationMethod">"@aggregateConfigurationModel.RadiusMeanCalculationMethod"</option>
+            @foreach (var m in new List<string> { "Geometric", "Arithmetic", "Sauter" })
+            {
+                <option value="@m">"@m"</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label class="control-label">Mean aggregate size calculation method</label>
+        <select @onchange="MeanAggregateSizeMethodChange" class="form-control">
+            <option value="@aggregateConfigurationModel.AggregateSizeMeanCalculationMethod">"@aggregateConfigurationModel.AggregateSizeMeanCalculationMethod"</option>
+            @foreach (var m in new List<string> { "Geometric", "Arithmetic" })
+            {
+                <option value="@m">"@m"</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label class="control-label">Primary particle size distribution</label>
+        <select @onchange="PSDMethodChange" class="form-control">
+            <option value="@aggregateConfigurationModel.PrimaryParticleSizeDistribution">"@aggregateConfigurationModel.PrimaryParticleSizeDistribution"</option>
+            @foreach (var m in new List<string> { "DissDefault", "LogNormal", "Normal", "Monodisperse" })
+            {
+                <option value="@m">"@m"</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label class="control-label">Aggregate size distribution</label>
+        <select @onchange="ASDMethodChange" class="form-control">
+            <option value="@aggregateConfigurationModel.AggregateSizeDistribution">"@aggregateConfigurationModel.AggregateSizeDistribution"</option>
+            @foreach (var m in new List<string> { "DissDefault", "LogNormal", "Normal", "Monodisperse" })
+            {
+                <option value="@m">"@m"</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label class="control-label">Aggregate formation method</label>
+        <select @onchange="AggFormationMethodChange" class="form-control">
+            <option value="@aggregateConfigurationModel.AggregateFormationFactory">"@aggregateConfigurationModel.AggregateFormationFactory"</option>
+            @foreach (var m in new List<string> { "CCA", "PCA" })
+            {
+                <option value="@m">"@m"</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label class="control-label">Epsilon - Minimum distance factor of two primary particles</label>
+        <InputNumber @bind-Value="aggregateConfigurationModel.Epsilon" class="form-control" />
+        <ValidationMessage For="@(() => aggregateConfigurationModel.Epsilon)" class="text-danger" />
+    </div>
+    <div class="form-group">
+        <label class="control-label">Delta - Maximum distance factor of two primary particles</label>
+        <InputNumber @bind-Value="aggregateConfigurationModel.Delta" class="form-control" />
+        <ValidationMessage For="@(() => aggregateConfigurationModel.Delta)" class="text-danger" />
+    </div>
+    <div class="form-group">
+        <label class="control-label">Maximum attempts to set a cluster</label>
+        <InputNumber @bind-Value="aggregateConfigurationModel.MaxAttemptsPerCluster" class="form-control" />
+        <ValidationMessage For="@(() => aggregateConfigurationModel.MaxAttemptsPerCluster)" class="text-danger" />
+    </div>
+    <div class="form-group">
+        <label class="control-label">Maximum attempts to set an aggregate</label>
+        <InputNumber @bind-Value="aggregateConfigurationModel.MaxAttemptsPerAggregate" class="form-control" />
+        <ValidationMessage For="@(() => aggregateConfigurationModel.MaxAttemptsPerAggregate)" class="text-danger" />
+    </div>
+    <div class="form-group">
+        <label class="control-label">A large number for internal comparison</label>
+        <InputNumber @bind-Value="aggregateConfigurationModel.LargeNumber" class="form-control" />
+        <ValidationMessage For="@(() => aggregateConfigurationModel.LargeNumber)" class="text-danger" />
+    </div>
+    <div class="form-group">
+        <label class="control-label">Random generator seed (-1 for no custom seed)</label>
+        <InputNumber @bind-Value="aggregateConfigurationModel.RandomGeneratorSeed" class="form-control" />
+        <ValidationMessage For="@(() => aggregateConfigurationModel.RandomGeneratorSeed)" class="text-danger" />
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Save configuration" class="btn btn-primary" />
+    </div>
+</EditForm>
+
+@code {
+    private AggregateConfigurationModel aggregateConfigurationModel= new AggregateConfigurationModel();
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        aggregateConfigurationModel = await aggConfigData.GetAggregateConfigurationById(1);
+        aggregateConfigurationModel.Description = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        var id = await aggConfigData.CreateAggregateConfiguration(aggregateConfigurationModel);
+
+        aggregateConfigurationModel = new AggregateConfigurationModel();
+        aggregateConfigurationModel.Description = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+    }
+
+    private void MeanRadiusMethodChange(ChangeEventArgs e)
+    {
+        if (string.IsNullOrWhiteSpace(e.Value.ToString()) == false)
+        {
+            aggregateConfigurationModel.RadiusMeanCalculationMethod = e.Value.ToString();
+        }
+    }
+
+    private void MeanAggregateSizeMethodChange(ChangeEventArgs e)
+    {
+        if (string.IsNullOrWhiteSpace(e.Value.ToString()) == false)
+        {
+            aggregateConfigurationModel.AggregateSizeMeanCalculationMethod = e.Value.ToString();
+        }
+    }
+
+    private void PSDMethodChange(ChangeEventArgs e)
+    {
+        if (string.IsNullOrWhiteSpace(e.Value.ToString()) == false)
+        {
+            aggregateConfigurationModel.PrimaryParticleSizeDistribution = e.Value.ToString();
+        }
+    }
+
+    private void ASDMethodChange(ChangeEventArgs e)
+    {
+        if (string.IsNullOrWhiteSpace(e.Value.ToString()) == false)
+        {
+            aggregateConfigurationModel.AggregateSizeDistribution = e.Value.ToString();
+        }
+
+    }
+
+    private void AggFormationMethodChange(ChangeEventArgs e)
+    {
+        if (string.IsNullOrWhiteSpace(e.Value.ToString()) == false)
+        {
+            aggregateConfigurationModel.AggregateFormationFactory = e.Value.ToString();
+        }
+    }
+}

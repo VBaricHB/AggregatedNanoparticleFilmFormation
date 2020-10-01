@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using ANPaX.Core;
 using ANPaX.DesktopUI.Models;
 using ANPaX.IO;
-using ANPaX.IO.Export;
 using ANPaX.Simulation.AggregateFormation;
 using ANPaX.UI.DesktopUI.Models;
 using ANPaX.UI.DesktopUI.Views;

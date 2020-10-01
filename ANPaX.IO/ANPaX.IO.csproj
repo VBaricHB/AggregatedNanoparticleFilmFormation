@@ -5,7 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ANPaX.Core\ANPaX.Core.csproj" />
+    <ProjectReference Include="..\ANPaX.Simulation.AggregateFormation\ANPaX.Simulation.AggregateFormation.csproj" />
+    <ProjectReference Include="..\ANPaX.Simulation.FilmFormation\ANPaX.Simulation.FilmFormation.csproj" />
   </ItemGroup>
 
 </Project>

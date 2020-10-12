@@ -14,9 +14,9 @@ namespace ANPaX.IO.DBConnection.Data
     public class ParticleSimulationDataSQL : IParticleSimulationData
     {
         private readonly IDataAccess _dataAccess;
-        private readonly ConnectionStringData _connectionString;
+        private readonly ConnectionData _connectionString;
 
-        public ParticleSimulationDataSQL(IDataAccess dataAccess, ConnectionStringData connectionString)
+        public ParticleSimulationDataSQL(IDataAccess dataAccess, ConnectionData connectionString)
         {
             _dataAccess = dataAccess;
             _connectionString = connectionString;
@@ -26,7 +26,7 @@ namespace ANPaX.IO.DBConnection.Data
         {
             return _dataAccess.LoadData<ParticleSimulationModel, dynamic>("dbo.spSimulations_All",
                                                                           new { },
-                                                                          _connectionString.SqlConnectionName);
+                                                                          _connectionString);
         }
 
         public async Task<int> CreateParticleSimulation(ParticleSimulationModel particleSimulation)
@@ -48,7 +48,7 @@ namespace ANPaX.IO.DBConnection.Data
             p.Add("Percentage", particleSimulation.Percentage);
             p.Add("Id", DbType.Int32, direction: ParameterDirection.Output);
 
-            await _dataAccess.SaveData("dbo.spParticleSimulations_Insert", p, _connectionString.SqlConnectionName);
+            await _dataAccess.SaveData("dbo.spParticleSimulations_Insert", p, _connectionString);
 
             return p.Get<int>("Id");
         }
@@ -61,7 +61,7 @@ namespace ANPaX.IO.DBConnection.Data
                                             Id = particleSimulationId,
                                             Status = status
                                         },
-                                        _connectionString.SqlConnectionName);
+                                        _connectionString);
         }
 
         public Task<int> UpdateParticleSimulationPercentage(int particleSimulationId, double percentage)
@@ -72,7 +72,7 @@ namespace ANPaX.IO.DBConnection.Data
                                             Id = particleSimulationId,
                                             Percentage = percentage
                                         },
-                                        _connectionString.SqlConnectionName);
+                                        _connectionString);
         }
 
         public Task<int> DeleteParticleSimulation(int particleSimulationId)
@@ -82,14 +82,14 @@ namespace ANPaX.IO.DBConnection.Data
                                         {
                                             Id = particleSimulationId
                                         },
-                                        _connectionString.SqlConnectionName);
+                                        _connectionString);
         }
 
         public async Task<ParticleSimulationModel> GetParticleSimulationById(int particleSimulationId)
         {
             var recs = await _dataAccess.LoadData<ParticleSimulationModel, dynamic>("dbo.spParticleSimulations_GetbyId",
                                                                                     new { Id = particleSimulationId },
-                                                                                    _connectionString.SqlConnectionName);
+                                                                                    _connectionString);
 
             return recs.FirstOrDefault();
         }

@@ -14,19 +14,19 @@ namespace ANPaX.IO.DBConnection.Data
     public class AggregateConfigurationDataSQL : IAggregateConfigurationData
     {
         private readonly IDataAccess _dataAccess;
-        private readonly ConnectionStringData _connectionString;
+        private readonly ConnectionData _connectionData;
 
-        public AggregateConfigurationDataSQL(IDataAccess dataAccess, ConnectionStringData connectionString)
+        public AggregateConfigurationDataSQL(IDataAccess dataAccess, ConnectionData connectionData)
         {
             _dataAccess = dataAccess;
-            _connectionString = connectionString;
+            _connectionData = connectionData;
         }
 
         public async Task<AggregateConfigurationModel> GetAggregateConfigurationById(int aggregateConfigurationId)
         {
             var recs = await _dataAccess.LoadData<AggregateConfigurationModel, dynamic>("dbo.spAggConfig_GetById",
                                                                                   new { Id = aggregateConfigurationId },
-                                                                                  _connectionString.SqlConnectionName);
+                                                                                  _connectionData);
 
             return recs.FirstOrDefault();
 
@@ -54,7 +54,7 @@ namespace ANPaX.IO.DBConnection.Data
             p.Add("RandomGeneratorSeed", aggregateConfigurationModel.RandomGeneratorSeed);
             p.Add("Id", DbType.Int32, direction: ParameterDirection.Output);
 
-            await _dataAccess.SaveData("dbo.spAggConfig_Insert", p, _connectionString.SqlConnectionName);
+            await _dataAccess.SaveData("dbo.spAggConfig_Insert", p, _connectionData);
 
             return p.Get<int>("Id");
         }
@@ -63,7 +63,7 @@ namespace ANPaX.IO.DBConnection.Data
         {
             return _dataAccess.LoadData<AggregateConfigurationModel, dynamic>("dbo.spAggConfig_All",
                                                                           new { },
-                                                                          _connectionString.SqlConnectionName);
+                                                                          _connectionData);
         }
     }
 }

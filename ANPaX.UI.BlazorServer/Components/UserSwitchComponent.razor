@@ -1,0 +1,58 @@
+﻿@page "/UserSwitch"
+
+@inject IUserData userData
+@inject IUserModelService userModelService
+@inject IAggregateConfigurationModelService aggconfigModelService
+
+    <div class="form-group">
+        <select class="form-control-sm" @bind="@_currentUser.User">
+            <option value="@_currentUser.User">"@_currentUser.User"</option>
+            @foreach (var u in _users)
+            {
+                <option value=@u.User>"@u.User"</option>
+            }
+        </select>
+        <DxButton RenderStyle="ButtonRenderStyle.Primary" Text="Add User" @onclick="@(() => _isPopupVisible = true)" />
+    </div>
+
+    <DxPopup HeaderText="New User"
+             @bind-Visible="@_isPopupVisible"
+             >
+        <Content>
+            <EditForm Model="@_currentUser" OnValidSubmit="HandleValidSubmit">
+                <div class="form-group">
+                    <label class="control-label">Enter user name</label>
+                    <InputText @bind-Value="_addUser.User" class="form-control" />
+                    <ValidationMessage For="@(() => _addUser.User)" class="text-danger" />
+
+                    <label class="control-label">E-Mail address</label>
+                    <InputText @bind-Value="_addUser.EMail" class="form-control" />
+                    <ValidationMessage For="@(() => _addUser.EMail)" class="text-danger" />
+                </div>
+                <input type="submit" value="Save configuration" class="btn btn-primary" />
+            </EditForm>
+        </Content>
+    </DxPopup>
+
+@code {
+    private List<UserModel> _users;
+    private bool _isPopupVisible;
+    private UserModel _currentUser = new UserModel { User = "Select user", EMail = ""};
+    private UserModel _addUser = new UserModel { User = "Some nice name", EMail = "anpax@iwt.uni-bremen.de"};
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _users = await userData.GetUsers();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await userData.CreateUser(_addUser);
+        _currentUser = _addUser;
+        _users = await userData.GetUsers();
+        aggconfigModelService.AggregateConfigurationModel.Description = _addUser.User + "_" +
+            aggconfigModelService.AggregateConfigurationModel.Description.Split('_').Last();
+        _isPopupVisible = false;
+    }
+
+}

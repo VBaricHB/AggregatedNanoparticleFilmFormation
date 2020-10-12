@@ -14,9 +14,9 @@ namespace ANPaX.IO.DBConnection.Data
     public class FilmFormationConfigurationDataSQL : IFilmFormationConfigurationData
     {
         private readonly IDataAccess _dataAccess;
-        private readonly ConnectionStringData _connectionString;
+        private readonly ConnectionData _connectionString;
 
-        public FilmFormationConfigurationDataSQL(IDataAccess dataAccess, ConnectionStringData connectionString)
+        public FilmFormationConfigurationDataSQL(IDataAccess dataAccess, ConnectionData connectionString)
         {
             _dataAccess = dataAccess;
             _connectionString = connectionString;
@@ -26,7 +26,7 @@ namespace ANPaX.IO.DBConnection.Data
         {
             var recs = await _dataAccess.LoadData<FilmFormationConfigurationModel, dynamic>("dbo.spFilmConfig_GetById",
                                                                                   new { Id = filmFormationConfigurationId },
-                                                                                  _connectionString.SqlConnectionName);
+                                                                                  _connectionString);
 
             return recs.FirstOrDefault();
 
@@ -48,7 +48,7 @@ namespace ANPaX.IO.DBConnection.Data
             p.Add("NeighborslistMethod", filmFormationConfiguration.NeighborslistMethod);
             p.Add("Id", DbType.Int32, direction: ParameterDirection.Output);
 
-            await _dataAccess.SaveData("dbo.spFilmConfig_Insert", p, _connectionString.SqlConnectionName);
+            await _dataAccess.SaveData("dbo.spFilmConfig_Insert", p, _connectionString);
 
             return p.Get<int>("Id");
         }
@@ -57,7 +57,7 @@ namespace ANPaX.IO.DBConnection.Data
         {
             return _dataAccess.LoadData<FilmFormationConfigurationModel, dynamic>("dbo.spFilmConfig_All",
                                                                           new { },
-                                                                          _connectionString.SqlConnectionName);
+                                                                          _connectionString);
         }
     }
 }

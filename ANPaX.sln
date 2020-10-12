@@ -13,6 +13,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DE131C92-1DD5-4FFB-BB87-A3F25AB79C35}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		ANPaXDB.sqlite = ANPaXDB.sqlite
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ANPaX.UI.DesktopUI", "ANPaX.UI.DesktopUI\ANPaX.UI.DesktopUI.csproj", "{BA738508-5F55-4A35-83E2-5D7486835805}"

@@ -5,7 +5,7 @@ namespace ANPaX.IO.DBConnection.Db
 {
     public interface IDataAccess
     {
-        Task<List<T>> LoadData<T, U>(string storedProcedure, U parameters, string connectionStringName);
-        Task<int> SaveData<U>(string storedProcedure, U parameters, string connectionStringName);
+        Task<List<T>> LoadData<T, U>(string procedure, U parameters, ConnectionData connectionData);
+        Task<int> SaveData<U>(string procedure, U parameters, ConnectionData connectionData);
     }
 }

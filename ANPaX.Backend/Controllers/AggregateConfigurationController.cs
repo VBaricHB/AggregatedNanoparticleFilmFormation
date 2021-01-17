@@ -15,10 +15,12 @@ namespace ANPaX.Backend.Controllers
     public class AggregateConfigurationController : ControllerBase
     {
         private readonly DataContext _context;
+        private readonly IDataStorageHelper<AggregateConfigurationDTO> _storageHelper;
 
-        public AggregateConfigurationController(DataContext context)
+        public AggregateConfigurationController(DataContext context, IDataStorageHelper<AggregateConfigurationDTO> storageHelper)
         {
             _context = context;
+            _storageHelper = storageHelper;
         }
 
         // GET: api/AggConfig
@@ -78,10 +80,9 @@ namespace ANPaX.Backend.Controllers
         [HttpPost]
         public async Task<ActionResult<AggregateConfigurationDTO>> PostAggregateConfigurationDTO(AggregateConfigurationDTO aggregateConfigurationDTO)
         {
-            _context.AggConfigs.Add(aggregateConfigurationDTO);
-            await _context.SaveChangesAsync();
+            var dto = await _storageHelper.SaveIfNotExist(aggregateConfigurationDTO);
 
-            return CreatedAtAction("GetAggregateConfigurationDTO", new { id = aggregateConfigurationDTO.Id }, aggregateConfigurationDTO);
+            return CreatedAtAction("GetAggregateConfigurationDTO", new { id = dto.Id }, dto);
         }
 
         // DELETE: api/AggConfig/5

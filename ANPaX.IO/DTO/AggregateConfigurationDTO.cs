@@ -101,7 +101,6 @@ namespace ANPaX.IO.DTO
 
             return
                 other.Description == this.Description &&
-                other.User == this.User &&
                 other.TotalPrimaryParticles == this.TotalPrimaryParticles &&
                 other.ClusterSize == this.ClusterSize &&
                 Math.Abs(other.Df - this.Df) < 1e-6 &&
@@ -123,7 +122,6 @@ namespace ANPaX.IO.DTO
         {
             var hash = new HashCode();
             hash.Add(Description);
-            hash.Add(User);
             hash.Add(TotalPrimaryParticles);
             hash.Add(ClusterSize);
             hash.Add(Df);

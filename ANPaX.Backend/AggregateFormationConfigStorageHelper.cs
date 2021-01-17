@@ -1,36 +1,54 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 
+using ANPaX.IO.DBConnection.Data;
 using ANPaX.IO.DTO;
-using ANPaX.IO.interfaces;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace ANPaX.Backend
 {
     public class AggregateFormationConfigStorageHelper : IDataStorageHelper<AggregateConfigurationDTO>
     {
-        private readonly IAggregateConfigurationData _aggregateConfigurationData;
+        private readonly DataContext _context;
 
-        public AggregateFormationConfigStorageHelper(IAggregateConfigurationData aggregateConfigurationData)
+        public AggregateFormationConfigStorageHelper(DataContext context)
         {
-            _aggregateConfigurationData = aggregateConfigurationData;
+            _context = context;
         }
 
-        public async Task<int> SaveIfNotExist(AggregateConfigurationDTO dto)
+        public async Task<AggregateConfigurationDTO> SaveIfNotExist(AggregateConfigurationDTO dto)
         {
-            var aggConfigs = await _aggregateConfigurationData.GetAggregateConfigurations();
-            int id;
-            var match = aggConfigs.FirstOrDefault(a => a.Equals(dto));
-            if (match != null)
+            var configs = await _context.AggConfigs
+                .Where(c => c.Description == dto.Description)
+                .Where(c => c.TotalPrimaryParticles == dto.TotalPrimaryParticles)
+                .Where(c => c.ClusterSize == dto.ClusterSize)
+                .Where(c => Math.Abs(c.Df - dto.Df) < 1e-6)
+                .Where(c => Math.Abs(c.Kf - dto.Kf) < 1e-6)
+                .Where(c => Math.Abs(c.Epsilon - dto.Epsilon) < 1e-6)
+                .Where(c => Math.Abs(c.Delta - dto.Delta) < 1e-6)
+                .Where(c => Math.Abs(c.LargeNumber - dto.LargeNumber) < 1e-6)
+                .Where(c => c.MaxAttemptsPerAggregate == dto.MaxAttemptsPerAggregate)
+                .Where(c => c.MaxAttemptsPerCluster == dto.MaxAttemptsPerCluster)
+                .Where(c => c.RadiusMeanCalculationMethod == dto.RadiusMeanCalculationMethod)
+                .Where(c => c.AggregateSizeMeanCalculationMethod == dto.AggregateSizeMeanCalculationMethod)
+                .Where(c => c.PrimaryParticleSizeDistributionType == dto.PrimaryParticleSizeDistributionType)
+                .Where(c => c.AggregateSizeDistributionType == dto.AggregateSizeDistributionType)
+                .Where(c => c.AggregateFormationType == dto.AggregateFormationType)
+                .Where(c => c.RandomGeneratorSeed == dto.RandomGeneratorSeed)
+                .ToListAsync();
+
+            if (configs.Any())
             {
-                id = match.Id;
+                return configs.First();
             }
             else
             {
-                id = await _aggregateConfigurationData.CreateAggregateConfiguration(dto);
+                _context.AggConfigs.Add(dto);
+                await _context.SaveChangesAsync();
+                return dto;
             }
-
-            return id;
         }
-
     }
 }

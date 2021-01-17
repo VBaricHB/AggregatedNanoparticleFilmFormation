@@ -1,23 +1,37 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 
+using ANPaX.IO.DBConnection.Data;
 using ANPaX.IO.DTO;
-using ANPaX.IO.interfaces;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace ANPaX.Backend
 {
     public class ParticleSimulationStorageHelper : IDataStorageHelper<ParticleSimulationDTO>
     {
-        private readonly IParticleSimulationData _particleSimulationData;
+        private readonly DataContext _context;
 
-        public ParticleSimulationStorageHelper(IParticleSimulationData particleSimulationData)
+        public ParticleSimulationStorageHelper(DataContext context)
         {
-            _particleSimulationData = particleSimulationData;
+            _context = context;
         }
-        public async Task<int> SaveIfNotExist(ParticleSimulationDTO dto)
+        public async Task<ParticleSimulationDTO> SaveIfNotExist(ParticleSimulationDTO dto)
         {
-            var id = await _particleSimulationData.CreateParticleSimulation(dto);
+            var sims = await _context.ParticleSimulations
+                .ToListAsync();
+            var match = sims.FirstOrDefault(c => c == dto);
 
-            return id;
+            if (match != null)
+            {
+                return match;
+            }
+            else
+            {
+                _context.ParticleSimulations.Add(dto);
+                await _context.SaveChangesAsync();
+                return dto;
+            }
         }
     }
 }

@@ -4,6 +4,6 @@ namespace ANPaX.Backend
 {
     public interface IDataStorageHelper<T>
     {
-        Task<int> SaveIfNotExist(T dto);
+        Task<T> SaveIfNotExist(T dto);
     }
 }

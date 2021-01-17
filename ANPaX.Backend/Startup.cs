@@ -2,7 +2,7 @@ using ANPaX.Backend.Models;
 using ANPaX.Core;
 using ANPaX.Core.interfaces;
 using ANPaX.IO.DBConnection.Data;
-using ANPaX.Simulation.AggregateFormation;
+using ANPaX.IO.DTO;
 using ANPaX.Simulation.FilmFormation;
 using ANPaX.Simulation.FilmFormation.interfaces;
 
@@ -37,23 +37,10 @@ namespace ANPaX.Backend
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ANPaX.Backend", Version = "v1" });
             });
-            //services.AddSingleton(new ConnectionData
-            //{
-            //    SQLConnectionString = "Default",
-            //    SQLiteFilePath = Configuration.GetConnectionString("SQLiteFile")
-            //});
 
-            //services.AddSingleton<IDataAccess, SqliteDB>();
-            //services.AddSingleton<IParticleSimulationData, ParticleSimulationDataSQLite>();
-            //services.AddSingleton<IUserData, UserDataSQLite>();
-            //services.AddSingleton<IAggregateConfigurationData, AggregateConfigurationDataSQLite>();
-            //services.AddSingleton<IFilmFormationConfigurationData, FilmFormationConfigurationDataSQLite>();
-            //services.AddSingleton<IDataStorageHelper<AggregateConfigurationDTO>, AggregateFormationConfigStorageHelper>();
-            services.AddSingleton<IAggregateSizeDistributionFactory, AggregateSizeDistributionFactory>();
-            services.AddSingleton<IPrimaryParticleSizeDistributionFactory, PrimaryParticleSizeDistributionFactory>();
-            services.AddSingleton<IAggregateFormationFactory, AggregateFormationFactory>();
+            services.AddScoped<IDataStorageHelper<AggregateConfigurationDTO>, AggregateFormationConfigStorageHelper>();
+            services.AddScoped<IDataStorageHelper<ParticleSimulationDTO>, ParticleSimulationStorageHelper>();
             services.AddSingleton<INeighborslistFactory, AccordNeighborslistFactory>();
-
             services.AddSingleton<ISimulationBoxFactory, AbsoluteTetragonalSimulationBoxFactory>();
             services.AddSingleton<ISingleParticleDepositionHandler, BallisticSingleParticleDepositionHandler>();
             services.AddSingleton<IAggregateDepositionHandler, BallisticAggregateDepositionHandler>();

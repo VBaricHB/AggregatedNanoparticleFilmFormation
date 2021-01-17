@@ -22,9 +22,9 @@ namespace ANPaX.IO.DBConnection.Data
             _connectionData = connectionData;
         }
 
-        public async Task<AggregateConfigurationModel> GetAggregateConfigurationById(int aggregateConfigurationId)
+        public async Task<AggregateConfigurationDTO> GetAggregateConfigurationById(int aggregateConfigurationId)
         {
-            var recs = await _dataAccess.LoadData<AggregateConfigurationModel, dynamic>("dbo.spAggConfig_GetById",
+            var recs = await _dataAccess.LoadData<AggregateConfigurationDTO, dynamic>("dbo.spAggConfig_GetById",
                                                                                   new { Id = aggregateConfigurationId },
                                                                                   _connectionData);
 
@@ -32,7 +32,7 @@ namespace ANPaX.IO.DBConnection.Data
 
         }
 
-        public async Task<int> CreateAggregateConfiguration(AggregateConfigurationModel aggregateConfigurationModel)
+        public async Task<int> CreateAggregateConfiguration(AggregateConfigurationDTO aggregateConfigurationModel)
         {
             var p = new DynamicParameters();
 
@@ -48,9 +48,9 @@ namespace ANPaX.IO.DBConnection.Data
             p.Add("LargeNumber", aggregateConfigurationModel.LargeNumber);
             p.Add("RadiusMeanCalculationMethod", aggregateConfigurationModel.RadiusMeanCalculationMethod);
             p.Add("AggregateSizeMeanCalculationMethod", aggregateConfigurationModel.AggregateSizeMeanCalculationMethod);
-            p.Add("PrimaryParticleSizeDistribution", aggregateConfigurationModel.PrimaryParticleSizeDistribution);
-            p.Add("AggregateSizeDistribution", aggregateConfigurationModel.AggregateSizeDistribution);
-            p.Add("AggregateFormationFactory", aggregateConfigurationModel.AggregateFormationFactory);
+            p.Add("PrimaryParticleSizeDistribution", aggregateConfigurationModel.PrimaryParticleSizeDistributionType);
+            p.Add("AggregateSizeDistribution", aggregateConfigurationModel.AggregateSizeDistributionType);
+            p.Add("AggregateFormationFactory", aggregateConfigurationModel.AggregateFormationType);
             p.Add("RandomGeneratorSeed", aggregateConfigurationModel.RandomGeneratorSeed);
             p.Add("Id", DbType.Int32, direction: ParameterDirection.Output);
 
@@ -59,9 +59,9 @@ namespace ANPaX.IO.DBConnection.Data
             return p.Get<int>("Id");
         }
 
-        public Task<List<AggregateConfigurationModel>> GetAggregateConfigurations()
+        public Task<List<AggregateConfigurationDTO>> GetAggregateConfigurations()
         {
-            return _dataAccess.LoadData<AggregateConfigurationModel, dynamic>("dbo.spAggConfig_All",
+            return _dataAccess.LoadData<AggregateConfigurationDTO, dynamic>("dbo.spAggConfig_All",
                                                                           new { },
                                                                           _connectionData);
         }

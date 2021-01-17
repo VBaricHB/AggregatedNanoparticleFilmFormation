@@ -10,7 +10,7 @@ namespace ANPaX.UI.BlazorServer.Model
     {
         private readonly IAggregateConfigurationData _configData;
 
-        public AggregateConfigurationModel AggregateConfigurationModel { get; set; }
+        public AggregateConfigurationDTO AggregateConfigurationModel { get; set; }
         public AggregateConfigurationModelService(IAggregateConfigurationData configData)
         {
             _configData = configData;
@@ -18,7 +18,7 @@ namespace ANPaX.UI.BlazorServer.Model
 
         }
 
-        private AggregateConfigurationModel GetDefaultConfigurationModel()
+        private AggregateConfigurationDTO GetDefaultConfigurationModel()
         {
             var output = _configData.GetAggregateConfigurationById(1).Result;
             output.Description = DateTime.Now.ToString("yyyyMMdd_HHmmss");

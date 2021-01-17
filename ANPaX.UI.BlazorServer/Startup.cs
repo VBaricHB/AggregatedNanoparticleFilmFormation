@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using Syncfusion.Blazor;
+
 namespace ANPaX.UI.BlazorServer
 {
     public class Startup
@@ -17,6 +19,7 @@ namespace ANPaX.UI.BlazorServer
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MzM3NTEzQDMxMzgyZTMzMmUzMGtiNmlyUGJxSktqUzdIVEd3TXpOK1hFekEyT2hDWStNa1lyK29RSUF6eWc9");
         }
 
         public IConfiguration Configuration { get; }
@@ -27,6 +30,7 @@ namespace ANPaX.UI.BlazorServer
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddSyncfusionBlazor();
             services.AddSingleton(new ConnectionData
             {
                 SQLConnectionString = "Default",

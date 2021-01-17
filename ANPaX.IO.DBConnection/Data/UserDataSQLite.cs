@@ -23,10 +23,11 @@ namespace ANPaX.IO.DBConnection.Data
             da.CreateDatabaseIfNotExist(GetInitializationProcedure(), GetInitialDataProcedure(), _tableName, _connectionData);
         }
 
-        public async Task<int> CreateUser(UserModel user)
+        public async Task<int> CreateUser(UserDTO user)
         {
             var procedure = $@"INSERT INTO {_tableName}
-            ( User,
+            (
+              User,
 		      EMail
             )
             VALUES
@@ -46,12 +47,12 @@ namespace ANPaX.IO.DBConnection.Data
             return id;
         }
 
-        public async Task<List<UserModel>> GetUsers()
+        public async Task<List<UserDTO>> GetUsers()
         {
             var procedure = $@"SELECT *
             FROM {_tableName}";
 
-            return await _dataAccess.LoadData<UserModel, dynamic>(procedure, new { }, _connectionData);
+            return await _dataAccess.LoadData<UserDTO, dynamic>(procedure, new { }, _connectionData);
         }
 
 

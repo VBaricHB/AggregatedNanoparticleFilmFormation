@@ -4,6 +4,6 @@ namespace ANPaX.UI.BlazorServer.Model
 {
     public interface IAggregateConfigurationModelService
     {
-        AggregateConfigurationModel AggregateConfigurationModel { get; set; }
+        AggregateConfigurationDTO AggregateConfigurationModel { get; set; }
     }
 }

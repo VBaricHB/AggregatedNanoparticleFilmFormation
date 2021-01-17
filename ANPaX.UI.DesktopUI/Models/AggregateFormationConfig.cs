@@ -50,5 +50,8 @@ namespace ANPaX.UI.DesktopUI.Models
         public IParticleFactory<Aggregate> AggregateFormationFactory { get; set; } = null;
 
         public int RandomGeneratorSeed { get; set; } = -1;
+        public SizeDistributionType AggregateSizeDistributionType { get; set; } = SizeDistributionType.DissDefault;
+        public SizeDistributionType PrimaryParticleSizeDistributionType { get; set; } = SizeDistributionType.DissDefault;
+        public AggregateFormationType AggregateFormationType { get; set; } = AggregateFormationType.ClusterClusterAggregation;
     }
 }

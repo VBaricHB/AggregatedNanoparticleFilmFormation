@@ -7,8 +7,8 @@ namespace ANPaX.IO.interfaces
 {
     public interface IAggregateConfigurationData
     {
-        Task<int> CreateAggregateConfiguration(AggregateConfigurationModel aggregateConfigurationModel);
-        Task<AggregateConfigurationModel> GetAggregateConfigurationById(int aggregateConfigurationId);
-        Task<List<AggregateConfigurationModel>> GetAggregateConfigurations();
+        Task<int> CreateAggregateConfiguration(AggregateConfigurationDTO aggregateConfigurationModel);
+        Task<AggregateConfigurationDTO> GetAggregateConfigurationById(int aggregateConfigurationId);
+        Task<List<AggregateConfigurationDTO>> GetAggregateConfigurations();
     }
 }

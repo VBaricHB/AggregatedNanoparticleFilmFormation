@@ -8,7 +8,7 @@ namespace ANPaX.UI.BlazorServer.Model
     {
         private readonly IUserData _userData;
 
-        public UserModel UserModel { get; set; }
+        public UserDTO UserModel { get; set; }
         public UserModelService(IUserData userData)
         {
             _userData = userData;
@@ -16,9 +16,9 @@ namespace ANPaX.UI.BlazorServer.Model
 
         }
 
-        private UserModel GetDefaultModel()
+        private UserDTO GetDefaultModel()
         {
-            var output = new UserModel { User = "", EMail = "" };
+            var output = new UserDTO { User = "", EMail = "" };
             return output;
         }
     }

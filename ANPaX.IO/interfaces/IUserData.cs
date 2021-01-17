@@ -7,7 +7,7 @@ namespace ANPaX.IO.interfaces
 {
     public interface IUserData
     {
-        Task<int> CreateUser(UserModel user);
-        Task<List<UserModel>> GetUsers();
+        Task<int> CreateUser(UserDTO user);
+        Task<List<UserDTO>> GetUsers();
     }
 }

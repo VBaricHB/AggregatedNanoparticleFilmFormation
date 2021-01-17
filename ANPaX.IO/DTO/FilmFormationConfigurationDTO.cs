@@ -1,7 +1,13 @@
-﻿namespace ANPaX.IO.DTO
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace ANPaX.IO.DTO
 {
-    public class FilmFormationConfigurationModel
+    [Table("FilmFormationConfiguration")]
+    public class FilmFormationConfigurationDTO
     {
+        [Key]
+        [Required]
         public int Id { get; set; }
         public string Description { get; set; }
         public double XWidth { get; set; }

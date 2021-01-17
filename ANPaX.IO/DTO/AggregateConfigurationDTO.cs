@@ -1,13 +1,20 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
 namespace ANPaX.IO.DTO
 {
-    public class AggregateConfigurationModel
+    [Table("AggegrateConfiguration")]
+    public class AggregateConfigurationDTO
     {
+        [Key]
+        [Required]
         public int Id { get; set; }
         public string Description { get; set; }
+
+        public string User { get; set; }
 
         [Required]
         [Range(1, 10000000, ErrorMessage = "Number of particles out of range. Please select between 1 and 10,000,000.")]
@@ -65,23 +72,75 @@ namespace ANPaX.IO.DTO
         public string AggregateSizeMeanCalculationMethod { get; set; }
 
         [Required]
-        [StringRange(AllowableValues = new[] { "DissDefault", "LogNormal", "Normal", "Monodisperse" }, ErrorMessage = "Invalid distribution. Must be 'DissDefault', 'LogNormal', 'Normal' or 'Monodisperse'.")]
-        [DisplayName("Primary particle size distribution")]
-        public string PrimaryParticleSizeDistribution { get; set; }
+        [StringRange(AllowableValues = new[] { "DissDefault", "LogNormal", "Normal", "Monodisperse", "Tabulated" }, ErrorMessage = "Invalid distribution. Must be 'DissDefault', 'LogNormal', 'Normal' or 'Monodisperse'.")]
+        [DisplayName("Primary particle size distribution type")]
+        public string PrimaryParticleSizeDistributionType { get; set; }
 
         [Required]
-        [StringRange(AllowableValues = new[] { "DissDefault", "LogNormal", "Normal", "Monodisperse" }, ErrorMessage = "Invalid distribution. Must be 'DissDefault', 'LogNormal', 'Normal' or 'Monodisperse'.")]
-        [DisplayName("Aggregate size distribution")]
-        public string AggregateSizeDistribution { get; set; }
+        [StringRange(AllowableValues = new[] { "DissDefault", "LogNormal", "Normal", "Monodisperse", "Tabulated" }, ErrorMessage = "Invalid distribution. Must be 'DissDefault', 'LogNormal', 'Normal' or 'Monodisperse'.")]
+        [DisplayName("Aggregate size distribution type")]
+        public string AggregateSizeDistributionType { get; set; }
 
         [Required]
-        [StringRange(AllowableValues = new[] { "CCA", "PCA" }, ErrorMessage = "Invalid Method. Must be 'CCA' (Cluster-Cluster Aggregation) or 'PCA' (Particle-Cluster Aggregation).")]
-        [DisplayName("Aggregate formation method")]
-        public string AggregateFormationFactory { get; set; }
+        [StringRange(AllowableValues = new[] { "ClusterClusterAggregation", "ParticleClusterAggregation", "Monodisperse" }, ErrorMessage = "Invalid Method. Must be 'CCA' (Cluster-Cluster Aggregation) or 'PCA' (Particle-Cluster Aggregation).")]
+        [DisplayName("Aggregate formation method type")]
+        public string AggregateFormationType { get; set; }
 
         [Required]
         [Range(-1, 100000000, ErrorMessage = "Invalid seed. Must be -1 (disable custom seed) or below 100,000,000.")]
         public double RandomGeneratorSeed { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            if (obj.GetType() != this.GetType() || obj == null)
+            {
+                return false;
+            }
+
+            var other = (AggregateConfigurationDTO)obj;
+
+            return
+                other.Description == this.Description &&
+                other.User == this.User &&
+                other.TotalPrimaryParticles == this.TotalPrimaryParticles &&
+                other.ClusterSize == this.ClusterSize &&
+                Math.Abs(other.Df - this.Df) < 1e-6 &&
+                Math.Abs(other.Kf - this.Kf) < 1e-6 &&
+                Math.Abs(other.Epsilon - this.Epsilon) < 1e-6 &&
+                Math.Abs(other.Delta - this.Delta) < 1e-6 &&
+                Math.Abs(other.LargeNumber - this.LargeNumber) < 1e-6 &&
+                other.MaxAttemptsPerAggregate == this.MaxAttemptsPerAggregate &&
+                other.MaxAttemptsPerCluster == this.MaxAttemptsPerCluster &&
+                other.RadiusMeanCalculationMethod == this.RadiusMeanCalculationMethod &&
+                other.AggregateSizeMeanCalculationMethod == this.AggregateSizeMeanCalculationMethod &&
+                other.PrimaryParticleSizeDistributionType == this.PrimaryParticleSizeDistributionType &&
+                other.AggregateSizeDistributionType == this.AggregateSizeDistributionType &&
+                other.AggregateFormationType == this.AggregateFormationType &&
+                other.RandomGeneratorSeed == this.RandomGeneratorSeed;
+        }
+
+        public override int GetHashCode()
+        {
+            var hash = new HashCode();
+            hash.Add(Description);
+            hash.Add(User);
+            hash.Add(TotalPrimaryParticles);
+            hash.Add(ClusterSize);
+            hash.Add(Df);
+            hash.Add(Kf);
+            hash.Add(Epsilon);
+            hash.Add(Delta);
+            hash.Add(MaxAttemptsPerCluster);
+            hash.Add(MaxAttemptsPerAggregate);
+            hash.Add(LargeNumber);
+            hash.Add(RadiusMeanCalculationMethod);
+            hash.Add(AggregateSizeMeanCalculationMethod);
+            hash.Add(PrimaryParticleSizeDistributionType);
+            hash.Add(AggregateSizeDistributionType);
+            hash.Add(AggregateFormationType);
+            hash.Add(RandomGeneratorSeed);
+            return hash.ToHashCode();
+        }
     }
 
     public class StringRangeAttribute : ValidationAttribute

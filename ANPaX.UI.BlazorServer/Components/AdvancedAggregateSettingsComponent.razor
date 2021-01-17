@@ -1,0 +1,124 @@
+﻿<div class="form-group">
+    <label class="control-label">Primary particle size distribution</label>
+    <select @onchange="PSDMethodChange" class="form-control-sm">
+        <option value="@aggConfigModel.PrimaryParticleSizeDistribution">"@aggConfigModel.PrimaryParticleSizeDistribution"</option>
+        @foreach (var m in new List<string> { "DissDefault", "LogNormal", "Normal", "Monodisperse" })
+        {
+            <option value="@m">"@m"</option>
+        }
+    </select>
+
+    <label class="control-label">Aggregate size distribution</label>
+    <select @onchange="ASDMethodChange" class="form-control-sm">
+        <option value="@aggConfigModel.AggregateSizeDistribution">"@aggConfigModel.AggregateSizeDistribution"</option>
+        @foreach (var m in new List<string> { "DissDefault", "LogNormal", "Normal", "Monodisperse" })
+        {
+            <option value="@m">"@m"</option>
+        }
+    </select>
+</div>
+<div class="form-group">
+    <label class="control-label">Aggregate formation method</label>
+    <select @onchange="AggFormationMethodChange" class="form-control-sm">
+        <option value="@aggConfigModel.AggregateFormationFactory">"@aggConfigModel.AggregateFormationFactory"</option>
+        @foreach (var m in new List<string> { "CCA", "PCA" })
+        {
+            <option value="@m">"@m"</option>
+        }
+    </select>
+</div>
+<div class="form-group">
+    <label class="control-label">Mean radius calculation method</label>
+    <select @onchange="MeanRadiusMethodChange" class="form-control">
+        <option value="@aggConfigModel.RadiusMeanCalculationMethod">"@aggConfigModel.RadiusMeanCalculationMethod"</option>
+        @foreach (var m in new List<string> { "Geometric", "Arithmetic", "Sauter" })
+        {
+            <option value="@m">"@m"</option>
+        }
+    </select>
+
+    <label class="control-label">Mean aggregate size calculation method</label>
+    <select @onchange="MeanAggregateSizeMethodChange" class="form-control">
+        <option value="@aggConfigModel.AggregateSizeMeanCalculationMethod">"@aggConfigModel.AggregateSizeMeanCalculationMethod"</option>
+        @foreach (var m in new List<string> { "Geometric", "Arithmetic" })
+        {
+
+            <option value="@m">"@m"</option>
+        }
+    </select>
+</div>
+<div class="form-group">
+    <label class="control-label">Epsilon - Minimum distance factor of two primary particles</label>
+    <InputNumber @bind-Value="aggConfigModel.Epsilon" class="form-control" />
+    <ValidationMessage For="@(() => aggConfigModel.Epsilon)" class="text-danger" />
+
+    <label class="control-label">Delta - Maximum distance factor of two primary particles</label>
+    <InputNumber @bind-Value="aggConfigModel.Delta" class="form-control" />
+    <ValidationMessage For="@(() => aggConfigModel.Delta)" class="text-danger" />
+</div>
+<div class="form-group">
+    <label class="control-label">Maximum attempts to set a cluster</label>
+    <InputNumber @bind-Value="aggConfigModel.MaxAttemptsPerCluster" class="form-control" />
+    <ValidationMessage For="@(() => aggConfigModel.MaxAttemptsPerCluster)" class="text-danger" />
+
+    <label class="control-label">Maximum attempts to set an aggregate</label>
+    <InputNumber @bind-Value="aggConfigModel.MaxAttemptsPerAggregate" class="form-control" />
+    <ValidationMessage For="@(() => aggConfigModel.MaxAttemptsPerAggregate)" class="text-danger" />
+</div>
+<div class="form-group">
+    <label class="control-label">A large number for internal comparison</label>
+    <InputNumber @bind-Value="aggConfigModel.LargeNumber" class="form-control" />
+    <ValidationMessage For="@(() => aggConfigModel.LargeNumber)" class="text-danger" />
+
+    <label class="control-label">Random generator seed (-1 for no custom seed)</label>
+    <InputNumber @bind-Value="aggConfigModel.RandomGeneratorSeed" class="form-control" />
+    <ValidationMessage For="@(() => aggConfigModel.RandomGeneratorSeed)" class="text-danger" />
+</div>
+
+@code {
+
+    [Parameter]
+    public AggregateConfigurationModel aggConfigModel { get; set; }
+
+    private void MeanRadiusMethodChange(ChangeEventArgs e)
+    {
+        if (string.IsNullOrWhiteSpace(e.Value.ToString()) == false)
+        {
+            aggConfigModel.RadiusMeanCalculationMethod = e.Value.ToString();
+        }
+    }
+
+    private void MeanAggregateSizeMethodChange(ChangeEventArgs e)
+    {
+        if (string.IsNullOrWhiteSpace(e.Value.ToString()) == false)
+        {
+            aggConfigModel.AggregateSizeMeanCalculationMethod = e.Value.ToString();
+        }
+    }
+
+    private void PSDMethodChange(ChangeEventArgs e)
+    {
+        if (string.IsNullOrWhiteSpace(e.Value.ToString()) == false)
+        {
+            aggConfigModel.PrimaryParticleSizeDistribution = e.Value.ToString();
+        }
+    }
+
+    private void ASDMethodChange(ChangeEventArgs e)
+    {
+        if (string.IsNullOrWhiteSpace(e.Value.ToString()) == false)
+        {
+            aggConfigModel.AggregateSizeDistribution = e.Value.ToString();
+        }
+
+    }
+
+    private void AggFormationMethodChange(ChangeEventArgs e)
+    {
+        if (string.IsNullOrWhiteSpace(e.Value.ToString()) == false)
+        {
+            aggConfigModel.AggregateFormationFactory = e.Value.ToString();
+        }
+    }
+
+}

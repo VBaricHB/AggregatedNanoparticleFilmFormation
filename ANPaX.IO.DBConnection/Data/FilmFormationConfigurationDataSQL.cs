@@ -22,9 +22,9 @@ namespace ANPaX.IO.DBConnection.Data
             _connectionString = connectionString;
         }
 
-        public async Task<FilmFormationConfigurationModel> GetFilmFormationConfigurationById(int filmFormationConfigurationId)
+        public async Task<FilmFormationConfigurationDTO> GetFilmFormationConfigurationById(int filmFormationConfigurationId)
         {
-            var recs = await _dataAccess.LoadData<FilmFormationConfigurationModel, dynamic>("dbo.spFilmConfig_GetById",
+            var recs = await _dataAccess.LoadData<FilmFormationConfigurationDTO, dynamic>("dbo.spFilmConfig_GetById",
                                                                                   new { Id = filmFormationConfigurationId },
                                                                                   _connectionString);
 
@@ -32,7 +32,7 @@ namespace ANPaX.IO.DBConnection.Data
 
         }
 
-        public async Task<int> CreateAggregateConfiguration(FilmFormationConfigurationModel filmFormationConfiguration)
+        public async Task<int> CreateFilmFormationConfiguration(FilmFormationConfigurationDTO filmFormationConfiguration)
         {
             var p = new DynamicParameters();
 
@@ -53,9 +53,9 @@ namespace ANPaX.IO.DBConnection.Data
             return p.Get<int>("Id");
         }
 
-        public Task<List<FilmFormationConfigurationModel>> GetFilmFormationConfigurations()
+        public Task<List<FilmFormationConfigurationDTO>> GetFilmFormationConfigurations()
         {
-            return _dataAccess.LoadData<FilmFormationConfigurationModel, dynamic>("dbo.spFilmConfig_All",
+            return _dataAccess.LoadData<FilmFormationConfigurationDTO, dynamic>("dbo.spFilmConfig_All",
                                                                           new { },
                                                                           _connectionString);
         }

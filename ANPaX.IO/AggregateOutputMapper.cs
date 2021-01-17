@@ -38,7 +38,7 @@ namespace ANPaX.IO
             var asdString = "FSP Default";
             if (!config.UseDefaultGenerationMethods)
             {
-                asdString = config.AggregateSizeDistribution.ToString();
+                asdString = config.AggregateSizeDistributionType.ToString();
             }
 
             return asdString;
@@ -49,7 +49,7 @@ namespace ANPaX.IO
             var psdString = "FSP Default";
             if (!config.UseDefaultGenerationMethods)
             {
-                psdString = config.PrimaryParticleSizeDistribution.ToString();
+                psdString = config.PrimaryParticleSizeDistributionType.ToString();
             }
 
             return psdString;
@@ -60,7 +60,7 @@ namespace ANPaX.IO
             var aggregateFormationFactoryString = "Cluster Cluster Aggregation";
             if (!config.UseDefaultGenerationMethods)
             {
-                aggregateFormationFactoryString = config.AggregateFormationFactory.ToString();
+                aggregateFormationFactoryString = config.AggregateFormationType.ToString();
             }
 
             return aggregateFormationFactoryString;

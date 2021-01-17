@@ -22,27 +22,21 @@ namespace ANPaX.IO.DBConnection.Data
             _connectionString = connectionString;
         }
 
-        public Task<List<ParticleSimulationModel>> GetParticleSimulations()
+        public Task<List<ParticleSimulationDTO>> GetParticleSimulations()
         {
-            return _dataAccess.LoadData<ParticleSimulationModel, dynamic>("dbo.spSimulations_All",
+            return _dataAccess.LoadData<ParticleSimulationDTO, dynamic>("dbo.spSimulations_All",
                                                                           new { },
                                                                           _connectionString);
         }
 
-        public async Task<int> CreateParticleSimulation(ParticleSimulationModel particleSimulation)
+        public async Task<int> CreateParticleSimulation(ParticleSimulationDTO particleSimulation)
         {
             var p = new DynamicParameters();
 
             p.Add("Description", particleSimulation.Description);
             p.Add("User", particleSimulation.User);
-            p.Add("EMail", particleSimulation.EMail);
-            p.Add("PrimaryParticles", particleSimulation.PrimaryParticles);
-            p.Add("XWidth", particleSimulation.XWidth);
-            p.Add("YWidth", particleSimulation.YWidth);
-            p.Add("ZWidth", particleSimulation.ZWidth);
             p.Add("Date", particleSimulation.Date);
             p.Add("SimulationType", particleSimulation.SimulationType);
-            p.Add("SimulationPath", particleSimulation.SimulationPath);
             p.Add("AggregateFormationConfigId", particleSimulation.AggregateFormationConfigId);
             p.Add("FilmFormationConfigId", particleSimulation.FilmFormationConfigId);
             p.Add("Percentage", particleSimulation.Percentage);
@@ -85,13 +79,21 @@ namespace ANPaX.IO.DBConnection.Data
                                         _connectionString);
         }
 
-        public async Task<ParticleSimulationModel> GetParticleSimulationById(int particleSimulationId)
+        public async Task<ParticleSimulationDTO> GetParticleSimulationById(int particleSimulationId)
         {
-            var recs = await _dataAccess.LoadData<ParticleSimulationModel, dynamic>("dbo.spParticleSimulations_GetbyId",
+            var recs = await _dataAccess.LoadData<ParticleSimulationDTO, dynamic>("dbo.spParticleSimulations_GetbyId",
                                                                                     new { Id = particleSimulationId },
                                                                                     _connectionString);
 
             return recs.FirstOrDefault();
+        }
+
+        public async Task<List<ParticleSimulationDTO>> GetParticleSimulationByUser(string user)
+        {
+            var recs = await _dataAccess.LoadData<ParticleSimulationDTO, dynamic>("dbo.spSimulations_All",
+                                                                          new { },
+                                                                          _connectionString);
+            return recs.Where(r => r.User == user).ToList();
         }
     }
 }

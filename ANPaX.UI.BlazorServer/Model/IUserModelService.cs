@@ -4,6 +4,6 @@ namespace ANPaX.UI.BlazorServer.Model
 {
     public interface IUserModelService
     {
-        UserModel UserModel { get; set; }
+        UserDTO UserModel { get; set; }
     }
 }

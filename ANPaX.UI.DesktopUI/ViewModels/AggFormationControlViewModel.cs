@@ -71,11 +71,8 @@ namespace ANPaX.UI.DesktopUI.ViewModels
                 SetFileFormat(value);
                 NotifyOfPropertyChange(() => SelectedAggFileFormat);
                 NotifyOfPropertyChange(() => AggFileName);
-
             }
         }
-
-
 
         public AggFormationControlViewModel(
             AggregateFormationConfig config,

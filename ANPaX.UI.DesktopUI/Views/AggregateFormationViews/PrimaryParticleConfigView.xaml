@@ -81,18 +81,17 @@
 
                             <TextBox.Style>
                                 <Style TargetType="{x:Type TextBox}">
-                                    <Setter Property="IsReadOnly" Value="True" />
-                                    <Setter Property="Background" Value="LightGray" />
+                                    <Setter Property="IsReadOnly" Value="False" />
+                                    <Setter Property="Background" Value="White" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Config_UseDefaultGenerationMethods}" Value="true">
                                             <Setter Property="IsReadOnly" Value="True" />
 
                                         </DataTrigger>
-                                        <DataTrigger Binding="{Binding SelectedPPSizeDistribution}" Value="Monodisperse">
-                                            <Setter Property="IsReadOnly" Value="False" />
-                                            <Setter Property="Background" Value="White" />
+                                        <DataTrigger Binding="{Binding SelectedPPSizeDistribution}" Value="FSP Standard">
+                                            <Setter Property="IsReadOnly" Value="True" />
+                                            <Setter Property="Background" Value=" LightGray" />
                                         </DataTrigger>
-
                                     </Style.Triggers>
                                 </Style>
                             </TextBox.Style>
@@ -112,9 +111,22 @@
 
                             <TextBox.Style>
                                 <Style TargetType="{x:Type TextBox}">
-                                    <Setter Property="IsReadOnly" Value="True" />
-                                    <Setter Property="Background" Value="LightGray" />
-                                    <Style.Triggers />
+                                    <Setter Property="IsReadOnly" Value="False" />
+                                    <Setter Property="Background" Value="White" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Config_UseDefaultGenerationMethods}" Value="true">
+                                            <Setter Property="IsReadOnly" Value="True" />
+
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding SelectedPPSizeDistribution}" Value="FSP Standard">
+                                            <Setter Property="IsReadOnly" Value="True" />
+                                            <Setter Property="Background" Value=" LightGray" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding SelectedPPSizeDistribution}" Value="Monodisperse">
+                                            <Setter Property="IsReadOnly" Value="True" />
+                                            <Setter Property="Background" Value=" LightGray" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
                                 </Style>
                             </TextBox.Style>
                         </TextBox>

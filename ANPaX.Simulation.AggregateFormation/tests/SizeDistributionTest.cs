@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -42,6 +43,54 @@ namespace ANPaX.Simulation.AggregateFormation.tests
             var list = psd._tabulatedSizeDistribution;
 
             Assert.Equal(1.0, list.Sizes.Last().Probability);
+        }
+
+        [Fact]
+        private void LogNormalDistribution_Correct_Mean()
+        {
+            var expectedMean = 5;
+
+            var rndGen = new Random(1);
+            var config = new TestAggregateFormationConfig()
+            {
+                MeanPPRadius = expectedMean,
+                StdPPRadius = 1
+            };
+
+            var dist = new LogNormalSizeDistribution(rndGen, config);
+
+            Assert.Equal(expectedMean, dist.Mean);
+        }
+
+        [Fact]
+        private void LogNormalDistribution_Dist_Correct_Mean()
+        {
+            var expectedMean = 5;
+            var expectedLogMean = 8.4;
+            var expectedLogStd = 11.0;
+
+            var nValues = 1000000;
+
+            var rndGen = new Random(1);
+            var config = new TestAggregateFormationConfig()
+            {
+                MeanPPRadius = expectedMean,
+                StdPPRadius = 1
+            };
+
+            var dist = new LogNormalSizeDistribution(rndGen, config);
+
+            var distValues = new List<double>(nValues);
+            for (int i = 0; i < nValues; i++)
+            {
+                distValues.Add(dist.GetRandomSize());
+            }
+
+            var actualDistMean = distValues.Average();
+            var actualDistStd = Math.Sqrt(distValues.Average(v => Math.Pow(v - actualDistMean, 2)));
+
+            Assert.Equal(expectedLogMean, actualDistMean, 1);
+            Assert.Equal(expectedLogStd, actualDistStd, 0);
         }
     }
 }

@@ -18,6 +18,7 @@
         public AggregateFormationType AggregateFormationType { get; set; }
         public bool UseDefaultGenerationMethods { get; }
         public int RandomGeneratorSeed { get; }
-
+        public double MeanPPRadius { get; }
+        public double StdPPRadius { get; }
     }
 }

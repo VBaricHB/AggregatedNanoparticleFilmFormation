@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+
 using ANPaX.Simulation.AggregateFormation.interfaces;
 
 namespace ANPaX.Simulation.AggregateFormation
@@ -11,7 +12,11 @@ namespace ANPaX.Simulation.AggregateFormation
         private readonly IAggregateFormationConfig _config;
         public double Mean { get; private set; }
 
-        public TabulatedPrimaryParticleSizeDistribution(XMLSizeDistribution<double> tabulatedSizeDistribution, Random rndGen, IAggregateFormationConfig config, bool integrate = true)
+        public TabulatedPrimaryParticleSizeDistribution(
+            XMLSizeDistribution<double> tabulatedSizeDistribution,
+            Random rndGen,
+            IAggregateFormationConfig config,
+            bool integrate = true)
         {
             _rndGen = rndGen;
             _tabulatedSizeDistribution = tabulatedSizeDistribution;

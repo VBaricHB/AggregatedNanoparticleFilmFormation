@@ -27,7 +27,7 @@ namespace ANPaX.UI.DesktopUI.ViewModels
 
         private CancellationTokenSource _cts;
 
-        public AggregateFilmFormationService AggregateFilmFormationService { get; set; }
+        public FilmFormationService FilmFormationService { get; set; }
         private StatusViewModel _statusViewModel;
         private LoggingViewModel _loggingViewModel;
         private FileExport _export = new FileExport();
@@ -74,8 +74,8 @@ namespace ANPaX.UI.DesktopUI.ViewModels
 
             _cts = new CancellationTokenSource();
 
-            AggregateFilmFormationService = new AggregateFilmFormationService(FilmFormationConfig);
-            ParticleFilm = await Task.Run(() => AggregateFilmFormationService.BuildFilm_Async(_aggregates, progress, FilmFormationConfig.Delta, _cts.Token));
+            FilmFormationService = new FilmFormationService(FilmFormationConfig);
+            ParticleFilm = await Task.Run(() => FilmFormationService.BuildFilm_Async(_aggregates, progress, FilmFormationConfig.Delta, _cts.Token));
             _loggingViewModel.LogInfo("Film generation complete.");
             ExportFilm();
             _statusViewModel.SimulationStatus = SimulationStatus.Idle;

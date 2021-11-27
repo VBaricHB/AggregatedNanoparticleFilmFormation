@@ -27,7 +27,7 @@ namespace ANPaX.UI.DesktopUI.ViewModels
 
         public AggregateFormationConfig Config { get; set; }
 
-        public double MeanPPRadius { get; set; } = 5;
+        public double MeanPPRadius { get; set; } = 5.0;
         public double SdevPPRadius { get; set; } = 0.230;
 
         public List<string> AvailablePPSizeDistributions { get; set; } = new List<string>() { _defaultSizeDistribution, "Monodisperse" };

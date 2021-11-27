@@ -7,8 +7,8 @@ namespace ANPaX.IO.interfaces
 {
     public interface IFilmFormationConfigurationData
     {
-        Task<int> CreateAggregateConfiguration(FilmFormationConfigurationModel filmFormationConfiguration);
-        Task<FilmFormationConfigurationModel> GetFilmFormationConfigurationById(int filmFormationConfigurationId);
-        Task<List<FilmFormationConfigurationModel>> GetFilmFormationConfigurations();
+        Task<int> CreateFilmFormationConfiguration(FilmFormationConfigurationDTO filmFormationConfiguration);
+        Task<FilmFormationConfigurationDTO> GetFilmFormationConfigurationById(int filmFormationConfigurationId);
+        Task<List<FilmFormationConfigurationDTO>> GetFilmFormationConfigurations();
     }
 }

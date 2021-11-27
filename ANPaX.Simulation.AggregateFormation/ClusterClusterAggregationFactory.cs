@@ -26,7 +26,7 @@ namespace ANPaX.Simulation.AggregateFormation
     /// This class uses the Particle-Cluster-Aggregation (PCA) <see cref="ParticleClusterAggregationFactory"/>
     /// from the same paper for the formation of the clusters.
     /// </remarks>
-    internal class ClusterClusterAggregationFactory : IParticleFactory<Aggregate>
+    public class ClusterClusterAggregationFactory : IParticleFactory<Aggregate>
     {
         private readonly ISizeDistribution<double> _psd;
         private readonly IAggregateFormationConfig _config;

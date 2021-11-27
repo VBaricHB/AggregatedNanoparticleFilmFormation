@@ -13,6 +13,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DE131C92-1DD5-4FFB-BB87-A3F25AB79C35}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		ANPaXDB.sqlite = ANPaXDB.sqlite
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ANPaX.UI.DesktopUI", "ANPaX.UI.DesktopUI\ANPaX.UI.DesktopUI.csproj", "{BA738508-5F55-4A35-83E2-5D7486835805}"
@@ -28,6 +29,8 @@ EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "ANPaX.IO.SQLDatabase", "ANPaX.IO.SQLDatabase\ANPaX.IO.SQLDatabase.sqlproj", "{B6F1CB14-72B4-42C1-BCA4-A673BC3EDDAB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ANPaX.UI.BlazorServer", "ANPaX.UI.BlazorServer\ANPaX.UI.BlazorServer.csproj", "{A3CACA96-4219-4F8A-98F7-C2C339E6AEDC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ANPaX.Backend", "ANPaX.Backend\ANPaX.Backend.csproj", "{07BF919D-C122-4861-8027-46EF161FB6EE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,6 +84,10 @@ Global
 		{A3CACA96-4219-4F8A-98F7-C2C339E6AEDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3CACA96-4219-4F8A-98F7-C2C339E6AEDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3CACA96-4219-4F8A-98F7-C2C339E6AEDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07BF919D-C122-4861-8027-46EF161FB6EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07BF919D-C122-4861-8027-46EF161FB6EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07BF919D-C122-4861-8027-46EF161FB6EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07BF919D-C122-4861-8027-46EF161FB6EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

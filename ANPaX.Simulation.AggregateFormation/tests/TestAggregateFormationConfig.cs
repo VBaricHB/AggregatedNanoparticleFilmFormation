@@ -46,5 +46,12 @@ namespace ANPaX.Simulation.AggregateFormation.tests
         public IParticleFactory<Aggregate> AggregateFormationFactory => null;
 
         public int RandomGeneratorSeed { get; } = 100;
+        public SizeDistributionType AggregateSizeDistributionType { get; set; }
+        public SizeDistributionType PrimaryParticleSizeDistributionType { get; set; }
+        public AggregateFormationType AggregateFormationType { get; set; }
+
+        public double ModalRadius { get; set; }
+
+        public double StdPPRadius { get; set; }
     }
 }

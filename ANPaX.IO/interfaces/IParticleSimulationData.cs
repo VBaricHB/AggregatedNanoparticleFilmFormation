@@ -7,10 +7,11 @@ namespace ANPaX.IO.interfaces
 {
     public interface IParticleSimulationData
     {
-        Task<int> CreateParticleSimulation(ParticleSimulationModel particleSimulation);
+        Task<int> CreateParticleSimulation(ParticleSimulationDTO particleSimulation);
         Task<int> DeleteParticleSimulation(int particleSimulationId);
-        Task<List<ParticleSimulationModel>> GetParticleSimulations();
-        Task<ParticleSimulationModel> GetParticleSimulationById(int particleSimulationId);
+        Task<List<ParticleSimulationDTO>> GetParticleSimulations();
+        Task<ParticleSimulationDTO> GetParticleSimulationById(int particleSimulationId);
+        Task<List<ParticleSimulationDTO>> GetParticleSimulationByUser(string user);
         Task<int> UpdateParticleSimulationPercentage(int particleSimulationId, double percentage);
         Task<int> UpdateParticleSimulationStatus(int particleSimulationId, string status);
     }

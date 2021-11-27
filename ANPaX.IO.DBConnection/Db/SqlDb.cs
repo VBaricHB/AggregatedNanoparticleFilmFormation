@@ -19,9 +19,9 @@ namespace ANPaX.IO.DBConnection.Db
             _config = config;
         }
 
-        public async Task<List<T>> LoadData<T, U>(string storedProcedure, U parameters, string connectionStringName)
+        public async Task<List<T>> LoadData<T, U>(string storedProcedure, U parameters, ConnectionData connectionData)
         {
-            var connectionString = _config.GetConnectionString(connectionStringName);
+            var connectionString = _config.GetConnectionString(connectionData.SQLConnectionString);
 
             using (IDbConnection connection = new SqlConnection(connectionString))
             {
@@ -34,16 +34,15 @@ namespace ANPaX.IO.DBConnection.Db
 
         }
 
-        public async Task<int> SaveData<U>(string storedProcedure, U parameters, string connectionStringName)
+        public async Task<int> SaveData<U>(string storedProcedure, U parameters, ConnectionData connectionData)
         {
-            var connectionString = _config.GetConnectionString(connectionStringName);
+            var connectionString = _config.GetConnectionString(connectionData.SQLConnectionString);
 
             using (IDbConnection connection = new SqlConnection(connectionString))
             {
                 return await connection.ExecuteAsync(storedProcedure,
                                                      parameters,
                                                      commandType: CommandType.StoredProcedure);
-
             }
         }
     }

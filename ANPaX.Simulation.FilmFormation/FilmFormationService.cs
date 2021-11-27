@@ -12,9 +12,8 @@ using ANPaX.Simulation.FilmFormation.interfaces;
 
 namespace ANPaX.Simulation.FilmFormation
 {
-    public class AggregateFilmFormationService
+    public class FilmFormationService
     {
-
         private readonly IAggregateDepositionHandler _aggregateDepositionHandler;
         private readonly IFilmFormationConfig _filmFormationConfig;
         private readonly IWallCollisionHandler _wallCollisionHandler;
@@ -24,12 +23,12 @@ namespace ANPaX.Simulation.FilmFormation
 
         public IParticleFilm<Aggregate> ParticleFilm { get; set; }
 
-        public AggregateFilmFormationService(IFilmFormationConfig filmFormationConfig)
+        public FilmFormationService(IFilmFormationConfig filmFormationConfig)
             : this(filmFormationConfig, -1)
         { }
 
 
-        public AggregateFilmFormationService(
+        public FilmFormationService(
             IFilmFormationConfig filmFormationConfig,
             int seed
             )
@@ -54,7 +53,6 @@ namespace ANPaX.Simulation.FilmFormation
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             await ProcessAggregates(aggregates, progress, report, stopwatch, delta, ct);
-
 
             return ParticleFilm;
         }

@@ -2,12 +2,15 @@
 using ANPaX.IO.DBConnection.Data;
 using ANPaX.IO.DBConnection.Db;
 using ANPaX.IO.interfaces;
+using ANPaX.UI.BlazorServer.Model;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
+using Syncfusion.Blazor;
 
 namespace ANPaX.UI.BlazorServer
 {
@@ -16,6 +19,7 @@ namespace ANPaX.UI.BlazorServer
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MzM3NTEzQDMxMzgyZTMzMmUzMGtiNmlyUGJxSktqUzdIVEd3TXpOK1hFekEyT2hDWStNa1lyK29RSUF6eWc9");
         }
 
         public IConfiguration Configuration { get; }
@@ -26,14 +30,20 @@ namespace ANPaX.UI.BlazorServer
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton(new ConnectionStringData
+            services.AddSyncfusionBlazor();
+            services.AddSingleton(new ConnectionData
             {
-                SqlConnectionName = "Default"
+                SQLConnectionString = "Default",
+                SQLiteFilePath = Configuration.GetConnectionString("SQLiteFile")
             });
-            services.AddSingleton<IDataAccess, SqlDb>();
+
+            services.AddSingleton<IDataAccess, SqliteDB>();
             services.AddSingleton<IParticleSimulationData, ParticleSimulationDataSQL>();
-            services.AddSingleton<IAggregateConfigurationData, AggregateConfigurationDataSQL>();
+            services.AddSingleton<IAggregateConfigurationData, AggregateConfigurationDataSQLite>();
             services.AddSingleton<IFilmFormationConfigurationData, FilmFormationConfigurationDataSQL>();
+            services.AddSingleton<IUserData, UserDataSQLite>();
+            services.AddSingleton<IAggregateConfigurationModelService, AggregateConfigurationModelService>();
+            services.AddSingleton<IUserModelService, UserModelService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -16,48 +16,38 @@ namespace ANPaX.Simulation.AggregateFormation
     public class AggregateFormationService
     {
         private readonly int _seed;
-        private ISizeDistribution<int> _asd;
-        private ISizeDistribution<double> _psd;
+        private ISizeDistribution<int> _aggregateSizeDistribution;
+        private ISizeDistribution<double> _primaryParticleSizeDistribution;
         private IParticleFactory<Aggregate> _particleFactory;
         private INeighborslistFactory _neighborslistFactory;
+        private readonly IAggregateSizeDistributionFactory _aggregateSizeDistributionFactory;
+        private readonly IPrimaryParticleSizeDistributionFactory _primaryParticleSizeDistributionFactory;
+        private readonly IAggregateFormationFactory _aggregateFormationFactory;
         private readonly IAggregateFormationConfig _config;
         private readonly ILogger _logger;
 
 
-        public AggregateFormationService(IAggregateFormationConfig config, ILogger logger)
+        public AggregateFormationService(
+            IAggregateSizeDistributionFactory aggregateSizeDistributionFactory,
+            IPrimaryParticleSizeDistributionFactory primaryParticleSizeDistributionFactory,
+            IAggregateFormationFactory aggregateFormationFactory,
+            INeighborslistFactory neighborslistFactory,
+            IAggregateFormationConfig config,
+            ILogger logger)
         {
-            _config = config;
-            _logger = logger;
-            _neighborslistFactory = new AccordNeighborslistFactory();
+            _aggregateSizeDistributionFactory = aggregateSizeDistributionFactory ?? throw new ArgumentException(nameof(aggregateSizeDistributionFactory));
+            _primaryParticleSizeDistributionFactory = primaryParticleSizeDistributionFactory ?? throw new ArgumentException(nameof(primaryParticleSizeDistributionFactory));
+            _aggregateFormationFactory = aggregateFormationFactory ?? throw new ArgumentException(nameof(aggregateFormationFactory));
+            _neighborslistFactory = neighborslistFactory ?? throw new ArgumentException(nameof(neighborslistFactory));
+            _config = config ?? throw new ArgumentException(nameof(config));
+            _logger = logger ?? throw new ArgumentException(nameof(logger));
 
-            if (config.UseDefaultGenerationMethods)
-            {
-                BuildDefaultMethods();
-            }
-            else
-            {
-                BuildMethodsFromConfig();
-            }
-        }
-
-        private void BuildMethodsFromConfig()
-        {
-            _asd = _config.AggregateSizeDistribution;
-            _psd = _config.PrimaryParticleSizeDistribution;
-            _particleFactory = _config.AggregateFormationFactory;
-        }
-
-        private void BuildDefaultMethods()
-        {
             var rndGen = new Random();
-            if (_config.RandomGeneratorSeed != -1)
-            {
-                rndGen = new Random(_config.RandomGeneratorSeed);
-            }
-            _asd = DefaultConfigurationBuilder.GetAggreateSizeDistribution(rndGen, _config);
-            _psd = DefaultConfigurationBuilder.GetPrimaryParticleSizeDistribution(rndGen, _config);
-            _particleFactory = new ClusterClusterAggregationFactory(_psd, _config, _logger, _neighborslistFactory, _config.RandomGeneratorSeed);
+            _aggregateSizeDistribution = aggregateSizeDistributionFactory.Build(rndGen, config);
+            _primaryParticleSizeDistribution = primaryParticleSizeDistributionFactory.Build(rndGen, config);
+            _particleFactory = _aggregateFormationFactory.Build(_primaryParticleSizeDistribution, _neighborslistFactory, _config, _logger);
         }
+
 
         internal AggregateFormationService
             (
@@ -70,8 +60,8 @@ namespace ANPaX.Simulation.AggregateFormation
             )
         {
             _seed = seed;
-            _asd = aggregateSizeDistribution;
-            _psd = primaryParticleSizeDistribution;
+            _aggregateSizeDistribution = aggregateSizeDistribution;
+            _primaryParticleSizeDistribution = primaryParticleSizeDistribution;
             _config = config;
             _logger = logger;
             _particleFactory = particleFactory;
@@ -193,7 +183,7 @@ namespace ANPaX.Simulation.AggregateFormation
             var sum = 0;
             while (sum < _config.TotalPrimaryParticles)
             {
-                sizes.Add(_asd.GetRandomSize());
+                sizes.Add(_aggregateSizeDistribution.GetRandomSize());
                 sum = sizes.Sum();
             }
 

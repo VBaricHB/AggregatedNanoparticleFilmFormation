@@ -1,6 +1,4 @@
-﻿using ANPaX.Core;
-
-namespace ANPaX.Simulation.AggregateFormation.interfaces
+﻿namespace ANPaX.Simulation.AggregateFormation.interfaces
 {
     public interface IAggregateFormationConfig
     {
@@ -15,11 +13,12 @@ namespace ANPaX.Simulation.AggregateFormation.interfaces
         public double LargeNumber { get; }
         public MeanMethod RadiusMeanCalculationMethod { get; }
         public MeanMethod AggregateSizeMeanCalculationMethod { get; }
+        public SizeDistributionType AggregateSizeDistributionType { get; set; }
+        public SizeDistributionType PrimaryParticleSizeDistributionType { get; set; }
+        public AggregateFormationType AggregateFormationType { get; set; }
         public bool UseDefaultGenerationMethods { get; }
-        public ISizeDistribution<double> PrimaryParticleSizeDistribution { get; }
-        public ISizeDistribution<int> AggregateSizeDistribution { get; }
-        public IParticleFactory<Aggregate> AggregateFormationFactory { get; }
         public int RandomGeneratorSeed { get; }
-
+        public double ModalRadius { get; }
+        public double StdPPRadius { get; }
     }
 }

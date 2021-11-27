@@ -71,11 +71,8 @@ namespace ANPaX.UI.DesktopUI.ViewModels
                 SetFileFormat(value);
                 NotifyOfPropertyChange(() => SelectedAggFileFormat);
                 NotifyOfPropertyChange(() => AggFileName);
-
             }
         }
-
-
 
         public AggFormationControlViewModel(
             AggregateFormationConfig config,
@@ -130,7 +127,13 @@ namespace ANPaX.UI.DesktopUI.ViewModels
             var progress = new Progress<ProgressReportModel>();
             progress.ProgressChanged += StatusViewModel.ReportProgress;
 
-            var service = new AggregateFormationService(Config, _logger);
+            var service = new AggregateFormationService(
+                new AggregateSizeDistributionFactory(),
+                new PrimaryParticleSizeDistributionFactory(),
+                new AggregateFormationFactory(),
+                new AccordNeighborslistFactory(),
+                Config,
+                _logger);
             _cts = new CancellationTokenSource();
 
             GeneratedAggregates = await service.GenerateAggregates_Parallel_Async(SimProp.NumberOfCPU, progress, _cts.Token);

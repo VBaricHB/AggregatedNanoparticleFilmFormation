@@ -4,9 +4,7 @@
     {
         public int Id { get; set; }
         public Vector3 Position { get; set; }
-
         public double Radius { get; set; }
-
         public int Type { get; set; }
 
         public PrimaryParticle(int id, Vector3 position, double radius)

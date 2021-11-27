@@ -15,14 +15,18 @@ using ANPaX.IO;
 using ANPaX.Simulation.FilmFormation;
 using ANPaX.Simulation.FilmFormation.interfaces;
 using ANPaX.UI.DesktopUI.Models;
+using ANPaX.UI.DesktopUI.Views;
+
+using Caliburn.Micro;
 
 namespace ANPaX.UI.DesktopUI.ViewModels
 {
-    public class FilmFormationControlViewModel : Caliburn.Micro.Screen
+    public class FilmFormationControlViewModel : Conductor<object>
     {
         private List<Aggregate> _aggregates;
 
         public IFilmFormationConfig FilmFormationConfig { get; set; }
+        public FilmFormationConfigViewModel FilmFormationConfigViewModel { get; set; }
         public AggFormationControlViewModel AggFormationControlViewModel { get; set; }
 
         private CancellationTokenSource _cts;
@@ -32,6 +36,8 @@ namespace ANPaX.UI.DesktopUI.ViewModels
         private LoggingViewModel _loggingViewModel;
         private FileExport _export = new FileExport();
         private FileImport _import = new FileImport();
+
+        public string ParticleFilmFileName { get; set; } = "ParticleFilm.trj";
 
         public SimulationProperties SimProp { get; set; }
         public IParticleFilm<Aggregate> ParticleFilm { get; set; }
@@ -47,6 +53,7 @@ namespace ANPaX.UI.DesktopUI.ViewModels
         {
             FilmFormationConfig = filmFormationConfig;
             SimProp = simProp;
+            FilmFormationConfigViewModel = new FilmFormationConfigViewModel(FilmFormationConfig);
             AggFormationControlViewModel = aggFormationControlViewModel;
             _statusViewModel = statusViewModel;
             _loggingViewModel = loggingViewModel;
@@ -134,5 +141,33 @@ namespace ANPaX.UI.DesktopUI.ViewModels
             ExportFilm(filename);
         }
 
+        #region ViewVisibility
+
+        public void ShowFilmFormationConfigView(FilmFormationControlView view)
+        {
+            SwitchToHideFilmFormationConfigButton(view);
+            ActivateItem(FilmFormationConfigViewModel);
+        }
+
+        public void HideFilmFormationConfigView(FilmFormationControlView view)
+        {
+            SwitchToShowFilmFormationConfigButton(view);
+            DeactivateItem(FilmFormationConfigViewModel, false);
+        }
+        #endregion
+
+        #region ButtonVisibility
+        private void SwitchToShowFilmFormationConfigButton(FilmFormationControlView view)
+        {
+            view.HideFilmFormationConfigButton.Visibility = System.Windows.Visibility.Hidden;
+            view.ShowFilmFormationConfigButton.Visibility = System.Windows.Visibility.Visible;
+        }
+
+        private void SwitchToHideFilmFormationConfigButton(FilmFormationControlView view)
+        {
+            view.HideFilmFormationConfigButton.Visibility = System.Windows.Visibility.Visible;
+            view.ShowFilmFormationConfigButton.Visibility = System.Windows.Visibility.Hidden;
+        }
+        #endregion
     }
 }

@@ -8,8 +8,6 @@ namespace ANPaX.UI.DesktopUI.ViewModels
 {
     public class AggregateConfigViewModel : Screen, IConfigViewModel
     {
-
-
         private static string _defaultSizeDistribution = "FSP Standard";
 
         private string _selectedAggSizeDistribution = _defaultSizeDistribution;

@@ -53,7 +53,7 @@ namespace ANPaX.Simulation.AggregateFormation.tests
             var rndGen = new Random(1);
             var config = new TestAggregateFormationConfig()
             {
-                MeanPPRadius = expectedMean,
+                ModalRadius = expectedMean,
                 StdPPRadius = 1
             };
 
@@ -74,7 +74,7 @@ namespace ANPaX.Simulation.AggregateFormation.tests
             var rndGen = new Random(1);
             var config = new TestAggregateFormationConfig()
             {
-                MeanPPRadius = expectedMean,
+                ModalRadius = expectedMean,
                 StdPPRadius = 1
             };
 

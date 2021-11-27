@@ -11,7 +11,7 @@ namespace ANPaX.Simulation.AggregateFormation
             switch (config.PrimaryParticleSizeDistributionType)
             {
                 case SizeDistributionType.Monodisperse:
-                    return new MonodispersePrimaryParticleSizeDistribution(config.MeanPPRadius);
+                    return new MonodispersePrimaryParticleSizeDistribution(config.ModalRadius);
                 case SizeDistributionType.LogNormal:
                     return new LogNormalSizeDistribution(rndGen, config);
                 case SizeDistributionType.DissDefault:

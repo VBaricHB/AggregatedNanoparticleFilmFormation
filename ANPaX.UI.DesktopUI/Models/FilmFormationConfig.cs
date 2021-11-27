@@ -27,14 +27,20 @@ namespace ANPaX.UI.DesktopUI.Models
             NeighborslistFactory = new AccordNeighborslistFactory();
         }
 
-        public ISimulationBoxFactory SimulationBoxFactory { get; }
+        public ISimulationBoxFactory SimulationBoxFactory { get; set; }
 
-        public ISingleParticleDepositionHandler SingleParticleDepositionHandler { get; }
+        public ISingleParticleDepositionHandler SingleParticleDepositionHandler { get; set; }
 
-        public IAggregateDepositionHandler AggregateDepositionHandler { get; }
+        public IAggregateDepositionHandler AggregateDepositionHandler { get; set; }
 
-        public IWallCollisionHandler WallCollisionHandler { get; }
+        public IWallCollisionHandler WallCollisionHandler { get; set; }
 
-        public INeighborslistFactory NeighborslistFactory { get; }
+        public INeighborslistFactory NeighborslistFactory { get; set; }
+    }
+
+    public enum WallCollisionType
+    {
+        Periodic,
+        Open
     }
 }

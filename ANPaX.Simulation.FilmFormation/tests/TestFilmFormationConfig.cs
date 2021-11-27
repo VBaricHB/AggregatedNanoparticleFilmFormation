@@ -8,14 +8,14 @@ namespace ANPaX.Simulation.FilmFormation.tests
 {
     internal class TestFilmFormationConfig : IFilmFormationConfig
     {
-        public double LargeNumber => 1e10;
+        public double LargeNumber { get; set; } = 1e10;
 
-        public double Delta => 1.01;
+        public double Delta { get; set; } = 1.01;
 
-        public double XFilmWidthAbsolute => 2000;
-        public double YFilmWidthAbsolute => 2000;
+        public double XFilmWidthAbsolute { get; set; } = 2000;
+        public double YFilmWidthAbsolute { get; set; } = 2000;
 
-        public int MaxCPU => Environment.ProcessorCount;
+        public int MaxCPU { get; set; } = Environment.ProcessorCount;
 
         public TestFilmFormationConfig()
         {
@@ -26,14 +26,14 @@ namespace ANPaX.Simulation.FilmFormation.tests
             NeighborslistFactory = new AccordNeighborslistFactory();
         }
 
-        public ISimulationBoxFactory SimulationBoxFactory { get; }
+        public ISimulationBoxFactory SimulationBoxFactory { get; set; }
 
-        public ISingleParticleDepositionHandler SingleParticleDepositionHandler { get; }
+        public ISingleParticleDepositionHandler SingleParticleDepositionHandler { get; set; }
 
-        public IAggregateDepositionHandler AggregateDepositionHandler { get; }
+        public IAggregateDepositionHandler AggregateDepositionHandler { get; set; }
 
-        public IWallCollisionHandler WallCollisionHandler { get; }
+        public IWallCollisionHandler WallCollisionHandler { get; set; }
 
-        public INeighborslistFactory NeighborslistFactory { get; }
+        public INeighborslistFactory NeighborslistFactory { get; set; }
     }
 }

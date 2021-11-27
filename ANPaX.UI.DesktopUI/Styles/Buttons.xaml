@@ -359,6 +359,97 @@
         </Setter>
     </Style>
 
+    <Style x:Key="ShowFilmFormationConfigButton" TargetType="{x:Type Button}">
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="Width" Value="150" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Background" Value="{StaticResource UniversityBlueBrush}" />
+        <Setter Property="LayoutTransform">
+            <Setter.Value>
+                <RotateTransform Angle="-90" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{StaticResource UniversityGreyBrush}"
+                        BorderThickness=".5">
+                        <Grid Margin="10,0,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="auto" />
+                            </Grid.ColumnDefinitions>
+                            <Image Name="Image" Grid.Column="0">
+                                <Image.Source>
+                                    <DrawingImage>
+                                        <DrawingImage.Drawing>
+                                            <GeometryDrawing Brush="{StaticResource UniversityGreyBrush}">
+                                                <GeometryDrawing.Geometry>
+                                                    <GeometryGroup>
+                                                        <EllipseGeometry
+                                                            Center="0,0"
+                                                            RadiusX=".6"
+                                                            RadiusY=".6" />
+                                                        <EllipseGeometry
+                                                            Center="1,1"
+                                                            RadiusX=".8"
+                                                            RadiusY=".8" />
+                                                        <EllipseGeometry
+                                                            Center="-0.4,1.1"
+                                                            RadiusX=".6"
+                                                            RadiusY=".6" />
+                                                        <EllipseGeometry
+                                                            Center="1.9,0.4"
+                                                            RadiusX=".3"
+                                                            RadiusY=".3" />
+
+                                                        <EllipseGeometry
+                                                            Center="0,2"
+                                                            RadiusX=".6"
+                                                            RadiusY=".6" />
+                                                        <EllipseGeometry
+                                                            Center="-1.5,2"
+                                                            RadiusX=".8"
+                                                            RadiusY=".8" />
+                                                        <EllipseGeometry
+                                                            Center="-1,3"
+                                                            RadiusX=".6"
+                                                            RadiusY=".6" />
+                                                        <EllipseGeometry
+                                                            Center="0,2.8"
+                                                            RadiusX=".3"
+                                                            RadiusY=".3" />
+                                                    </GeometryGroup>
+                                                </GeometryDrawing.Geometry>
+                                            </GeometryDrawing>
+                                        </DrawingImage.Drawing>
+                                    </DrawingImage>
+                                </Image.Source>
+                            </Image>
+                            <TextBlock
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="Film formation config" />
+                        </Grid>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="White" />
+                            <Setter Property="Foreground" Value="{StaticResource UniversityBlueBrush}" />
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="ShowAdvancedConfigButton" TargetType="{x:Type Button}">
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="FontSize" Value="10" />
@@ -613,6 +704,94 @@
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 Text="Aggregate config" />
+                        </Grid>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{StaticResource UniversityGreyBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource UniversityBlueBrush}" />
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="HideFilmFormationConfigButton" TargetType="{x:Type Button}">
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="Width" Value="150" />
+        <Setter Property="Background" Value="White" />
+        <Setter Property="Foreground" Value="{StaticResource UniversityBlueBrush}" />
+        <Setter Property="LayoutTransform">
+            <Setter.Value>
+                <RotateTransform Angle="-90" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}">
+                        <Grid Margin="10,0,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="auto" />
+                            </Grid.ColumnDefinitions>
+                            <Image Name="Image" Grid.Column="0">
+                                <Image.Source>
+                                    <DrawingImage>
+                                        <DrawingImage.Drawing>
+                                            <GeometryDrawing Brush="{StaticResource UniversityBlueBrush}">
+                                                <GeometryDrawing.Geometry>
+                                                    <GeometryGroup>
+                                                        <EllipseGeometry
+                                                            Center="0,0"
+                                                            RadiusX=".6"
+                                                            RadiusY=".6" />
+                                                        <EllipseGeometry
+                                                            Center="1,1"
+                                                            RadiusX=".8"
+                                                            RadiusY=".8" />
+                                                        <EllipseGeometry
+                                                            Center="-0.4,1.1"
+                                                            RadiusX=".6"
+                                                            RadiusY=".6" />
+                                                        <EllipseGeometry
+                                                            Center="1.9,0.4"
+                                                            RadiusX=".3"
+                                                            RadiusY=".3" />
+
+                                                        <EllipseGeometry
+                                                            Center="0,2"
+                                                            RadiusX=".6"
+                                                            RadiusY=".6" />
+                                                        <EllipseGeometry
+                                                            Center="-1.5,2"
+                                                            RadiusX=".8"
+                                                            RadiusY=".8" />
+                                                        <EllipseGeometry
+                                                            Center="-1,3"
+                                                            RadiusX=".6"
+                                                            RadiusY=".6" />
+                                                        <EllipseGeometry
+                                                            Center="0,2.8"
+                                                            RadiusX=".3"
+                                                            RadiusY=".3" />
+                                                    </GeometryGroup>
+                                                </GeometryDrawing.Geometry>
+                                            </GeometryDrawing>
+                                        </DrawingImage.Drawing>
+                                    </DrawingImage>
+                                </Image.Source>
+                            </Image>
+                            <TextBlock
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="Film formation config" />
                         </Grid>
                     </Border>
 

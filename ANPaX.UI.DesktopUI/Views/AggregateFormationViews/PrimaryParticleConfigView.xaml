@@ -72,9 +72,9 @@
                             Grid.Column="0"
                             Margin="0,5,0,0"
                             FontSize="10"
-                            Text="Mean primary particle radius" />
+                            Text="Modal primary particle radius" />
                         <TextBox
-                            x:Name="MeanPPRadius"
+                            x:Name="ModalRadius"
                             Grid.Row="1"
                             Grid.Column="0"
                             FontSize="10">

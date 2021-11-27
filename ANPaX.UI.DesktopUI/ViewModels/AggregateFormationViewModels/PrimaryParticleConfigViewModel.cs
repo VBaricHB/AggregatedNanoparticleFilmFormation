@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 
 using ANPaX.Simulation.AggregateFormation;
 using ANPaX.UI.DesktopUI.Models;
@@ -16,33 +17,41 @@ namespace ANPaX.UI.DesktopUI.ViewModels
         public AggregateFormationConfig Config { get; set; }
         public List<string> AvailablePPSizeDistributions { get; set; } = new List<string>() { _defaultSizeDistribution, "Monodisperse", "Lognormal" };
 
-        private double _meanPPRadius = 5.5;
-        private double _sdevPPRadius = 0.230;
+        private string _modalRadius;
+        private string _sdevPPRadius;
 
-        public double MeanPPRadius
+        public string ModalRadius
         {
-            get => _meanPPRadius;
+            get => _modalRadius;
             set
             {
-                if (value != _meanPPRadius)
+                if (value != _modalRadius)
                 {
-                    _meanPPRadius = value;
-                    NotifyOfPropertyChange(() => MeanPPRadius);
-                    Config.MeanPPRadius = value;
+                    _modalRadius = value;
+                    NotifyOfPropertyChange(() => ModalRadius);
+                    var isSuccessful = double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out var doubleValue);
+                    if (isSuccessful)
+                    {
+                        Config.ModalRadius = doubleValue;
+                    }
                 }
             }
         }
 
-        public double SdevPPRadius
+        public string SdevPPRadius
         {
             get => _sdevPPRadius;
             set
             {
-                if (_meanPPRadius != value)
+                if (_sdevPPRadius != value)
                 {
-                    _meanPPRadius = value;
+                    _sdevPPRadius = value;
                     NotifyOfPropertyChange(() => SdevPPRadius);
-                    Config.StdPPRadius = value;
+                    var isSuccessful = double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out var doubleValue);
+                    if (isSuccessful)
+                    {
+                        Config.StdPPRadius = doubleValue;
+                    }
                 }
             }
         }
@@ -79,6 +88,8 @@ namespace ANPaX.UI.DesktopUI.ViewModels
         public PrimaryParticleConfigViewModel(AggregateFormationConfig config)
         {
             Config = config;
+            _modalRadius = config.ModalRadius.ToString(CultureInfo.InvariantCulture);
+            _sdevPPRadius = config.StdPPRadius.ToString(CultureInfo.InvariantCulture);
         }
 
     }

@@ -53,7 +53,7 @@ namespace ANPaX.UI.DesktopUI.Models
         public SizeDistributionType AggregateSizeDistributionType { get; set; } = SizeDistributionType.DissDefault;
         public SizeDistributionType PrimaryParticleSizeDistributionType { get; set; } = SizeDistributionType.DissDefault;
         public AggregateFormationType AggregateFormationType { get; set; } = AggregateFormationType.ClusterClusterAggregation;
-        public double MeanPPRadius { get; internal set; } = 5.5;
-        public double StdPPRadius { get; internal set; } = 0.230;
+        public double ModalRadius { get; set; } = 4.479;
+        public double StdPPRadius { get; set; } = 0.230;
     }
 }

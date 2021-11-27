@@ -50,7 +50,7 @@ namespace ANPaX.Simulation.AggregateFormation.tests
         public SizeDistributionType PrimaryParticleSizeDistributionType { get; set; }
         public AggregateFormationType AggregateFormationType { get; set; }
 
-        public double MeanPPRadius { get; set; }
+        public double ModalRadius { get; set; }
 
         public double StdPPRadius { get; set; }
     }

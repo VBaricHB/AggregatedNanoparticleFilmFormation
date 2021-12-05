@@ -20,4 +20,8 @@
     <PackageReference Include="MudBlazor" Version="6.0.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ANPaX.IO\ANPaX.IO.csproj" />
+  </ItemGroup>
+
 </Project>

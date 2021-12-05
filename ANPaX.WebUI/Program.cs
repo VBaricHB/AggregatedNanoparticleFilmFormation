@@ -1,4 +1,3 @@
-using ANPaX.IO.DBConnection.Db;
 using ANPaX.WebUI.Areas.Identity;
 using ANPaX.WebUI.Data;
 using ANPaX.WebUI.Model;
@@ -26,7 +25,7 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddMudServices();
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
 builder.Services.AddSingleton<IAggregateConfigurationModelService, AggregateConfigurationModelService>();
-builder.Services.AddSingleton<IDataAccess, SqliteDB>();
+builder.Services.AddSingleton<IANPaXAPIHandler, StaticANPaXAPIHandler>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

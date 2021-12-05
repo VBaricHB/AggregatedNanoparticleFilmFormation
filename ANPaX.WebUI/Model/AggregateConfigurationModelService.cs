@@ -1,25 +1,24 @@
 ﻿using ANPaX.IO.DTO;
 using ANPaX.IO.interfaces;
+using ANPaX.WebUI.Data;
 
 namespace ANPaX.WebUI.Model
 {
     public class AggregateConfigurationModelService : IAggregateConfigurationModelService
     {
-        private readonly IAggregateConfigurationData _configData;
+        private readonly IANPaXAPIHandler _apiHandler;
 
         public AggregateConfigurationDTO AggregateConfigurationModel { get; set; }
-        public AggregateConfigurationModelService(IAggregateConfigurationData configData)
+        public AggregateConfigurationModelService(IANPaXAPIHandler apiHandler)
         {
-            _configData = configData;
+            _apiHandler = apiHandler;
             AggregateConfigurationModel = GetDefaultConfigurationModel();
 
         }
 
         private AggregateConfigurationDTO GetDefaultConfigurationModel()
         {
-            var output = _configData.GetAggregateConfigurationById(1).Result;
-            output.Description = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-            return output;
+            return _apiHandler.GetAggregateConfigurationById(1);
         }
     }
 }

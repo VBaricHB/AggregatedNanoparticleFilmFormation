@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29911.84
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ANPaX.Simulation.FilmFormation", "ANPaX.Simulation.FilmFormation\ANPaX.Simulation.FilmFormation.csproj", "{ECC70DF6-8549-4EF2-A789-1ECA7712969B}"
 EndProject
@@ -28,9 +28,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ANPaX.IO.DBConnection", "AN
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "ANPaX.IO.SQLDatabase", "ANPaX.IO.SQLDatabase\ANPaX.IO.SQLDatabase.sqlproj", "{B6F1CB14-72B4-42C1-BCA4-A673BC3EDDAB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ANPaX.UI.BlazorServer", "ANPaX.UI.BlazorServer\ANPaX.UI.BlazorServer.csproj", "{A3CACA96-4219-4F8A-98F7-C2C339E6AEDC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ANPaX.Backend", "ANPaX.Backend\ANPaX.Backend.csproj", "{07BF919D-C122-4861-8027-46EF161FB6EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ANPaX.Backend", "ANPaX.Backend\ANPaX.Backend.csproj", "{07BF919D-C122-4861-8027-46EF161FB6EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ANPaX.WebUI", "ANPaX.WebUI\ANPaX.WebUI.csproj", "{6A9C8DE2-1CE0-4E3E-B929-9B2686BC4D7B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -80,14 +80,14 @@ Global
 		{B6F1CB14-72B4-42C1-BCA4-A673BC3EDDAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B6F1CB14-72B4-42C1-BCA4-A673BC3EDDAB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B6F1CB14-72B4-42C1-BCA4-A673BC3EDDAB}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{A3CACA96-4219-4F8A-98F7-C2C339E6AEDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A3CACA96-4219-4F8A-98F7-C2C339E6AEDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A3CACA96-4219-4F8A-98F7-C2C339E6AEDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A3CACA96-4219-4F8A-98F7-C2C339E6AEDC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{07BF919D-C122-4861-8027-46EF161FB6EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{07BF919D-C122-4861-8027-46EF161FB6EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07BF919D-C122-4861-8027-46EF161FB6EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07BF919D-C122-4861-8027-46EF161FB6EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A9C8DE2-1CE0-4E3E-B929-9B2686BC4D7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A9C8DE2-1CE0-4E3E-B929-9B2686BC4D7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A9C8DE2-1CE0-4E3E-B929-9B2686BC4D7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A9C8DE2-1CE0-4E3E-B929-9B2686BC4D7B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

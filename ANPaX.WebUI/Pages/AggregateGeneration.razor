@@ -1,0 +1,23 @@
+﻿@inject AggFormationConfigService _configService;
+
+<MudText Typo="@Typo.h1">Aggregate Generation Simulation</MudText>
+
+<MudGrid>
+    <MudItem xs="6">
+        <MudTextField @bind-Value="_config.Description" Label="Description" Variant="Variant.Text"></MudTextField>
+        <MudTextField @bind-Value="_config.TotalPrimaryParticles" Label="TotalPrimaryParticles" Variant="Variant.Text"></MudTextField>
+    </MudItem>
+
+    <MudItem xs="6">
+        
+        <MudSelect>
+            <MudSelectItem></MudSelectItem>
+        </MudSelect>
+
+    </MudItem>
+
+</MudGrid>
+
+@code {
+    AggregateConfigurationDTO _config => _configService.Config;
+}

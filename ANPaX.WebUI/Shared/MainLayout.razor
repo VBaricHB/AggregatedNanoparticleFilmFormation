@@ -1,0 +1,147 @@
+﻿@inherits LayoutComponentBase
+
+@*<PageTitle>ANPaX.WebUI</PageTitle>
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4 auth">
+            <LoginDisplay />
+            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+*@
+
+<MudThemeProvider Theme="UniBremenTheme"/>
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="0" Dense="true" Color=Color.Transparent>
+        <MudText Typo="Typo.h5" Class="ml-3">ANPaX</MudText>
+        <MudSpacer />
+        <MudTabs Elevation="0" 
+            Rounded="true" 
+            Centered="true" 
+            Color=Color.Transparent
+            @bind-ActivePanelIndex="_activeIndex">
+            <MudTabPanel Text="Aggegate Generation" ID='"pn_one"'/> 
+            <MudTabPanel Text="Film Generation" ID='"pn_two"'/>
+            <MudTabPanel Text="Analyses" ID='"pn_three"'/>
+        </MudTabs>
+
+        <MudSpacer />
+        
+        <MudDivider Vertical="true" FlexItem="true" Class="ma-3" />
+        <div style="align-content: flex-end">
+            <LoginDisplay/>
+        </div>
+    </MudAppBar>
+      
+    <MudAppBar Elevation="1" Dense="true"  Bottom=true>
+        <MudText Typo="Typo.body1" Class="ml-3">Currently Loaded</MudText>
+        <MudIconButton Icon="@Icons.Filled.KeyboardArrowUp" Color="Color.Inherit" Edge="Edge.End" OnClick="@((e) => CurrentlyLoadedToggle())" />
+        
+        <MudSpacer />
+        
+        <MudText Typo="Typo.body1" Class="ml-3">Logging</MudText>
+        <MudIconButton Icon="@Icons.Filled.KeyboardArrowUp" Color="Color.Inherit" Edge="Edge.End" OnClick="@((e) => LoggingToggle())" />
+
+    </MudAppBar>
+    
+    <MudDrawer @bind-Open="@_drawerOpen" Elevation="2" Anchor="@Anchor.Bottom" Variant="@DrawerVariant.Temporary">
+        @switch(_currentContent)
+        {
+            case Content.CurrentlyLoaded:
+                <CurrentlyLoadedDrawer/>
+                break;
+            case Content.Logging:
+                <LoggingDrawer/>    
+                break;
+        }
+    </MudDrawer>
+
+    <MudMainContent MaxWidth="MaxWidth.Medium">
+        
+        <div style="padding: 0cm 0.5cm 0.0cm 0.5cm">
+            @switch(_activeIndex)
+            {
+                case 0:
+                    <ANPaX.WebUI.Pages.AggregateGeneration/>
+                    break;
+                case 1:
+                     <ANPaX.WebUI.Pages.FilmGeneration />
+                    break;
+                case 2:
+                    <ANPaX.WebUI.Pages.Analyses />
+                    break;
+
+                
+            }
+        </div>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    bool _drawerOpen = false;
+    Content _currentContent = Content.CurrentlyLoaded;
+    int _activeIndex = 0;
+
+    MudTheme UniBremenTheme = new MudTheme()
+    {
+        Palette = new Palette()
+        {
+            Primary = "#00326D",
+            PrimaryContrastText = "#000000",
+            Tertiary = "#D40032",
+            Secondary = "#686868",
+            //Black = "#27272f",
+            Background = "#efefef",
+            BackgroundGrey = "#616161",
+            //Surface = "#373740",
+            //DrawerBackground = "#27272f",
+            //DrawerText = "#000000",
+            //DrawerIcon = "rgba(255,255,255, 0.50)",
+            AppbarBackground = "#00326D",
+            //    AppbarText = "rgba(255,255,255, 0.70)",
+            //    TextPrimary = "rgba(255,255,255, 0.70)",
+            //    TextSecondary = "rgba(255,255,255, 0.50)",
+            //    ActionDefault = "#adadb1",
+            //    ActionDisabled = "rgba(255,255,255, 0.26)",
+            //    ActionDisabledBackground = "rgba(255,255,255, 0.12)",
+            //    Divider = "rgba(255,255,255, 0.12)",
+            //    DividerLight = "rgba(255,255,255, 0.06)",
+            //    TableLines = "rgba(255,255,255, 0.12)",
+            //    LinesDefault = "rgba(255,255,255, 0.12)",
+            //    LinesInputs = "rgba(255,255,255, 0.3)",
+            //    TextDisabled = "rgba(255,255,255, 0.2)"
+        }
+    };
+
+    void CurrentlyLoadedToggle()
+    {
+        _currentContent = Content.CurrentlyLoaded;
+        _drawerOpen = !_drawerOpen;
+    }
+
+    void LoggingToggle()
+    {
+        _currentContent = Content.Logging;
+        _drawerOpen = !_drawerOpen;
+    }
+
+    public enum Content
+    {
+        Logging,
+        CurrentlyLoaded
+    }
+}
+
